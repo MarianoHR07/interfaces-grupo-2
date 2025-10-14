@@ -1,0 +1,33 @@
+<template id="sidebar-template">
+  <aside class="sidebar">
+    <h3 class="sidebar-title">Menu</h3>
+    <ul class="sidebar-list">
+      <li class="sidebar-list-item">
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+      </li>
+      <li class="sidebar-list-item">
+        <i class="fa-solid fa-star"></i>
+        <span>Nuevos</span>
+      </li>
+      <li class="sidebar-list-item">
+        <i class="fa-solid fa-fire"></i>
+        <span>Populares</span>
+      </li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <h3 class="sidebar-title">Categorías</h3>
+    <ul class="sidebar-list" id="categories-sidebar">
+    </ul>
+  </aside>
+
+  <!-- Template para cada categoría de los juegos -->
+  <template id="category-item">
+    <li class="sidebar-list-item">
+      <span class="icon"></span>
+      <span class="category-name"></span>
+    </li>
+  </template>
+</template>
