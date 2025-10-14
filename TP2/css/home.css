@@ -1,20 +1,14 @@
 /* -----------------------------------CONTENEDORES PRINCIPALES */
-#carouseles-container-1 {
+#carouseles-container-1, #most-liked {
   display: flex;
   flex-direction: column;
   gap: 15px;
   /* padding-left: 12px; */
+  margin-bottom: 10px;
 }
 
-#main-container{
-  margin-top: 20px;
-}
-
-#container{
-  display: flex;
-  /* flex-direction: column; */
-  /*gap: 10px;  */
-  margin-left: 20px;
+#games{
+  margin-bottom: 30px;
 }
 
 /* -------------------- Divisores ----------------------- */
@@ -41,31 +35,38 @@
 }
 
 .img-recommended-community {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);;
+  display: flex;
   gap: 10px;
-  min-height: 360px;
-  cursor: pointer;
+  width: 100%;
+  overflow-x: auto; /*permite desplazarce en el eje x*/
+  scroll-snap-type:x mandatory; /*al deslizar, siempre se detendra en una imagen completa*/
+  scrollbar-width: none; /*oculta scrollbar en Firefox*/
 }
 
+.img-recommended-community::-webkit-scrollbar{ display: none; }
+
 .img-recommended-community img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 5px;
+  flex:0 0 auto;
+  max-width: 350px;
+  max-height: 180px;
+  border-radius: 10px;
+  /* aspect-ratio: 16/9; */
+  /* height: auto; */
+  
+  scroll-snap-align: center; /*centra las imagenes al soltar el swipe*/
+  transition: transform 0.3 ease, opacity 0.3 ease;
 }
 
 
 .decoration-bar-home {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-
   width: 100%;
-  height: fit-content;
   padding: 16px 30px;
-  gap: 130px;
-  box-sizing: border-box;
+  gap: 10px;
+  
 }
 
 .logo-and-phrase {
@@ -76,6 +77,7 @@
   width: fit-content;
   height: fit-content;
   gap: 10px;
+  margin-right: 70px;
 }
 
 .logo-and-phrase img {
@@ -87,30 +89,60 @@
   max-width: 30ch; 
 }
 
+/* --------------------------- BLOQUE DE INFORMACIÓN --------------------------- */
 .information-on-the-home-page {
-  display: flex;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);  
+  gap: 20px;
+  justify-items: center;
   align-items: center;
-
-  width: fit-content;
-  height: fit-content;
-  gap: 50px;
-  box-sizing: border-box;
+  width: 100%;
 }
 
 .information-home-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-
-  width: fit-content;
-  height: fit-content;
+  justify-content: center;
+  gap: 6px;
 }
 
 .img-home-divider {
   width: 42px;
   height: 42px;
 }
+ 
+@media (min-width:768px) {
+  .img-recommended-community{
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    overflow-x: hidden; /*remueve el scroll horizontal*/
+    gap:10px;
+    overflow: visible;
+  }
 
+  .img-recommended-community img{
+    aspect-ratio: 3/5;
+    border-radius: 10px;
+    max-width: none;
+    max-height: none;
+  }
 
+  .decoration-bar-home{
+    flex-direction: row;
+    gap: 130px;
+  }
+
+  .information-on-the-home-page {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+    gap: 50px;
+    box-sizing: border-box;
+  }
+ 
+}

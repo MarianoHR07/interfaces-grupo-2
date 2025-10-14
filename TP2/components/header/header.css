@@ -10,7 +10,9 @@
 /* HEADER COMPLETO*/
 
 .header {
+    position: fixed;
     display: flex;
+    width: 100%;
     align-items: center;
     justify-content: space-between;
     background: var(--primary-600);
@@ -266,4 +268,111 @@
 
 .footer-btn i {
     font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+
+    .header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between; 
+        gap: 6px;
+        padding: 10px 16px;
+        position: fixed;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .header-logo-img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .header-logo-text {
+        font-size: 1rem;
+    }
+
+    .header-menu-btn::after {
+        display: none;
+    }
+
+    /* Contenedor derecho: favoritos + usuario */
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .header-icon-link {
+        width: 22px;
+        height: 22px;
+    }
+
+    .header-user {
+        width: 28px;
+        height: 28px;
+    }
+
+    .header-user-status {
+        width: 7px;
+        height: 7px;
+    }
+
+    .header-search {
+        width: 90%;
+        max-width: 350px;
+        margin: 8px auto 0;
+    }
+
+    .header-search input {
+        font-size: .85rem;
+        padding: 6px 10px;
+        border-radius: 25px 0 0 25px;
+    }
+
+    .header-search button {
+        font-size: .85rem;
+        padding: 6px 10px;
+        border-radius: 0 25px 25px 0;
+    }
+
+    /* Tarjeta de perfil */
+    .profile-card {
+        top: 60px; 
+        right: 8px;
+        width: 200px;
+    }
+
+    .avatar-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .username {
+        font-size: .9rem;
+    }
+
+    .email {
+        font-size: .7rem;
+    }
+
+    .profile-btn {
+        font-size: .75rem;
+        padding: 6px 10px;
+    }
+
+    .edit-btn {
+        width: 28px;
+        height: 28px;
+    }
 }

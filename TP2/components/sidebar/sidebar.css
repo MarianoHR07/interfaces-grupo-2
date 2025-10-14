@@ -11,14 +11,16 @@
 
 .sidebar {
     background-image: linear-gradient(to bottom, var(--primary-600), var(--primary-700));
-    position: absolute;
+    position: fixed;
     top: 51px;
-    height: 100vh;
+    height: 91%;
     z-index: 1000;
     width: 45px;
     padding: 15px 0;
     transition: width 0.3s ease-in-out;
+    overflow: scroll;
 }
+
 .sidebar::-webkit-scrollbar{
     display: none; 
 }
@@ -105,4 +107,81 @@
     height: 1px;
     background: linear-gradient(to right, transparent, #777, transparent);
     margin: 15px 0;
+}
+
+@media (max-width: 600px) {
+
+    .sidebar {
+        position: fixed;
+        top: 51px;
+        left: -250px; 
+        width: 200px; 
+        height: calc(100vh - 51px); 
+        padding: 15px;
+        z-index: 1500;
+        transition: left 0.3s ease-in-out;
+        background-image: linear-gradient(to bottom, var(--primary-600), var(--primary-700));
+        overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* cuando está activo / visible */
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* Títulos y textos visibles en mobile cuando se despliega */
+    .sidebar-title,
+    .sidebar-list-item span:not(.icon) {
+        display: block;
+        opacity: 1;
+        transition: opacity 0.2s;
+        font-size: 12px;
+        color: #ccc;
+    }
+
+    .sidebar-list-item {
+        justify-content: flex-start;
+        padding: 8px 10px;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .sidebar-list-item i,
+    .sidebar-list-item .icon {
+        min-width: 24px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .sidebar-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-list-item:hover {
+        background-image: linear-gradient(to top, var(--primary-300), var(--primary-700));
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(54, 96, 146, 0.9);
+        color: #fff;
+    }
+
+    .divider {
+        margin: 15px 0;
+    }
+
+    .sidebar-close-btn {
+        display: block;
+        margin-bottom: 15px;
+        font-size: 20px;
+        color: #fff;
+        cursor: pointer;
+        text-align: right;
+    }
 }
