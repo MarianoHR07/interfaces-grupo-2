@@ -5,16 +5,27 @@
         <section class="game-running">  <!-- juego -->
 
             <div class="blocka-container">
-                
-                <div class="controls-blocka">
-                    <button id="startBtn">Comenzar</button>
-                    <button id="helpBtn">Ayudita</button>
-                    <span id="timer">00:00</span>
-                </div>
 
-                <canvas id="blockaCanvas" width="921" height="617"></canvas>
+                <div id="buttons-blocka">
+                    <button id="startBtnBlocka">Comenzar</button>
+                    <button id="nextLevelBlocka">Siguiente Nivel</button>
+                    <!-- <button id="difficultyBlocka">Seleccionar Dificultad</button> -->
+
+                    <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
+                        <select id="difficultyLevelBlocka">
+                        <option value="easy">Fácil</option>
+                        <option value="medium">Media</option>
+                        <option value="hard">Difícil</option>
+                    </select>
+                </div>
+                
+                <button id="helpBtnBlocka"> <p>?</p> </button>
+                <span id="timerBlocka">00:00</span>
+
+                <canvas id="blockaCanvas" width="921" height="555"></canvas>
 
                 <div class="title-typography-gameplay" id="message"></div>
+                <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
 
             </div>
 
@@ -30,7 +41,7 @@
                     <button id="favBtn"> <img src="images/favoritos.png" alt="Favoritos"> </button>
                     <button id="controlsBtn"> <img src="images/controles.png" alt="Controles"> </button>
                     <button id="shareBtn"> <img src="images/compartir.png" alt="Compartir"> </button>
-                    <button id="fullscreenBtn"> <img src="images/pantalla completa.png" alt="Pantalla completa"> </button>
+                    <!-- <button id="fullscreenBtn"> <img src="images/pantalla completa.png" alt="Pantalla completa"> </button> -->
                 </div>
 
             </div>
@@ -58,12 +69,12 @@
                 <div class="breadcrumb-right"> &gt; </div> 
             </div>
 
-            <p class="typography-description">Peg Solitaire</p>
+            <p class="typography-description">Blocka</p>
         </div>
 
         <section class="game-infomation-container">     <!-- informacion del juego -->
             <div class="game-title titles-gameplay">
-                <p class="title-typography-gameplay">Peg Solitaire - Steve vs Zombie</p>
+                <p class="title-typography-gameplay">Blocka</p>
             </div>
 
             <div class="container-categories-game">
@@ -86,7 +97,7 @@
                 </div>
 
                 <div class="description">
-                    <p class="typography-description">El Peg Solitaire, también llamado Damas chinas, es un juego de suerte y habilidad. Quite las esmeraldas saltando sobre ellas, al igual que las damas, hasta que solo quede una esmeralda en el centro del tablero. Tu objetivo es eliminar todas las esmeraldas menos una. Para despejar una esmeralda, salte sobre ella y colóquela en un espacio vacío.</p>
+                    <p class="typography-description">Blocka es un juego de ingenio en el que una imagen se divide en varias piezas desordenadas. El objetivo es rotarlas correctamente hasta reconstruir la imagen original. Poné a prueba tu observación y lógica para resolver el rompecabezas y completar la figura.</p>
                 </div>
 
                 <div class="how-to-play-container">
@@ -98,7 +109,7 @@
                         <div class="divider-gameplay"></div> 
                     </div>
                     <div class="description">
-                        <p class="typography-description">Usa el ratón para seleccionar una esmeralda. Retira todas las fichas del tablero saltando una sobre otra en un agujero vacío, dejando una sola ficha al final. </p>
+                        <p class="typography-description">Al comenzar una partida, se muestra una imagen dividida en varias piezas cuadradas. Cada pieza está rotada aleatoriamente, y tu misión es girar las piezas usando el mouse hasta que todas encajen en la posición correcta, formando la imagen original.</p>
                     </div>
                 </div>
 
@@ -112,10 +123,8 @@
                     </div>
 
                     <ul class="typography-description">
-                        <li>Saltar una esmeralda sobre una esmeralda adyacente (ortogonalmente, sin diagonales), hacia un espacio vacío inmediatamente después.</li>
-                        <li>La esmeralda saltada se retira del tablero.</li>
-                        <li>No se permiten saltos en diagonal, debes saltar en línea recta (arriba, abajo, izquierda, derecha).</li>
-                        <li>El juego termina cuando solo queda 1 esmeralda (¡ganas!) o no quedan más movimientos válidos (¡pierdes!).</li>
+                        <li>No se pueden mover las piezas de lugar, solo rotarlas.</li>
+                        <li>Solo se cuenta como finalizado el nivel cuando todas las piezas encastran correctamente.</li>
                     </ul>
                     
                 </div>
@@ -129,7 +138,11 @@
                         <div class="divider-gameplay"></div>
                     </div>
                     <div class="description">
-                        <p class="typography-description">Tan fácil como presionar con el ratón la esmeralda que deseas mover y arrastrar hacia un lugar libre para realizar el movimiento. </p>
+                        <!-- <p class="typography-description">Tan fácil como presionar con el ratón la esmeralda que deseas mover y arrastrar hacia un lugar libre para realizar el movimiento. </p> -->
+                         <ul class="typography-description">
+                            <li>Clic izquierdo: rota 90° hacia la izquierda (sentido antihorario).</li>
+                            <li>Clic derecho: rota 90° hacia la derecha (sentido horario).</li>
+                        </ul>
                     </div>
                     <div class="control-image">
                         <img src="images/mouse.png" alt="imagen de un mouse">
@@ -146,10 +159,11 @@
                     </div>
 
                     <div class="gameplay-images">
-                        <img src="images/indicacion 1.png" alt="">
-                        <img src="images/indicacion 2.png" alt="">
-                        <img src="images/indicacion 3.png" alt="">
-                        <img src="images/indicacion 4.png" alt="">
+                        <img src="images/blocka/Instruccions/1.png" alt="">
+                        <img src="images/blocka/Instruccions/2.png" alt="">
+                        <img src="images/blocka/Instruccions/3.png" alt="">
+                        <img src="images/blocka/Instruccions/4.png" alt="">
+                        <img src="images/blocka/Instruccions/5.png" alt="">
                     </div>
                 </div>
 

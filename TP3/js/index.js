@@ -3,8 +3,8 @@ import { initGameplay } from "./gameplay.js";
 import { initLoading } from "./loading.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadPage("login.html");
-    // loadPage("gameplay.html");
+    // loadPage("login.html");
+    loadPage("gameplay.html");
 });
 
 // contenedor principal donde se cargan las páginas

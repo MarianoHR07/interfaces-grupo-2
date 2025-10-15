@@ -2,20 +2,6 @@ import { initCategoriesGameplay } from "../components/game-category/game-categor
 import { loadPage } from "./index.js";
 
 export function initGameplay(container) {
-    // // Jugar 
-    // const playGameBtn = container.querySelector(".button-game-running");
-    // playGameBtn.addEventListener("click", function() {
-    //         container.querySelector("#game-preview").style.display = "none";
-    //         container.querySelector("#game-playing").style.display = "block";
-    //     });
-    
-    // // Salir del juego
-    // const exitGameBtn = container.querySelector("#exit-game");
-    // exitGameBtn.addEventListener("click", () => {
-    //         container.querySelector("#game-preview").style.display = "block";
-    //         container.querySelector("#game-playing").style.display = "none";
-    //     });
-    
     //--------------------------------- Interacciones relacionadas al juego ------------------------------ 
     
     // Like or Dislike
@@ -74,21 +60,21 @@ export function initGameplay(container) {
     
     
     // Pantalla Completa
-    const fullscreenBtn = container.querySelector("#fullscreenBtn");
-    const gameSection = container.querySelector(".game-running");
+    // const fullscreenBtn = container.querySelector("#fullscreenBtn");
+    // const gameSection = container.querySelector(".game-running");
     
-    fullscreenBtn.addEventListener("click", () => {
-        if (!container.fullscreenElement) {
-            gameSection.requestFullscreen();
-        } else {
-            container.exitFullscreen();
-        }
-    });
+    // fullscreenBtn.addEventListener("click", () => {
+    //     if (!container.fullscreenElement) {
+    //         gameSection.requestFullscreen();
+    //     } else {
+    //         container.exitFullscreen();
+    //     }
+    // });
 
-    const returnHome = container.querySelector(".retun-home-gameplay");
-    returnHome.addEventListener("click", () => {
-        loadPage("home.html");
-    });
+    // const returnHome = container.querySelector(".retun-home-gameplay");
+    // returnHome.addEventListener("click", () => {
+    //     loadPage("home.html");
+    // });
 
 
     // -------------------------Recommended Games---------------------------
