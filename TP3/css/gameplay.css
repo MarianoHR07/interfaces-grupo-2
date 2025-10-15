@@ -46,7 +46,7 @@
 .game-container-playing{
     display: flex;
     gap: 33px;
-    padding: 10px 24px 10px 24px;
+    /* padding: 10px 24px 10px 24px; */
     box-sizing: border-box;
 }
 
@@ -80,22 +80,92 @@
     position: relative;
     width: 100%;
     height: fit-content;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     border-radius: 15px 15px 0px 0px;
-    color: var(--secondary-200);
     background-color: var(--primary-600);
 }
 
-.controls-blocka {
+#buttons-blocka {
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
     display: flex;
     flex-direction: column;
     gap: 20px;
 
+    backdrop-filter: blur(10px);
+}
+
+
+#nextLevelBlocka {
+    display: none;
+}
+
+#startBtnBlocka,
+#helpBtnBlocka,
+#nextLevelBlocka,
+#difficultyLevelBlocka {
+    border: none;
+    color: var(--secondary-200);
+    cursor: pointer;
+}
+
+#startBtnBlocka,
+#nextLevelBlocka,
+#difficultyLevelBlocka {
+    padding: 10px;
+    border-radius: 15px;
+    background-color: var(--secondary-700);
+    font-size: var(--font-size-large);
+}
+
+.labelDifficultyLevel {
+    font-size: var(--font-size-large);
+}
+
+#helpBtnBlocka {
+    display: none;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+
+    border-radius: 10%;
+    background-color: var(--secondary-500);
+}
+
+#helpBtnBlocka p {
+    font-size: var(--font-size-extra-large);
+}
+
+#timerBlocka {
+    display: none;
     position: absolute;
     top: 15px;
-    left: 15px;
+    right: 55px;
+    font-size: var(--font-size-extra-large);
+    color: var(--secondary-200);
 }
 
 #message {
+    display: none;
+
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: var(--font-size-huge);
+    color: #02ca02;
+}
+
+#puzzle-completion-time {
     display: none;
 
     position: absolute;
@@ -104,7 +174,12 @@
     transform: translate(-50%, -50%);
 
     font-size: var(--font-size-huge);
-    color: #02ca02;
+    color: var(--accent-700);
+}
+
+.post-button#startBtnBlocka,
+.post-button#helpBtn{
+    width:fit-content;
 }
 
 /* =========================================== */
@@ -481,7 +556,8 @@ button.active {
     box-sizing: border-box;
 }
   
-.rules-of-the-game ul li{
+.rules-of-the-game ul li,
+.description ul li{
     gap: 10px;
     padding: 0px 10px;
     box-sizing: border-box;
@@ -547,7 +623,7 @@ button.active {
 
 .gameplay-images{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     width: 100%;    /* equivalente a fill container en ancho */ 
     height: 100%;   /* equivalente a fill container en alto */ 
     gap: 5px;

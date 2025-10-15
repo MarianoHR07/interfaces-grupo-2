@@ -1,25 +1,26 @@
 
 function initBlocka(container){
     /** @type {HTMLCanvasElement} */
-    const canvas = document.getElementById('blockaCanvas');
+    const canvas = container.querySelector('#blockaCanvas');
     /** @type {CanvasRenderingContext2D} */
     const ctx = canvas.getContext('2d');
 
 
-    // ===============================
-    //            Variables 
-    // ===============================
+    // =================================================================================================================
+    //                                                      Variables 
+    // =================================================================================================================
     let pieces = [];
-    let rows = 2, cols = 2; // nivel básico
     let img = new Image();
     let level = 1;
+    let rows = 2, cols = 2; // dificultad por defecto
     const totalLevels = 6;
     let startTime, timerInterval;
     let gameStarted = false; // Para no permitir girar antes de iniciar
 
     // calculo el tamaño cuadrado maximo que entra en el canvas
-    const pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
+    let pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
 
+    // Mensajes de Victoria
     const messages = [
         "¡Excelente! 🔥",
         "¡Impresionante! 💪",
@@ -28,10 +29,15 @@ function initBlocka(container){
         "¡Buen trabajo! 🎯"
     ];
 
-
-    // ======================================
-    //       INICIALIZACIÓN DEL JUEGO
-    // ======================================
+    const helpBtnBlocka = container.querySelector("#helpBtnBlocka");
+    const timerBlocka = container.querySelector("#timerBlocka");
+    const buttonsBlocka = container.querySelector("#buttons-blocka");
+    const victoryMessage = container.querySelector('#message');
+    const messageCompletionTime = container.querySelector('#puzzle-completion-time');
+        
+    // =================================================================================================================
+    //                                                INICIALIZACIÓN DEL JUEGO
+    // =================================================================================================================
     function loadRandomImage() {
         const images = ['rompecabezas1.jpg', 'rompecabezas2.jpg', 'rompecabezas3.jpg', 'rompecabezas4.jpg', 'rompecabezas5.jpg', 'rompecabezas6.jpg', 'rompecabezas7.jpg'];
         const random = images[Math.floor(Math.random() * images.length)];
@@ -46,37 +52,67 @@ function initBlocka(container){
     };
 
 
-    // =================================
-    //      FUNCIONES PRINCIPALES
-    // =================================
+    // Carga de dificultad
+    const difficulty = container.querySelector("#difficultyLevelBlocka");
+    difficulty.addEventListener('change', updateDifficulty);
+
+    function updateDifficulty(){
+        if(difficulty.value == 'easy'){
+            rows = 2, 
+            cols = 2;
+       }else{
+            if(difficulty.value == "medium"){
+                rows = 3, 
+                cols = 3;
+            }else{
+                if(difficulty.value == "hard"){
+                    rows = 4, 
+                    cols = 4;
+                }
+            } 
+        }
+
+        // Recalculo el tamaño de la pieza
+        pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
+
+        // Crear y dibujar las piezas según la nueva dificultad
+        createPieces();
+        drawPieces();
+    }
+
+
+    // =================================================================================================================
+    //                                                   FUNCIONES PRINCIPALES
+    // =================================================================================================================
     // Divide la imagen en piezas iguales(cuadradas)
     function createPieces() {
         pieces = [];  
 
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
-            const rotation = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
-            
-            pieces.push({
-                x,      // posicion horizontal en la cuadricula
-                y,      // posicion vertical en la cuadricula
-                rotation,
-                correctRotation: 0, 
-                width: pieceSize,  // tamaño horizontal de la subimagen
-                height: pieceSize  // tamaño vertical de la subimagen
-            });
+                const rotation = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
+                
+                pieces.push({
+                    x,      // posicion horizontal en la cuadricula
+                    y,      // posicion vertical en la cuadricula
+                    rotation,
+                    correctRotation: 0, 
+                    width: pieceSize,  // tamaño horizontal de la subimagen
+                    height: pieceSize  // tamaño vertical de la subimagen
+                });
             }
         }
     }
 
 
-    // Dibuja las piezas en el canvas
+    // Dibuja las piezas en el canvas (centrandola horizontal y verticalmente)
     function drawPieces() {
         let { offsetX, offsetY} = imageFit();
 
         // Limpia completamente el canvas antes de redibujar todo
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
+        // Cada pieza es ubicada donde corresponde y con su rotacion inicial asignada
         pieces.forEach(p => {
             // Defino la posición de origen dentro de la imagen original
             const sx = p.x * (img.width / cols);
@@ -123,9 +159,9 @@ function initBlocka(container){
     }
 
 
-    // =============================
-    //      EVENTOS DE JUEGO
-    // =============================
+    // =================================================================================================================
+    //                                                   EVENTOS DE JUEGO
+    // =================================================================================================================
     // Girar piezas
     canvas.addEventListener('mousedown', e => {
         if(!gameStarted) return;  // no permite girar si no comenzó
@@ -153,29 +189,35 @@ function initBlocka(container){
 
         piece.rotation = (piece.rotation + 360) % 360;  // Normaliza, mantiene los ángulos dentro de 0–359°
 
-        drawPieces();
+        drawPieces();   // redibujo la pieza con su nueva inclinacion
         checkWin();  // verifico si gane
     });
 
 
-    // ====================================
-    //      TIMER Y CONTROL DE NIVELES
-    // ====================================
-    const startBtn = document.getElementById("startBtn");
+    // =================================================================================================================
+    //                                              TIMER Y CONTROL DE NIVELES
+    // =================================================================================================================
+    const startBtn = container.querySelector("#startBtnBlocka");
     startBtn.addEventListener("click", startGame);
     
 
     function startGame(){
         if (gameStarted) return; // Evita reiniciar si ya empezó
         
-        document.getElementById('message').textContent = "";  // si habia un mensaje de una jugada anterior se limpia
+        victoryMessage.textContent = "";  // si habia un mensaje de una jugada anterior se limpia
         gameStarted = true;
+
+        helpBtnBlocka.style.display = "block";
+        timerBlocka.style.display = "block";
+        buttonsBlocka.style.display = "none";
+        buttonsBlocka.style.backdropFilter = "none";    // con "unset" lo vuelvo a activar
 
         startTimer();
     }
 
 
     function startTimer() {
+
         startTime = Date.now();
         
         // Creo un temporizador que ejecuta el bloque de código cada 1 segundo
@@ -184,7 +226,7 @@ function initBlocka(container){
             const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");  // obtiene los minutos completos transcurridos
             const seconds = String(elapsed % 60).padStart(2, "0");  // elapsed % 60 obtiene los segundos que sobran después de dividir por 60
                                                                     // padStart(2, "0") asegura que siempre haya dos dígitos
-            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+            timerBlocka.textContent = `${minutes}:${seconds}`;
         }, 1000);
     }
 
@@ -198,14 +240,17 @@ function initBlocka(container){
             gameStarted = false;  // Evita que el jugador siga girando piezas luego de ganar
             
             if(level < totalLevels){
-                ctx.filter = 'blur(80px)'; 
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
-                const messageBlocka = document.getElementById('message');
-                messageBlocka.style.display = "block";
-                
-                const randomMessages = messages[Math.floor(Math.random() * messages.length)];
-                messageBlocka.innerHTML = `${randomMessages}`;
+                setTimeout(() => {
+                    ctx.filter = 'blur(80px)'; 
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    victoryMessage.style.display = "block";
+                    const randomMessages = messages[Math.floor(Math.random() * messages.length)];
+                    victoryMessage.innerHTML = `${randomMessages}`;
+
+                    messageCompletionTime.style.display = "block";
+                    messageCompletionTime.innerHTML = "Lo lograste en: " + timerBlocka.innerHTML;
+                }, 1000);
             }else{
                 showFinalWin();
             }
@@ -218,7 +263,7 @@ function initBlocka(container){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillText("🎉 ¡GANASTE TODOS LOS NIVELES! 🎉", canvas.width / 2, canvas.height / 2);
-        document.getElementById('message').textContent = "";
+        victoryMessage.textContent = "";
     }
 
 

@@ -6,8 +6,8 @@ function initComments(container) {
         { nameUser: "thiaguitoxd", publicationDay: "7 de Enero", likes: 553, description: "juegazooo" },
         { nameUser: "Patatasss", publicationDay: "22 de Marzo", likes: 3498, description: "Me encanta el juego pero los anuncios lo hacen insufrible." },
         { nameUser: "ElChulo232", publicationDay: "10 de Junio", likes: 267, description: "Muy pasado de moda." },
-        { nameUser: "PaulitaPiola5", publicationDay: "2 de Julio", likes: 5000, description: "Que gran juego!! Se lo recomende a mi madre que es fanatica del Peg Solitaire, no entendio nada pero dijo que se veia muy lindo." },
-        { nameUser: "Mario1233", publicationDay: "23 de Septiembre", likes: 881, description: "Muy divertido, aunque no me guste Minecraft." }
+        { nameUser: "PaulitaPiola5", publicationDay: "2 de Julio", likes: 5000, description: "Que gran juego!! Se lo recomende a mi madre que es fanatica de los Puzzles, no entendio nada pero dijo que se veia muy lindo." },
+        { nameUser: "Mario1233", publicationDay: "23 de Septiembre", likes: 881, description: "Muy divertido, aunque no me gusto!." }
     ];
     
     
