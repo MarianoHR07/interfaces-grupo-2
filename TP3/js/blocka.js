@@ -6,15 +6,14 @@ function initBlocka(container){
     const ctx = canvas.getContext('2d');
 
 
-    // =================================================================================================================
-    //                                                      Variables 
-    // =================================================================================================================
+    // ================================================================================================
+    //                                           Variables 
+    // ================================================================================================
     let pieces = [];
     let img = new Image();
     let level = 1;
     let rows = 2, cols = 2; // dificultad por defecto
-    const totalLevels = 6;
-    let startTime, timerInterval;
+    const totalLevels = 3;
     let gameStarted = false; // Para no permitir girar antes de iniciar
 
     // calculo el tamaño cuadrado maximo que entra en el canvas
@@ -30,14 +29,25 @@ function initBlocka(container){
     ];
 
     const helpBtnBlocka = container.querySelector("#helpBtnBlocka");
+    const gameConfigurationBlocka = container.querySelector("#gameConfigurationBlocka");
     const timerBlocka = container.querySelector("#timerBlocka");
+    const timerContainer = container.querySelector(".timer-container-blocka");
     const buttonsBlocka = container.querySelector("#buttons-blocka");
     const victoryMessage = container.querySelector('#message');
     const messageCompletionTime = container.querySelector('#puzzle-completion-time');
-        
-    // =================================================================================================================
-    //                                                INICIALIZACIÓN DEL JUEGO
-    // =================================================================================================================
+    const messageContainer = container.querySelector("#message-container-blocka");
+    const difficulty = container.querySelector("#difficultyLevelBlocka");
+    const startBtn = container.querySelector("#startBtnBlocka");
+
+    // Timer
+    let startTime, timerInterval;
+    let elapsedBeforePause = 0; // tiempo transcurrido antes de la pausa
+    let isPaused = false;
+
+    
+    // ================================================================================================
+    //                                         INICIALIZACIÓN DEL JUEGO
+    // ================================================================================================
     function loadRandomImage() {
         const images = ['rompecabezas1.jpg', 'rompecabezas2.jpg', 'rompecabezas3.jpg', 'rompecabezas4.jpg', 'rompecabezas5.jpg', 'rompecabezas6.jpg', 'rompecabezas7.jpg'];
         const random = images[Math.floor(Math.random() * images.length)];
@@ -52,38 +62,9 @@ function initBlocka(container){
     };
 
 
-    // Carga de dificultad
-    const difficulty = container.querySelector("#difficultyLevelBlocka");
-    difficulty.addEventListener('change', updateDifficulty);
-
-    function updateDifficulty(){
-        if(difficulty.value == 'easy'){
-            rows = 2, 
-            cols = 2;
-       }else{
-            if(difficulty.value == "medium"){
-                rows = 3, 
-                cols = 3;
-            }else{
-                if(difficulty.value == "hard"){
-                    rows = 4, 
-                    cols = 4;
-                }
-            } 
-        }
-
-        // Recalculo el tamaño de la pieza
-        pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
-
-        // Crear y dibujar las piezas según la nueva dificultad
-        createPieces();
-        drawPieces();
-    }
-
-
-    // =================================================================================================================
-    //                                                   FUNCIONES PRINCIPALES
-    // =================================================================================================================
+    // ================================================================================================
+    //                                       FUNCIONES PRINCIPALES
+    // ================================================================================================
     // Divide la imagen en piezas iguales(cuadradas)
     function createPieces() {
         pieces = [];  
@@ -159,9 +140,9 @@ function initBlocka(container){
     }
 
 
-    // =================================================================================================================
-    //                                                   EVENTOS DE JUEGO
-    // =================================================================================================================
+    // ================================================================================================
+    //                                      EVENTOS DE JUEGO
+    // ================================================================================================
     // Girar piezas
     canvas.addEventListener('mousedown', e => {
         if(!gameStarted) return;  // no permite girar si no comenzó
@@ -194,31 +175,77 @@ function initBlocka(container){
     });
 
 
-    // =================================================================================================================
-    //                                              TIMER Y CONTROL DE NIVELES
-    // =================================================================================================================
-    const startBtn = container.querySelector("#startBtnBlocka");
-    startBtn.addEventListener("click", startGame);
-    
+    // Carga de dificultad
+    difficulty.addEventListener('change', updateDifficulty);
 
-    function startGame(){
-        if (gameStarted) return; // Evita reiniciar si ya empezó
-        
-        victoryMessage.textContent = "";  // si habia un mensaje de una jugada anterior se limpia
-        gameStarted = true;
+    function updateDifficulty(){
+        if(difficulty.value == 'easy'){
+            rows = 2, 
+            cols = 2;
+       }else{
+            if(difficulty.value == "medium"){
+                rows = 3, 
+                cols = 3;
+            }else{
+                if(difficulty.value == "hard"){
+                    rows = 4, 
+                    cols = 4;
+                }
+            } 
+        }
 
-        helpBtnBlocka.style.display = "block";
-        timerBlocka.style.display = "block";
-        buttonsBlocka.style.display = "none";
-        buttonsBlocka.style.backdropFilter = "none";    // con "unset" lo vuelvo a activar
+        // Recalculo el tamaño de la pieza
+        pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
 
-        startTimer();
+        // Crear y dibujar las piezas según la nueva dificultad
+        createPieces();
+        drawPieces();
     }
 
 
-    function startTimer() {
+    // Abrir panel de opciones
+    gameConfigurationBlocka.addEventListener("click", openOptionsPanel);
 
-        startTime = Date.now();
+    function openOptionsPanel(){
+        buttonsBlocka.style.display = "flex";
+        helpBtnBlocka.style.display = "none";
+        startBtn.innerHTML = "Continuar Nivel";
+
+        pauseTimer();
+    }
+
+
+    // ================================================================================================
+    //                                     TIMER Y CONTROL DE NIVELES
+    // ================================================================================================
+    startBtn.addEventListener("click", startGame);
+    
+    function startGame(){        
+        gameStarted = true;
+
+        // si habia un mensaje de una jugada anterior se limpia
+        victoryMessage.textContent = "";  
+        messageCompletionTime.textContent = "";
+
+        helpBtnBlocka.style.display = "block";
+        gameConfigurationBlocka.style.display = "block";
+        timerContainer.style.display = "flex";
+        buttonsBlocka.style.display = "none";
+
+        if(isPaused){
+            isPaused = false;
+            startTimer();
+        }else{
+            elapsedBeforePause = 0;
+            startTimer();
+        }
+    }
+
+
+    // Arrancar el temporizador
+    function startTimer() {
+        // Si ya había tiempo transcurrido (por una pausa previa) lo conserva
+        startTime = Date.now() - elapsedBeforePause;
         
         // Creo un temporizador que ejecuta el bloque de código cada 1 segundo
         timerInterval = setInterval(() => {
@@ -231,9 +258,23 @@ function initBlocka(container){
     }
 
 
+    // Pausar el temporizador
+    function pauseTimer() {
+        if (!timerInterval) return;
+        clearInterval(timerInterval);
+        timerInterval = null;
+
+        // Guarda cuánto tiempo pasó hasta el momento de la pausa
+        elapsedBeforePause = Date.now() - startTime;
+        isPaused = true;
+    }
+
+
+    // Verifico si gane un nivel o todos
     function checkWin() {
         // Recorro todas las piezas del arreglo pieces y devuelve true solo si todas cumplen la condición
         const allCorrect = pieces.every(p => p.rotation % 360 === p.correctRotation);
+        
         // Si todas están bien orientadas:
         if (allCorrect) {
             clearInterval(timerInterval);  // Detiene el cronómetro
@@ -243,29 +284,30 @@ function initBlocka(container){
                 setTimeout(() => {
                     ctx.filter = 'blur(80px)'; 
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    victoryMessage.style.display = "block";
+
+                    hideGameOptions();
                     const randomMessages = messages[Math.floor(Math.random() * messages.length)];
                     victoryMessage.innerHTML = `${randomMessages}`;
 
-                    messageCompletionTime.style.display = "block";
                     messageCompletionTime.innerHTML = "Lo lograste en: " + timerBlocka.innerHTML;
                 }, 1000);
             }else{
-                showFinalWin();
+                hideGameOptions();
+                victoryMessage.innerHTML = "🎉 ¡GANASTE TODOS LOS NIVELES! 🎉";
             }
 
         }
     }
 
-
-    function showFinalWin() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillText("🎉 ¡GANASTE TODOS LOS NIVELES! 🎉", canvas.width / 2, canvas.height / 2);
-        victoryMessage.textContent = "";
+    function hideGameOptions(){
+        timerContainer.style.display = "none";
+        helpBtnBlocka.style.display = "none";
+        gameConfigurationBlocka.style.display = "none"; 
+        
+        messageContainer.style.display = "flex";
     }
 
+   
 
 
 

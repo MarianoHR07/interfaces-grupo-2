@@ -7,25 +7,34 @@
             <div class="blocka-container">
 
                 <div id="buttons-blocka">
-                    <button id="startBtnBlocka">Comenzar</button>
-                    <button id="nextLevelBlocka">Siguiente Nivel</button>
-                    <!-- <button id="difficultyBlocka">Seleccionar Dificultad</button> -->
+                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel: <span id="levelToSolve">1</span> </button>
+                    <button class="menu-button-blocka" id="nextLevelBlocka">Siguiente Nivel</button>
 
                     <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
-                        <select id="difficultyLevelBlocka">
-                        <option value="easy">Fácil</option>
-                        <option value="medium">Media</option>
-                        <option value="hard">Difícil</option>
+                        <select class="menu-button-blocka" id="difficultyLevelBlocka">
+                            <option value="easy">Fácil</option>
+                            <option value="medium">Media</option>
+                            <option value="hard">Difícil</option>
                     </select>
+
+                    <button class="menu-button-blocka" id="retryLevelBlocka">Reintentar Nivel</button>
+
                 </div>
                 
-                <button id="helpBtnBlocka"> <p>?</p> </button>
-                <span id="timerBlocka">00:00</span>
+                <button id="gameConfigurationBlocka"> <img src="images/configuracion.png" alt=""> </button>
+                <button id="helpBtnBlocka"> <img src="images/pista.png" alt=""> </button>
+                
+                <div class="timer-container-blocka">
+                    <p class="title-typography-gameplay">Tiempo:</p>
+                    <span id="timerBlocka">00:00</span>
+                </div>
 
                 <canvas id="blockaCanvas" width="921" height="555"></canvas>
 
-                <div class="title-typography-gameplay" id="message"></div>
-                <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
+                <div id="message-container-blocka">
+                    <div class="title-typography-gameplay" id="message"></div>
+                    <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
+                </div>
 
             </div>
 
@@ -41,7 +50,6 @@
                     <button id="favBtn"> <img src="images/favoritos.png" alt="Favoritos"> </button>
                     <button id="controlsBtn"> <img src="images/controles.png" alt="Controles"> </button>
                     <button id="shareBtn"> <img src="images/compartir.png" alt="Compartir"> </button>
-                    <!-- <button id="fullscreenBtn"> <img src="images/pantalla completa.png" alt="Pantalla completa"> </button> -->
                 </div>
 
             </div>
