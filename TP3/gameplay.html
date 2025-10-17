@@ -7,7 +7,7 @@
             <div class="blocka-container">
 
                 <div id="buttons-blocka">
-                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel: <span id="levelToSolve">1</span> </button>
+                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel: <span class="levelToSolve">1</span> </button>
                     <button class="menu-button-blocka" id="nextLevelBlocka">Siguiente Nivel</button>
 
                     <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
@@ -19,6 +19,11 @@
 
                     <button class="menu-button-blocka" id="retryLevelBlocka">Reintentar Nivel</button>
 
+                    <div id="message-container-blocka">
+                        <div class="title-typography-gameplay" id="message"></div>
+                        <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
+                    </div>
+
                 </div>
                 
                 <button id="gameConfigurationBlocka"> <img src="images/configuracion.png" alt=""> </button>
@@ -29,12 +34,9 @@
                     <span id="timerBlocka">00:00</span>
                 </div>
 
-                <canvas id="blockaCanvas" width="921" height="555"></canvas>
+                <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p>
 
-                <div id="message-container-blocka">
-                    <div class="title-typography-gameplay" id="message"></div>
-                    <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
-                </div>
+                <canvas id="blockaCanvas" width="921" height="555"></canvas>
 
             </div>
 

@@ -1,4 +1,3 @@
-
 function initBlocka(container){
     /** @type {HTMLCanvasElement} */
     const canvas = container.querySelector('#blockaCanvas');
@@ -14,7 +13,7 @@ function initBlocka(container){
     let level = 1;
     let rows = 2, cols = 2; // dificultad por defecto
     const totalLevels = 3;
-    let gameStarted = false; // Para no permitir girar antes de iniciar
+    let gameStarted = false; // no permitir girar antes de iniciar
 
     // calculo el tamaño cuadrado maximo que entra en el canvas
     let pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
@@ -37,7 +36,11 @@ function initBlocka(container){
     const messageCompletionTime = container.querySelector('#puzzle-completion-time');
     const messageContainer = container.querySelector("#message-container-blocka");
     const difficulty = container.querySelector("#difficultyLevelBlocka");
+    const labelDifficultyLevel = container.querySelector(".labelDifficultyLevel");
     const startBtn = container.querySelector("#startBtnBlocka");
+    const nextLevelBlocka = container.querySelector("#nextLevelBlocka");
+    const levelsToSolve = container.querySelectorAll(".levelToSolve");
+    const currentLevelPlaying = container.querySelector(".currentLevelPlaying");
 
     // Timer
     let startTime, timerInterval;
@@ -48,18 +51,32 @@ function initBlocka(container){
     // ================================================================================================
     //                                         INICIALIZACIÓN DEL JUEGO
     // ================================================================================================
+
     function loadRandomImage() {
-        const images = ['rompecabezas1.jpg', 'rompecabezas2.jpg', 'rompecabezas3.jpg', 'rompecabezas4.jpg', 'rompecabezas5.jpg', 'rompecabezas6.jpg', 'rompecabezas7.jpg'];
-        const random = images[Math.floor(Math.random() * images.length)];
-        img.src = `images/blocka/${random}`;
+        return new Promise((resolve) => {
+            const images = [
+                'rompecabezas1.jpg', 'rompecabezas2.jpg',
+                'rompecabezas3.jpg', 'rompecabezas4.jpg',
+                'rompecabezas5.jpg', 'rompecabezas6.jpg',
+                'rompecabezas7.jpg', 'rompecabezas8.jpg',
+                'rompecabezas9.jpg', 'rompecabezas10.jpg',
+                'rompecabezas11.jpg', 'rompecabezas12.jpg',
+                'rompecabezas13.jpg', 'rompecabezas14.jpg',
+                'rompecabezas15.jpg', 'rompecabezas16.jpg',
+                'rompecabezas17.jpg', 'rompecabezas18.jpg'
+            ];
+            const random = images[Math.floor(Math.random() * images.length)];
+            img.src = `images/blocka/${random}`;
+            img.onload = () => resolve(); // solo cuando la imagen realmente se carga
+        });
     }
 
-    loadRandomImage();
-
-    img.onload = () => {
+    (async function initFirstImage() {
+        await loadRandomImage();
         createPieces();
         drawPieces();
-    };
+    })();
+
 
 
     // ================================================================================================
@@ -176,9 +193,7 @@ function initBlocka(container){
 
 
     // Carga de dificultad
-    difficulty.addEventListener('change', updateDifficulty);
-
-    function updateDifficulty(){
+    difficulty.addEventListener('change', () => {
         if(difficulty.value == 'easy'){
             rows = 2, 
             cols = 2;
@@ -200,37 +215,58 @@ function initBlocka(container){
         // Crear y dibujar las piezas según la nueva dificultad
         createPieces();
         drawPieces();
-    }
+    });
 
 
     // Abrir panel de opciones
-    gameConfigurationBlocka.addEventListener("click", openOptionsPanel);
-
-    function openOptionsPanel(){
+    gameConfigurationBlocka.addEventListener("click", () => {
+        // habilito el panel de pausa
         buttonsBlocka.style.display = "flex";
+        startBtn.style.display = "block";
+
+        // deshabilito las opciones de jugar
         helpBtnBlocka.style.display = "none";
-        startBtn.innerHTML = "Continuar Nivel";
+        difficulty.style.display = "none";
+        labelDifficultyLevel.style.display = "none";
+        nextLevelBlocka.style.display = "none";
+
+        updateStartButtonText("Continuar Nivel");
 
         pauseTimer();
-    }
+    });
+
+
+    // Avanzar al siguiente nivel
+    nextLevelBlocka.addEventListener("click", async () => {
+        await nextLevel();
+        startGame();
+    });
+
+    
+    // Comenzar Nivel
+    startBtn.addEventListener("click", startGame);
+
 
 
     // ================================================================================================
     //                                     TIMER Y CONTROL DE NIVELES
     // ================================================================================================
-    startBtn.addEventListener("click", startGame);
-    
-    function startGame(){        
+    // Comenzar nivel
+    function startGame(){    
         gameStarted = true;
 
         // si habia un mensaje de una jugada anterior se limpia
         victoryMessage.textContent = "";  
         messageCompletionTime.textContent = "";
 
+        // habilito las opciones al jugar
         helpBtnBlocka.style.display = "block";
         gameConfigurationBlocka.style.display = "block";
         timerContainer.style.display = "flex";
-        buttonsBlocka.style.display = "none";
+        currentLevelPlaying.style.display = "block";
+
+        // deshabilito el menu de pausa/menu
+        buttonsBlocka.style.display = "none";  
 
         if(isPaused){
             isPaused = false;
@@ -242,12 +278,40 @@ function initBlocka(container){
     }
 
 
+    // Avanzar de nivel
+    async function nextLevel(){
+        // reinicio el timer
+        clearInterval(timerInterval);
+        elapsedBeforePause = 0;
+        timerBlocka.textContent = "00:00";
+
+        // incremento el nivel
+        level++;
+        levelsToSolve.forEach((lvlElem) => {
+            lvlElem.innerHTML = `${level}`;
+        })
+
+        // Nueva imagen random para el siguiente nivel
+        await loadRandomImage();
+
+        // Para evitar que quede algun rastro visual del nivel anterior
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // dibuja la nueva imagen
+        createPieces();
+        drawPieces();        
+    }
+
+
     // Arrancar el temporizador
     function startTimer() {
-        // Si ya había tiempo transcurrido (por una pausa previa) lo conserva
+        // para evitar tener dos o más intervalos corriendo a la vez
+        if (timerInterval) clearInterval(timerInterval);
+        
+        // Si ya había tiempo transcurrido (por una pausa previa) lo conservo
         startTime = Date.now() - elapsedBeforePause;
         
-        // Creo un temporizador que ejecuta el bloque de código cada 1 segundo
+        // Temporizador que incrementa el timer cada 1 segundo
         timerInterval = setInterval(() => {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);  // calcula cuántos milisegundos pasaron desde que empezó el juego
             const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");  // obtiene los minutos completos transcurridos
@@ -261,6 +325,7 @@ function initBlocka(container){
     // Pausar el temporizador
     function pauseTimer() {
         if (!timerInterval) return;
+
         clearInterval(timerInterval);
         timerInterval = null;
 
@@ -282,32 +347,53 @@ function initBlocka(container){
             
             if(level < totalLevels){
                 setTimeout(() => {
-                    ctx.filter = 'blur(80px)'; 
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
                     hideGameOptions();
+                    nextLevelBlocka.style.display = "block";
+
                     const randomMessages = messages[Math.floor(Math.random() * messages.length)];
                     victoryMessage.innerHTML = `${randomMessages}`;
 
                     messageCompletionTime.innerHTML = "Lo lograste en: " + timerBlocka.innerHTML;
+                    
                 }, 1000);
             }else{
                 hideGameOptions();
+                nextLevelBlocka.style.display = "none";
+
                 victoryMessage.innerHTML = "🎉 ¡GANASTE TODOS LOS NIVELES! 🎉";
+                messageCompletionTime.innerHTML = "";
             }
 
         }
     }
 
+
+    // Control de vista
     function hideGameOptions(){
+        // deshabilito las funciones del juego al ganar
+        difficulty.style.display = "none"; 
+        labelDifficultyLevel.style.display = "none"; 
+        startBtn.style.display = "none";
         timerContainer.style.display = "none";
-        helpBtnBlocka.style.display = "none";
+        helpBtnBlocka.style.display = "none"; 
         gameConfigurationBlocka.style.display = "none"; 
-        
+
+        // habilito mensaje de celebracion
+        buttonsBlocka.style.display = "flex"; 
         messageContainer.style.display = "flex";
     }
 
    
+    // Actualizo texto de boton: comenzar nivel <--> continuar nivel
+    function updateStartButtonText(text) {
+        if(startBtn.firstChild.nodeType === Node.TEXT_NODE){
+            startBtn.firstChild.textContent = `${text} `;
+        }else{
+            // Si por alguna razón no hay texto, lo creo antes del span
+            startBtn.insertBefore(document.createTextNode(`${text}: `), level);
+        }
+    }
+
 
 
 

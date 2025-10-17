@@ -103,10 +103,13 @@
     backdrop-filter: blur(10px);
 }
 
-
 #nextLevelBlocka,
 #retryLevelBlocka {
     display: none;
+}
+
+#startBtnBlocka {
+    display: block;
 }
 
 .menu-button-blocka {
@@ -173,15 +176,9 @@
 #message-container-blocka {
     display: none;
 
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 .post-button#startBtnBlocka,
@@ -212,6 +209,14 @@
     background: none;
 }
 
+.currentLevelPlaying {
+    position: absolute;
+    bottom: 1%;
+    left: 1%;
+
+    font-size: var(--font-size-large);
+    display: none;
+}
 
 /* =========================================== */
 
