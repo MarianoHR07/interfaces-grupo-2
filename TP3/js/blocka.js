@@ -28,7 +28,7 @@ function initBlocka(container){
     ];
 
     const helpBtnBlocka = container.querySelector("#helpBtnBlocka");
-    const gameConfigurationBlocka = container.querySelector("#gameConfigurationBlocka");
+    const gameOptionsMenuBlocka = container.querySelector("#gameOptionsMenuBlocka");
     const timerBlocka = container.querySelector("#timerBlocka");
     const timerContainer = container.querySelector(".timer-container-blocka");
     const buttonsBlocka = container.querySelector("#buttons-blocka");
@@ -41,6 +41,8 @@ function initBlocka(container){
     const nextLevelBlocka = container.querySelector("#nextLevelBlocka");
     const levelsToSolve = container.querySelectorAll(".levelToSolve");
     const currentLevelPlaying = container.querySelector(".currentLevelPlaying");
+    const retryLevelBlocka = container.querySelector("#retryLevelBlocka");
+    const returnBeginningBlocka = container.querySelector("#returnBeginningBlocka");
 
     // Timer
     let startTime, timerInterval;
@@ -71,11 +73,15 @@ function initBlocka(container){
         });
     }
 
-    (async function initFirstImage() {
-        await loadRandomImage();
-        createPieces();
-        drawPieces();
-    })();
+    // elegir una nueva imagen, crear sus piezas y dibujarlas
+    function initFirstImage() {
+        loadRandomImage().then(() => {
+            createPieces();
+            drawPieces();
+        });
+    }
+
+    initFirstImage();
 
 
 
@@ -95,6 +101,7 @@ function initBlocka(container){
                     y,      // posicion vertical en la cuadricula
                     rotation,
                     correctRotation: 0, 
+                    initialRotation: rotation,
                     width: pieceSize,  // tamaño horizontal de la subimagen
                     height: pieceSize  // tamaño vertical de la subimagen
                 });
@@ -160,6 +167,11 @@ function initBlocka(container){
     // ================================================================================================
     //                                      EVENTOS DE JUEGO
     // ================================================================================================
+    
+    // Comenzar Nivel
+    startBtn.addEventListener("click", startGame);
+
+
     // Girar piezas
     canvas.addEventListener('mousedown', e => {
         if(!gameStarted) return;  // no permite girar si no comenzó
@@ -218,11 +230,13 @@ function initBlocka(container){
     });
 
 
-    // Abrir panel de opciones
-    gameConfigurationBlocka.addEventListener("click", () => {
+    // Abrir panel de opciones al pausar el juego
+    gameOptionsMenuBlocka.addEventListener("click", () => {
         // habilito el panel de pausa
         buttonsBlocka.style.display = "flex";
         startBtn.style.display = "block";
+        retryLevelBlocka.style.display = "block";
+        returnBeginningBlocka.style.display = "block";
 
         // deshabilito las opciones de jugar
         helpBtnBlocka.style.display = "none";
@@ -243,10 +257,61 @@ function initBlocka(container){
     });
 
     
-    // Comenzar Nivel
-    startBtn.addEventListener("click", startGame);
+    // Reintentar Nivel actual
+    retryLevelBlocka.addEventListener("click", () => {
+        // reinicio el timer
+        resetTimer();
+
+        // restauro las rotaciones iniciales de cada pieza
+        pieces.forEach(p => 
+            p.rotation = p.initialRotation
+        );
+
+        // redibujo las piezas como estaban al inicio del nivel
+        drawPieces();
+
+        // Oculto el menú
+        victoryMessage.textContent = "";
+        messageCompletionTime.textContent = "";
+        buttonsBlocka.style.display = "none";
+
+        // reinicio el juego
+        startGame();
+    });
 
 
+    // Volver al inicio
+    returnBeginningBlocka.addEventListener("click", async () => {
+        // vuelvo a empezar desde el nivel 1
+        level = 1;
+        levelsToSolve.forEach((lvlElem) => {
+            lvlElem.innerHTML = `${level}`;
+        })
+
+        // habilito el panel de pausa
+        buttonsBlocka.style.display = "flex";
+        startBtn.style.display = "block";
+        labelDifficultyLevel.style.display = "block";
+        difficulty.style.display = "block";
+
+        // deshabilito las opciones del juego
+        nextLevelBlocka.style.display = "none";
+        retryLevelBlocka.style.display = "none";
+        messageContainer.style.display = "none";
+        gameOptionsMenuBlocka.style.display = "none";
+        helpBtnBlocka.style.display = "none";
+        timerContainer.style.display = "none";
+        currentLevelPlaying.style.display = "none";
+        returnBeginningBlocka.style.display = "none";
+
+        // actualizo el mensaje de 
+        updateStartButtonText("Comenzar Nivel");
+
+        resetTimer();
+
+        initFirstImage();
+
+    });
 
     // ================================================================================================
     //                                     TIMER Y CONTROL DE NIVELES
@@ -261,7 +326,7 @@ function initBlocka(container){
 
         // habilito las opciones al jugar
         helpBtnBlocka.style.display = "block";
-        gameConfigurationBlocka.style.display = "block";
+        gameOptionsMenuBlocka.style.display = "block";
         timerContainer.style.display = "flex";
         currentLevelPlaying.style.display = "block";
 
@@ -281,9 +346,7 @@ function initBlocka(container){
     // Avanzar de nivel
     async function nextLevel(){
         // reinicio el timer
-        clearInterval(timerInterval);
-        elapsedBeforePause = 0;
-        timerBlocka.textContent = "00:00";
+        resetTimer();
 
         // incremento el nivel
         level++;
@@ -335,6 +398,14 @@ function initBlocka(container){
     }
 
 
+    // Reseteo el timer
+    function resetTimer(){
+        clearInterval(timerInterval);
+        elapsedBeforePause = 0;
+        timerBlocka.textContent = "00:00";
+    }
+
+
     // Verifico si gane un nivel o todos
     function checkWin() {
         // Recorro todas las piezas del arreglo pieces y devuelve true solo si todas cumplen la condición
@@ -368,7 +439,7 @@ function initBlocka(container){
     }
 
 
-    // Control de vista
+    // Control de vista al finalizar el nivel
     function hideGameOptions(){
         // deshabilito las funciones del juego al ganar
         difficulty.style.display = "none"; 
@@ -376,11 +447,13 @@ function initBlocka(container){
         startBtn.style.display = "none";
         timerContainer.style.display = "none";
         helpBtnBlocka.style.display = "none"; 
-        gameConfigurationBlocka.style.display = "none"; 
+        gameOptionsMenuBlocka.style.display = "none"; 
+        nextLevelBlocka.style.display = "none";
 
         // habilito mensaje de celebracion
         buttonsBlocka.style.display = "flex"; 
         messageContainer.style.display = "flex";
+        returnBeginningBlocka.style.display = "block";
     }
 
    
