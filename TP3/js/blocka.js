@@ -178,21 +178,37 @@ function initBlocka(container){
     canvas.addEventListener('mousedown', e => {
         if(!gameStarted) return;  // no permite girar si no comenzó
 
-        const rect = canvas.getBoundingClientRect();  // devuelve el rectángulo que ocupa el canvas en la ventana
+        const rect = canvas.getBoundingClientRect();   // devuelve el rectángulo que ocupa el canvas en la ventana
+        
         // resto los bordes del canvas para obtener la posición dentro del canvas (en píxeles)
-        const x = e.clientX - rect.left;  // posición del clic en la pantalla
-        const y = e.clientY - rect.top;
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
 
-        // determino que pieza fue clickeada
-        const pieceWidth = canvas.width / cols; // cuanto ocupa la pieza en horizontal
-        const pieceHeight = canvas.height / rows;  // cuanto ocupa la pieza en vertical
+        const { offsetX, offsetY } = imageFit();
 
-        // convierto el clic (x, y) en coordenadas de fila y columna
-        const col = Math.floor(x / pieceWidth);
-        const row = Math.floor(y / pieceHeight);
+        // Verifico si el clic está dentro del área del rompecabezas
+        if (clickX < offsetX ||
+            clickY < offsetY ||
+            clickX > offsetX + pieceSize * cols ||
+            clickY > offsetY + pieceSize * rows) {
+                return; // si hace clic fuera, no hago nada
+        }
 
         // Busco dentro del arreglo de piezas cual es la que fue clickeada
-        const piece = pieces.find(p => p.x === col && p.y === row);
+        const piece = pieces.find(p => {
+            const dx = offsetX + p.x * p.width + p.width / 2;
+            const dy = offsetY + p.y * p.height + p.height / 2;
+
+            // Calculo el rectángulo que ocupa realmente esa pieza en el canvas
+            const left = dx - p.width / 2;
+            const right = dx + p.width / 2;
+            const top = dy - p.height / 2;
+            const bottom = dy + p.height / 2;
+
+            // Compruebo si el clic está dentro de esos límites
+            return clickX >= left && clickX <= right && clickY >= top && clickY <= bottom;
+        });
+
         if (!piece) return;
         if (piece.fixed) return;  // no permite girar piezas fijas
 
