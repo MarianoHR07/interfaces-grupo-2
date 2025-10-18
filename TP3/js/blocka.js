@@ -47,6 +47,7 @@ function initBlocka(container){
     // Timer
     let startTime, timerInterval;
     let elapsedBeforePause = 0; // tiempo transcurrido antes de la pausa
+    let penaltyForHelp = 0; // penalizacion pro pedir "Ayudita"
     let isPaused = false;
 
     
@@ -103,7 +104,8 @@ function initBlocka(container){
                     correctRotation: 0, 
                     initialRotation: rotation,
                     width: pieceSize,  // tamaño horizontal de la subimagen
-                    height: pieceSize  // tamaño vertical de la subimagen
+                    height: pieceSize,  // tamaño vertical de la subimagen
+                    fixed: false // por defecto, ninguna está fija
                 });
             }
         }
@@ -192,6 +194,7 @@ function initBlocka(container){
         // Busco dentro del arreglo de piezas cual es la que fue clickeada
         const piece = pieces.find(p => p.x === col && p.y === row);
         if (!piece) return;
+        if (piece.fixed) return;  // no permite girar piezas fijas
 
         // e.button: devuelve que botón del mouse se usó (0 = izquierdo, 2 = derecho).
         if (e.button === 0) piece.rotation -= 90;
@@ -263,9 +266,10 @@ function initBlocka(container){
         resetTimer();
 
         // restauro las rotaciones iniciales de cada pieza
-        pieces.forEach(p => 
-            p.rotation = p.initialRotation
-        );
+        pieces.forEach(p => { 
+            p.rotation = p.initialRotation;
+            p.fixed = false; // permito volver a girarla la pieza(en caso que se haya acomodado sola por pedir "Ayudita")
+        });
 
         // redibujo las piezas como estaban al inicio del nivel
         drawPieces();
@@ -312,6 +316,31 @@ function initBlocka(container){
         initFirstImage();
 
     });
+
+
+    // AYUDITA
+    helpBtnBlocka.addEventListener("click", () => {
+        // agarro una pieza que no haya sido colocada correctamente
+        const piece = pieces.find(p => p.rotation !== p.correctRotation && !p.fixed);
+        if(!piece) return; // por si todas ya estan colocadas correctamente
+
+        // coloco la pieza correctamente
+        piece.rotation = piece.correctRotation;
+        piece.rotation = (piece.rotation + 360) % 360;  // Normaliza, mantiene los ángulos dentro de 0–359°
+
+        // dejo fija la pieza para que no pueda ser rotada
+        piece.fixed = true;
+
+        drawPieces();   // redibujo la pieza con su nueva inclinacion
+        checkWin();  // verifico si gane
+
+        // se le suman 5 segundos al timer por ayuda recibida
+        penaltyForHelp += 5000;
+    });
+
+
+
+
 
     // ================================================================================================
     //                                     TIMER Y CONTROL DE NIVELES
@@ -376,7 +405,8 @@ function initBlocka(container){
         
         // Temporizador que incrementa el timer cada 1 segundo
         timerInterval = setInterval(() => {
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);  // calcula cuántos milisegundos pasaron desde que empezó el juego
+            const elapsed = Math.floor((Date.now() - startTime + penaltyForHelp) / 1000);  // calcula cuántos milisegundos pasaron desde que empezó el juego
+                                                                // sumo la penalizacion por pedir ayuda
             const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");  // obtiene los minutos completos transcurridos
             const seconds = String(elapsed % 60).padStart(2, "0");  // elapsed % 60 obtiene los segundos que sobran después de dividir por 60
                                                                     // padStart(2, "0") asegura que siempre haya dos dígitos
@@ -402,7 +432,9 @@ function initBlocka(container){
     function resetTimer(){
         clearInterval(timerInterval);
         elapsedBeforePause = 0;
+        penaltyForHelp = 0;
         timerBlocka.textContent = "00:00";
+        // startTime === null
     }
 
 
