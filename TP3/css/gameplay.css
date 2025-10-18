@@ -46,7 +46,7 @@
 .game-container-playing{
     display: flex;
     gap: 33px;
-    /* padding: 10px 24px 10px 24px; */
+    padding: 10px 24px 10px 24px;
     box-sizing: border-box;
 }
 
@@ -104,7 +104,8 @@
 }
 
 #nextLevelBlocka,
-#retryLevelBlocka {
+#retryLevelBlocka,
+#returnBeginningBlocka {
     display: none;
 }
 
@@ -127,6 +128,7 @@
 
 .labelDifficultyLevel {
     font-size: var(--font-size-large);
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.9));
 }
 
 #helpBtnBlocka {
@@ -140,7 +142,6 @@
     border: none;
 }
 
-
 #timerBlocka {    
     font-size: var(--font-size-extra-large);
     color: var(--secondary-200);
@@ -150,8 +151,8 @@
     display: none;
 
     position: absolute;
-    top: 15px;
-    right: 55px;
+    top: 10px;
+    right: 10px;
 
     flex-direction: column;
     justify-content: center;
@@ -186,7 +187,7 @@
     width:fit-content;
 }
 
-#gameConfigurationBlocka{
+#gameOptionsMenuBlocka{
     display: none;
     position: absolute;
     top: 1%;
@@ -197,7 +198,7 @@
     border: none;
 }
 
-#gameConfigurationBlocka img,
+#gameOptionsMenuBlocka img,
 #helpBtnBlocka img {
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
     cursor: pointer;
@@ -210,11 +211,11 @@
 }
 
 .currentLevelPlaying {
-    position: absolute;
-    bottom: 1%;
-    left: 1%;
+    /* position: absolute;
+    top: 1%;
+    right: 1%; */
 
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-extra-large);
     display: none;
 }
 
@@ -757,6 +758,7 @@ button.active {
     width: 100%;
     height: 100%;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 

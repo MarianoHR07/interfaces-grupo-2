@@ -7,7 +7,7 @@
             <div class="blocka-container">
 
                 <div id="buttons-blocka">
-                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel: <span class="levelToSolve">1</span> </button>
+                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel <span class="levelToSolve">1</span> </button>
                     <button class="menu-button-blocka" id="nextLevelBlocka">Siguiente Nivel</button>
 
                     <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
@@ -15,9 +15,11 @@
                             <option value="easy">Fácil</option>
                             <option value="medium">Media</option>
                             <option value="hard">Difícil</option>
-                    </select>
+                        </select>
 
                     <button class="menu-button-blocka" id="retryLevelBlocka">Reintentar Nivel</button>
+
+                    <button class="menu-button-blocka" id="returnBeginningBlocka">Volver al Inicio</button>
 
                     <div id="message-container-blocka">
                         <div class="title-typography-gameplay" id="message"></div>
@@ -26,19 +28,21 @@
 
                 </div>
                 
-                <button id="gameConfigurationBlocka"> <img src="images/configuracion.png" alt=""> </button>
+                <button id="gameOptionsMenuBlocka"> <img src="images/configuracion.png" alt=""> </button>
                 <button id="helpBtnBlocka"> <img src="images/pista.png" alt=""> </button>
                 
                 <div class="timer-container-blocka">
-                    <p class="title-typography-gameplay">Tiempo:</p>
-                    <span id="timerBlocka">00:00</span>
+                    <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p>
+                    <p class="title-typography-gameplay">Tiempo: <span id="timerBlocka">00:00</span></p>
                 </div>
 
-                <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p>
+                <!-- <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p> -->
 
                 <canvas id="blockaCanvas" width="921" height="555"></canvas>
 
             </div>
+
+            
 
             <div class="game-bar-container-running">
                 <div class="title-bar-game">
