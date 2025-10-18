@@ -26,7 +26,7 @@ function initBlocka(container){
         "¡Así se hace! 👏",
         "¡Buen trabajo! 🎯"
     ];
-
+    
     const helpBtnBlocka = container.querySelector("#helpBtnBlocka");
     const gameConfigurationBlocka = container.querySelector("#gameConfigurationBlocka");
     const timerBlocka = container.querySelector("#timerBlocka");
@@ -47,6 +47,51 @@ function initBlocka(container){
     let elapsedBeforePause = 0; // tiempo transcurrido antes de la pausa
     let isPaused = false;
 
+    // ===========================================================
+    //            CONFIGURACIÓN DE DIFICULTAD Y FILTROS
+    // ===========================================================
+
+    const gameDifficulty = {
+        1: {
+            filters: ["none", "sepia", "blackAndWhite"],
+            filterParams: {
+                brightness: [0.2, 0.4, 0.6],
+                opacity: [0.7, 0.8, 0.9]
+            },
+            // valores expresados en milisegundos
+            timeLimit: {
+                easy: 3000,
+                normal: 9000,
+                hard: 18000
+            }
+        },
+
+        2: {
+            filters: ["none", "sepia", "grey", "opacity", "blackAndWhite", "brightness"],
+            filterParams: {
+                brightness: [0.3, 0.5, 0.8],
+                opacity: [0.4, 0.6, 0.8]
+            },
+            timeLimit: {
+                easy: 3000,
+                normal: 15000,
+                hard: 26000
+            }
+        },
+
+        3: {
+            filters: ["sepia", "grey", "brightness", "negative"],
+            filterParams: {
+                brightness: [-0.5, -0.3, 0.3],
+                opacity: [0.3, 0.5]
+            },
+            timeLimit: {
+                easy: 3000,
+                normal: 9000,
+                hard: 18000
+            }
+        }
+    };
     
     // ================================================================================================
     //                                         INICIALIZACIÓN DEL JUEGO
@@ -85,18 +130,35 @@ function initBlocka(container){
     // Divide la imagen en piezas iguales(cuadradas)
     function createPieces() {
         pieces = [];  
+        let selectedfilter = null;
 
+        const config = gameDifficulty[level];
+        const filters = config.filters;
+        
+        if (difficulty.value == 'easy') {    // obtengo 1 filtro aleatorio != "none"
+            const filtered = filters.filter(f => f !== "none");
+            selectedfilter = filtered[Math.floor(Math.random() * filtered.length)];
+        }
+        
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
+
                 const rotation = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
+                let { filterType, k } = getRandomFilter(level);
                 
+                if (difficulty.value == 'easy') {// Para cada pieza, elegir entre "none" o el filtro previamente elegido
+                    const applyFilter = Math.random() < 0.5 ? "none" : selectedfilter;
+                    filterType = applyFilter;
+                }
                 pieces.push({
                     x,      // posicion horizontal en la cuadricula
                     y,      // posicion vertical en la cuadricula
                     rotation,
                     correctRotation: 0, 
                     width: pieceSize,  // tamaño horizontal de la subimagen
-                    height: pieceSize  // tamaño vertical de la subimagen
+                    height: pieceSize,  // tamaño vertical de la subimagen
+                    filterType,
+                    k,
                 });
             }
         }
@@ -110,6 +172,12 @@ function initBlocka(container){
         // Limpia completamente el canvas antes de redibujar todo
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
+        // Canvas temporal para procesar cada pieza
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCanvas.width = pieceSize;
+        tempCanvas.height = pieceSize;
+
         // Cada pieza es ubicada donde corresponde y con su rotacion inicial asignada
         pieces.forEach(p => {
             // Defino la posición de origen dentro de la imagen original
@@ -122,21 +190,30 @@ function initBlocka(container){
             const dx = offsetX + p.x * p.width + p.width / 2;
             const dy = offsetY + p.y * p.height + p.height / 2;
 
+            // Dibujo el fragmento original de la imagen en el canvasTemp
+            tempCtx.clearRect(0, 0, pieceSize, pieceSize);
+            tempCtx.drawImage(
+                img,
+                sx,sy,
+                img.width / cols,
+                img.height / rows,
+                0,0, pieceSize, pieceSize
+            );
+            
+            let imageData = tempCtx.getImageData(0, 0, pieceSize, pieceSize);
+            imageData = setFilter(imageData, p.filterType, p.k);
+            tempCtx.putImageData(imageData, 0, 0); // inserto el resultado nuevamente en el canvas temporal
+            
+            // Dibujo la pieza filtrada y rotada en el canvas principal
             ctx.save(); // Guarda el estado actual del contexto (posición, rotación, transformaciones, etc.)
             ctx.translate(dx, dy);  // Mueve el punto de origen (0,0) del canvas al centro de la pieza
             ctx.rotate(p.rotation * Math.PI / 180); // Roto la imagen
             
             // Dibujo la imagen
             ctx.drawImage(  
-                img,
-                sx, 
-                sy, 
-                img.width / cols, 
-                img.height / rows,
-                -p.width / 2, // (-p.width/2 , -p.height/2): punto donde se coloca el dibujo en el canvas
-                -p.height / 2, 
-                p.width,     // tamaño final de la pieza dibujada
-                p.height
+                tempCanvas,
+                -p.width / 2, -p.height / 2,  // (-p.width/2 , -p.height/2): punto donde se coloca el dibujo en el canvas
+                p.width, p.height     // tamaño final de la pieza dibujada    
             );
 
             ctx.restore();  // “limpia” la rotación y traslación aplicadas, así la siguiente pieza empieza con un lienzo limpio
@@ -406,4 +483,37 @@ function initBlocka(container){
 
     // Evita el menú del clic derecho en la seccion del canvas 
     canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+
+
+    // ===========================================================
+    //            FUNCIÓN AUXILIAR PARA FILTROS RANDOM
+    // ===========================================================
+
+    /**
+     * Devuelve un filtro aleatorio y su valor k (si aplica)
+     * @param {number} level - nivel actual del juego
+     * @returns {{ filterType: string, k: number }}
+     */
+    function getRandomFilter(level) {
+        const config = gameDifficulty[level];
+        if (!config) return { filterType: "none", k: 1 };
+
+        const filters = config.filters;
+        const filterType = filters[Math.floor(Math.random() * filters.length)];
+        let k = 1;
+
+        // si el filtro requiere k, lo tomamos aleatoriamente
+        if (filterType === "brightness") {
+            const vals = config.filterParams.brightness;
+            k = vals[Math.floor(Math.random() * vals.length)];
+        } else if (filterType === "opacity") {
+            const vals = config.filterParams.opacity;
+            k = vals[Math.floor(Math.random() * vals.length)];
+        }
+
+        return { filterType, k };
+    }
 }
+
+
