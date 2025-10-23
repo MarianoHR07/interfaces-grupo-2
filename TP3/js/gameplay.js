@@ -1,5 +1,10 @@
 import { initCategoriesGameplay } from "../components/game-category/game-category.js";
-import { loadPage } from "./index.js";
+import { loadGamesData } from "./home.js";
+import { buildGameList } from "./home.js";
+import { initComments } from "../components/game-comment/game-comment.js";
+import { initTweets } from "../components/tweet/tweet.js";
+import { navigateTo } from "./router.js";
+
 
 export function initGameplay(container) {
     //--------------------------------- Interacciones relacionadas al juego ------------------------------ 
@@ -58,26 +63,13 @@ export function initGameplay(container) {
             }
         });
     
-    
-    // Pantalla Completa
-    // const fullscreenBtn = container.querySelector("#fullscreenBtn");
-    // const gameSection = container.querySelector(".game-running");
-    
-    // fullscreenBtn.addEventListener("click", () => {
-    //     if (!container.fullscreenElement) {
-    //         gameSection.requestFullscreen();
-    //     } else {
-    //         container.exitFullscreen();
-    //     }
-    // });
-
-    // const returnHome = container.querySelector(".retun-home-gameplay");
-    // returnHome.addEventListener("click", () => {
-    //     loadPage("home.html");
-    // });
+    const returnHome = container.querySelector(".retun-home-gameplay");
+    returnHome.addEventListener("click", () => {
+        navigateTo("home");
+    });
 
 
-    // -------------------------Recommended Games---------------------------
+    // ------------------------- Juegos Recomendados ---------------------------
     function loadStrategyGames() {
         loadGamesData()
         .then(data => {
@@ -107,7 +99,8 @@ export function initGameplay(container) {
         loadStrategyGames();
     }
 
-    initBlocka(container);
+
+
     initCategoriesGameplay(container);
     initComments(container);
     initTweets(container);

@@ -1,3 +1,5 @@
+import { new_FeaturedCarousel } from "../components/carousel/carousel.js"
+
 async function loadTemplates() {
     const [carouselHTML] = await Promise.all([
       fetch("components/carousel/carousel.html").then(r => r.text()),
@@ -8,14 +10,14 @@ async function loadTemplates() {
 }
 
 // Cargar listado de juegos desde games.json
-async function loadGamesData() {
+export async function loadGamesData() {
   const data = await fetch("games.json").then(r => r.json());
   return data;
 }
   
   
 // Transforma archivos en objetos {title,image,link}
-function buildGameList(category, files, quantity) {
+export function buildGameList(category, files, quantity) {
   if (!Array.isArray(files)) {
     console.warn(`⚠️ No se encontraron archivos para la categoría "${category}"`);
     return [];
@@ -53,13 +55,21 @@ function initHome(container){
       const selectedGames = allGames.slice(0, 14);
       ////////////////////////////////////////////////////////////////////////
       // 🎯 featured
-      const featuredGame = {
+      const featuredGamePegSolitaire = {
         title: "Peg Solitaire",
         image: `images/Peg-Solitaire-tematica-minecraft.png`, 
         link: "#",
         category: ""
       };
-      selectedGames.splice(4, 0, featuredGame);
+      selectedGames.splice(3, 0, featuredGamePegSolitaire);
+
+      const featuredGameBlocka = {
+        title: "Blocka Cartoons",
+        image: `images/Blocka.png`, 
+        link: "#",
+        category: ""
+      };
+      selectedGames.splice(4, 0, featuredGameBlocka);
       
       
       const featuredCarousel = new_FeaturedCarousel({
@@ -197,3 +207,5 @@ function initHome(container){
 
 }
 
+
+export {initHome};

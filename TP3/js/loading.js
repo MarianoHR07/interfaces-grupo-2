@@ -1,4 +1,6 @@
-import { loadPage } from "./index.js";
+import { loadGamesData } from "./home.js";
+import { buildGameList } from "./home.js";
+import { navigateTo } from "./router.js";
 
 
 // Inicializador principal llamado desde index.js
@@ -104,7 +106,7 @@ function initLoader(container) {
 
                     // Redirigir al home
                     setTimeout(() => {
-                        loadPage("home.html");
+                        navigateTo("home");
                     }, 3000);
 
                 }, 500);

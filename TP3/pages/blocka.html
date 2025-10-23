@@ -1,0 +1,252 @@
+<link rel="stylesheet" href="css/gameplay.css">
+
+<link rel="stylesheet" href="css/games/blocka.css">
+
+<link rel="stylesheet" href="components/game-category/game-category.css">
+<link rel="stylesheet" href="components/game-comment/game-comment.css">
+<link rel="stylesheet" href="components/tweet/tweet.css">
+
+
+<div class="game-container-playing">
+
+    <article class="gameplay-container">
+
+        <section class="game-running">  <!-- juego -->
+
+
+            <div class="blocka-container">
+
+                <div id="buttons-blocka">
+                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel <span class="levelToSolve">1</span> </button>
+                    <button class="menu-button-blocka" id="nextLevelBlocka">Siguiente Nivel</button>
+
+                    <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
+                        <select class="menu-button-blocka" id="difficultyLevelBlocka">
+                            <option value="easy">Fácil</option>
+                            <option value="medium">Media</option>
+                            <option value="hard">Difícil</option>
+                        </select>
+
+                    <button class="menu-button-blocka" id="retryLevelBlocka">Reintentar Nivel</button>
+
+                    <button class="menu-button-blocka" id="returnBeginningBlocka">Volver al Inicio</button>
+
+                    <div id="message-container-blocka">
+                        <div class="title-typography-gameplay" id="message"></div>
+                        <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
+                    </div>
+
+                </div>
+                
+                <button id="gameOptionsMenuBlocka"> <img src="images/configuracion.png" alt=""> </button>
+                <button id="helpBtnBlocka"> <img src="images/pista.png" alt=""> </button>
+                
+                <div class="timer-container-blocka">
+                    <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p>
+                    <p class="title-typography-gameplay">Tiempo: <span id="timerBlocka">00:00</span></p>
+                </div>
+
+                <canvas id="blockaCanvas" width="921" height="555"></canvas>
+
+            </div>
+
+            
+            <div class="game-bar-container-running">    <!--  -->
+                <div class="title-bar-game">
+                    <h1 class="title-typography-gameplay name-game">Blocka</h1>
+                    <p class="typography-description number-of-views">+5K personas han jugado este juego.</p>
+                </div>
+
+                <div class="interactions">
+                    <button class="likeBtn"> <img src="images/me gusta.png" alt="Me gusta"> </button>
+                    <button id="dislikeBtn"> <img src="images/no me gusta.png" alt="No me gusta"> </button>
+                    <button id="favBtn"> <img src="images/favoritos.png" alt="Favoritos"> </button>
+                    <button id="controlsBtn"> <img src="images/controles.png" alt="Controles"> </button>
+                    <button id="shareBtn"> <img src="images/compartir.png" alt="Compartir"> </button>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="breadcrumbs-gameplay">
+            <img class="retun-home-gameplay" src="images/retun-house.png" alt="">
+
+            <div class="breadcrumb-right-container">
+                <div class="breadcrumb-right"> &gt; </div>
+                <div class="breadcrumb-right"> &gt; </div> 
+            </div>
+
+            <p class="typography-description">Juegos</p>
+
+            <div class="breadcrumb-right-container">
+                <div class="breadcrumb-right"> &gt; </div>
+                <div class="breadcrumb-right"> &gt; </div> 
+            </div>
+
+            <p class="typography-description">Estrategia</p>
+
+            <div class="breadcrumb-right-container">
+                <div class="breadcrumb-right"> &gt; </div>
+                <div class="breadcrumb-right"> &gt; </div> 
+            </div>
+
+            <p class="typography-description">Blocka</p>
+        </div>
+
+        <section class="game-infomation-container">     <!-- informacion del juego -->
+            <div class="game-title titles-gameplay">
+                <p class="title-typography-gameplay">Blocka - Cartoons</p>
+            </div>
+
+            <div class="container-categories-game">
+                <div class="titles-gameplay">
+                    🏷️
+                    <p class="title-typography-gameplay">CATEGORIAS</p>
+                </div>
+                <div class="game-categories">
+                    <div id="categories"><!--se llena desde js--></div> 
+                </div>
+            </div>
+
+            <div class="game-information">
+                <div class="descrption-game">
+                    <div class="title-description titles-gameplay">
+                        <img src="images/exclamacion.png" alt="">
+                        <p class="title-typography-gameplay">Descripción del Juego</p>    
+                    </div>
+                    <div class="divider-gameplay"></div> 
+                </div>
+
+                <div class="description">
+                    <p class="typography-description">Blocka es un juego de ingenio en el que una imagen se divide en varias piezas desordenadas. El objetivo es rotarlas correctamente hasta reconstruir la imagen original. Poné a prueba tu observación y lógica para resolver el rompecabezas y completar la figura.</p>
+                </div>
+
+                <div class="how-to-play-container">
+                    <div class="how-to-play">
+                        <div class="titles-gameplay">
+                            🎮
+                            <p class="title-typography-gameplay">¿Cómo Jugar?</p>
+                        </div>
+                        <div class="divider-gameplay"></div> 
+                    </div>
+                    <div class="description">
+                        <p class="typography-description">Al comenzar una partida, se muestra una imagen dividida en varias piezas cuadradas. Cada pieza está rotada aleatoriamente, y tu misión es girar las piezas usando el mouse hasta que todas encajen en la posición correcta, formando la imagen original.</p>
+                    </div>
+                </div>
+
+                <div class="rules-of-the-game">
+                    <div class="title-rules-container">
+                        <div class="titles-gameplay">
+                            📖
+                            <p class="title-typography-gameplay">Reglas del juego:</p>
+                        </div>
+                        <div class="divider-gameplay"></div> 
+                    </div>
+
+                    <ul class="typography-description">
+                        <li>No se pueden mover las piezas de lugar, solo rotarlas.</li>
+                        <li>Solo se cuenta como finalizado el nivel cuando todas las piezas encastran correctamente.</li>
+                    </ul>
+                    
+                </div>
+
+                <div class="controls">
+                    <div class="title-controls-container">
+                        <div class="titles-gameplay">
+                            ⌨️
+                            <p class="title-typography-gameplay">Controles:</p>
+                        </div>
+                        <div class="divider-gameplay"></div>
+                    </div>
+                    <div class="description">
+                        <!-- <p class="typography-description">Tan fácil como presionar con el ratón la esmeralda que deseas mover y arrastrar hacia un lugar libre para realizar el movimiento. </p> -->
+                         <ul class="typography-description">
+                            <li>Clic izquierdo: rota 90° hacia la izquierda (sentido antihorario).</li>
+                            <li>Clic derecho: rota 90° hacia la derecha (sentido horario).</li>
+                        </ul>
+                    </div>
+                    <div class="control-image">
+                        <img src="images/mouse.png" alt="imagen de un mouse">
+                    </div>
+                </div>
+
+                <div class="gameplay-information">
+                    <div class="title-gameplay-container">
+                        <div class="titles-gameplay">
+                            🖼️
+                            <p class="title-typography-gameplay">Jugabilidad:</p>
+                        </div>
+                        <div class="divider-gameplay"></div>
+                    </div>
+
+                    <div class="gameplay-images">
+                        <img src="images/blocka/Instruccions/1.png" alt="">
+                        <img src="images/blocka/Instruccions/2.png" alt="">
+                        <img src="images/blocka/Instruccions/3.png" alt="">
+                        <img src="images/blocka/Instruccions/4.png" alt="">
+                        <img src="images/blocka/Instruccions/5.png" alt="">
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="comments-seccion">  <!-- Seccion de comentarios -->
+            
+            <div class="title-gameplay-container">
+                <div class="titles-gameplay">
+                    💬
+                    <p class="title-typography-gameplay">Comentarios:</p>
+                </div>
+                <div class="divider-gameplay"></div>
+            </div>
+
+            <article class="comment-post-container">
+                <div class="comment-post">
+                    <img class="active-session-logo" src="images/sesion activa.png" alt="">
+                    <input class="input-opinion" type="text" placeholder="¿Qué opinas sobre este juego?">
+                    <button class="post-button title-typography-gameplay">Postear</button>
+                </div>
+            </article>
+
+            
+            <div id="comments-others"> <!-- se llena desde js --> </div>
+
+            
+        </section>
+    </article>
+
+    <article class="additional-container">  <!-- Juegos adicionales -->
+        <aside class="recommended-games">
+            <div class="images-recommended-games-container">
+                <!-- Se llenan las imagenes desde js -->
+            </div>
+        </aside>
+
+        <aside class="latest-news-container">      <!-- Seccion de tweets -->
+            <div class="latest-news">
+                <div class="titles-gameplay">
+                    📢
+                    <p class="title-typography-gameplay">Ultimas Novedades:</p>
+                </div>
+                <div class="divider-gameplay"></div>
+            </div>
+
+            <div id="tweets-container"> <!-- se llena desde js --> </div>  
+
+        </aside>
+    </article>
+    
+</div>
+
+
+
+<script type="module" src="../js/gameplay.js"></script>
+
+<script src="../js/games/blocka.js"></script>
+<script type="module" src="../js/canvasFilters.js"></script>
+
+<script src="../components/game-category/game-category.js"></script>
+<script type="module" src="../components/game-comment/game-comment.js"></script>
+<script type="module" src="../components/tweet/tweet.js"></script>

@@ -1,4 +1,3 @@
-import { loadPage } from "../../js/index.js";
 
 // precarga de templates
 async function loadTemplates() {
@@ -30,7 +29,6 @@ window.new_Carousel = ({ games, category, quantity = 14, extraClasses = "" }) =>
   }
 
   
-  // const filtered = games.filter((g) => g.category.includes(category)).slice(0, quantity)
   const filtered = games;
  
   filtered.forEach((game) => {
@@ -39,10 +37,21 @@ window.new_Carousel = ({ games, category, quantity = 14, extraClasses = "" }) =>
     const img = itemClone.querySelector("img")
     const title = itemClone.querySelector("h3")
     link.href = game.link
-    // link.addEventListener('click', (event) => {
-    //   event.preventDefault();
-    //   loadPage("gameplay.html");
-    // })
+
+    link.addEventListener("click", (event) => {
+        event.preventDefault()
+        
+        if(title.textContent === "Blocka Cartoons"){
+          card.id = "play-blocka";
+          import("../../js/router.js").then(({ navigateTo }) => navigateTo("blocka"));
+        }
+      
+        if(title.textContent === "Peg Solitaire"){
+          card.id = "play-peg-solitaire";
+          import("../../js/router.js").then(({ navigateTo }) => navigateTo("pegSolitaire"));
+        }
+      })
+
     img.src = game.image
     img.alt = game.title
     title.textContent = game.title
@@ -134,7 +143,8 @@ window.new_Carousel = ({ games, category, quantity = 14, extraClasses = "" }) =>
 }
 
 
-window.new_FeaturedCarousel = ({ games, category, quantity = 14 }) => {
+// window.new_FeaturedCarousel = ({ games, category, quantity = 14 }) => {
+export function new_FeaturedCarousel   ({ games, category, quantity = 14 })  {
   const templateCarousel = document.getElementById("carousel-template")
   if (!templateCarousel) {
     console.error("❌ Templates de carrusel no cargados aún.")
@@ -175,11 +185,21 @@ window.new_FeaturedCarousel = ({ games, category, quantity = 14 }) => {
       img.src = game.image
       img.alt = game.title
       title.textContent = game.title
-
-      // card.addEventListener("click", (event) => {
-      //   event.preventDefault()
-      //   loadPage("gameplay.html");
-      // })
+      
+      card.addEventListener("click", (event) => {
+        event.preventDefault()
+        
+        if(title.textContent === "Blocka Cartoons"){
+          card.id = "play-blocka";
+          import("../../js/router.js").then(({ navigateTo }) => navigateTo("blocka"));
+        }
+      
+        if(title.textContent === "Peg Solitaire"){
+          card.id = "play-peg-solitaire";
+          import("../../js/router.js").then(({ navigateTo }) => navigateTo("pegSolitaire"));
+        }
+      })
+        
 
       gridContainer.appendChild(card)
     }
@@ -198,11 +218,22 @@ window.new_FeaturedCarousel = ({ games, category, quantity = 14 }) => {
       img.src = game.image
       img.alt = game.title
       title.textContent = game.title
-
+      
       card.addEventListener("click", (event) => {
         event.preventDefault()
-        loadPage("gameplay.html");
+
+        if(title.textContent === "Blocka Cartoons"){
+          card.id = "play-blocka";
+          import("../../js/router.js").then(({ navigateTo }) => navigateTo("blocka"));
+        }
+      
+        if(title.textContent === "Peg Solitaire"){
+          card.id = "play-peg-solitaire";
+          import("../../js/router.js").then(({ navigateTo }) => navigateTo("pegSolitaire"));
+        }
       })
+
+      
 
       track.appendChild(largeClone)
       i++

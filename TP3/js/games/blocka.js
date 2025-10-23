@@ -1,4 +1,6 @@
-function initBlocka(container){
+import { setFilter } from "../canvasFilters.js";
+
+export function initBlocka(container){
     /** @type {HTMLCanvasElement} */
     const canvas = container.querySelector('#blockaCanvas');
     /** @type {CanvasRenderingContext2D} */
@@ -635,6 +637,8 @@ function initBlocka(container){
 
         return { filterType, k };
     }
+
+
 }
 
 
