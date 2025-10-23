@@ -38,6 +38,7 @@ function initBlocka(container){
     const difficulty = container.querySelector("#difficultyLevelBlocka");
     const labelDifficultyLevel = container.querySelector(".labelDifficultyLevel");
     const startBtn = container.querySelector("#startBtnBlocka");
+    const continueBtn = container.querySelector("#continueBtnBlocka");
     const nextLevelBlocka = container.querySelector("#nextLevelBlocka");
     const levelsToSolve = container.querySelectorAll(".levelToSolve");
     const currentLevelPlaying = container.querySelector(".currentLevelPlaying");
@@ -45,11 +46,12 @@ function initBlocka(container){
     const returnBeginningBlocka = container.querySelector("#returnBeginningBlocka");
 
     // Timer
-    let startTime, timerInterval;
+    let timerInterval = 0;
+    let startTime = 0;
     let elapsedBeforePause = 0; // tiempo transcurrido antes de la pausa
     let penaltyForHelp = 0; // penalizacion pro pedir "Ayudita"
     let isPaused = false;
-
+    let isGameOver = false;
     // ===========================================================
     //            CONFIGURACIÓN DE DIFICULTAD Y FILTROS
     // ===========================================================
@@ -63,10 +65,15 @@ function initBlocka(container){
             },
             // valores expresados en milisegundos
             timeLimit: {
-                easy: 3000,
-                normal: 9000,
-                hard: 18000
-            }
+                easy: 10000,
+                medium: 15000,
+                hard: 35000
+            },
+            records: {
+                easy: 10000,
+                medium: 15000,
+                hard: 35000
+            },
         },
 
         2: {
@@ -76,10 +83,15 @@ function initBlocka(container){
                 opacity: [0.4, 0.6, 0.8]
             },
             timeLimit: {
-                easy: 3000,
-                normal: 15000,
-                hard: 26000
-            }
+                easy: 10000,
+                medium: 15000,
+                hard: 35000
+            },
+            records: {
+                easy: 10000,
+                medium: 15000,
+                hard: 35000
+            },
         },
 
         3: {
@@ -89,17 +101,28 @@ function initBlocka(container){
                 opacity: [0.3, 0.5]
             },
             timeLimit: {
-                easy: 3000,
-                normal: 9000,
-                hard: 18000
-            }
+                easy: 10000,
+                medium: 15000,
+                hard: 35000
+            },
+            records: {
+                easy: 10000,
+                medium: 15000,
+                hard: 35000
+            },
         }
     };
     
     // ================================================================================================
     //                                         INICIALIZACIÓN DEL JUEGO
     // ================================================================================================
-
+    function loadImage(src) {
+        return new Promise((resolve) => {
+            // const random = src;
+            img.src = src;
+            img.onload = () => resolve(); // solo cuando la imagen realmente se carga
+        });
+    }
     function loadRandomImage() {
         return new Promise((resolve) => {
             const images = [
@@ -119,14 +142,42 @@ function initBlocka(container){
         });
     }
 
-    // elegir una nueva imagen, crear sus piezas y dibujarlas
-    function initFirstImage() {
-        loadRandomImage().then(() => {
-            createPieces();
-            drawPieces();
+    function generatePreviewGrid() {
+        const previewContainer = container.querySelector('#previewGrid');
+        previewContainer.innerHTML = ''; // limpio por si ya existía algo
+
+        const images = [
+            'rompecabezas1.jpg', 'rompecabezas2.jpg',
+            'rompecabezas3.jpg', 'rompecabezas4.jpg',
+            'rompecabezas5.jpg', 'rompecabezas6.jpg',
+            'rompecabezas7.jpg', 'rompecabezas8.jpg',
+            'rompecabezas9.jpg', 'rompecabezas10.jpg',
+            'rompecabezas11.jpg', 'rompecabezas12.jpg',
+            'rompecabezas13.jpg', 'rompecabezas14.jpg',
+            'rompecabezas15.jpg', 'rompecabezas16.jpg',
+            'rompecabezas17.jpg', 'rompecabezas18.jpg'
+        ];
+
+        // mezclo y tomo 9
+        const random9 = images.sort(() => 0.5 - Math.random()).slice(0, 9);
+
+        random9.forEach(src => {
+            const imgElem = new Image();
+            // const imgElem = document.createElement('img');
+            imgElem.src = `images/blocka/${src}`;
+            previewContainer.appendChild(imgElem);
         });
+
+        return random9; // las devuelvo para usar luego
     }
 
+    let previewImages = [];
+    
+
+    function initFirstImage() {
+        // genero las 9 imágenes random y guardo la lista
+        previewImages = generatePreviewGrid();
+    }
     initFirstImage();
 
 
@@ -176,6 +227,7 @@ function initBlocka(container){
 
     // Dibuja las piezas en el canvas (centrandola horizontal y verticalmente)
     function drawPieces() {
+
         let { offsetX, offsetY} = imageFit();
 
         // Limpia completamente el canvas antes de redibujar todo
@@ -183,7 +235,7 @@ function initBlocka(container){
 
         // Canvas temporal para procesar cada pieza
         const tempCanvas = document.createElement("canvas");
-        const tempCtx = tempCanvas.getContext("2d");
+        const tempCtx = tempCanvas.getContext("2d",{willReadFrequently:true});
         tempCanvas.width = pieceSize;
         tempCanvas.height = pieceSize;
 
@@ -229,6 +281,27 @@ function initBlocka(container){
         });
     }
 
+    function drawSolvedPieces() {
+
+        let { offsetX, offsetY} = imageFit();
+
+        
+        // Limpia completamente el canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+        scaledWidth = pieceSize * cols;
+        scaledHeight = pieceSize * rows;
+        // Dibuja la imagen original completa en el canvas
+        ctx.drawImage(
+            img,
+            0, 0, img.width, img.height, // origen completo de la imagen
+            offsetX, offsetY,            // posición donde comienza el dibujo
+            scaledWidth, scaledHeight    // tamaño final que ocupa (igual al puzzle)
+        );
+ 
+         
+    }
+
 
     // Calcula los offsets
     function imageFit(){
@@ -249,6 +322,31 @@ function initBlocka(container){
     
     // Comenzar Nivel
     startBtn.addEventListener("click", startGame);
+
+    // Continuar Nivel
+    continueBtn.addEventListener("click",e=>{
+        e.preventDefault;
+        // Oculto el menú
+        victoryMessage.textContent = "";
+        messageCompletionTime.textContent = "";
+        buttonsBlocka.style.display = "none";
+
+        // Habilito el boton de ayuda 
+        helpBtnBlocka.style.display = "block";
+
+
+        if(isPaused){ // al presionar continuar nivel vuelve a correr el reloj
+            isPaused = false;
+            startCountdown();
+            // console.log("se despauso")
+        }
+        else{
+            elapsedBeforePause = 0;
+            console.log("pausado")
+            startCountdown(false); 
+        }
+
+    })
 
 
     // Girar piezas
@@ -320,9 +418,8 @@ function initBlocka(container){
         // Recalculo el tamaño de la pieza
         pieceSize = Math.min(canvas.width / cols, canvas.height / rows);
 
-        // Crear y dibujar las piezas según la nueva dificultad
-        createPieces();
-        drawPieces();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        resetTimer();
     });
 
 
@@ -330,11 +427,12 @@ function initBlocka(container){
     gameOptionsMenuBlocka.addEventListener("click", () => {
         // habilito el panel de pausa
         buttonsBlocka.style.display = "flex";
-        startBtn.style.display = "block";
+        continueBtn.style.display = "block";
         retryLevelBlocka.style.display = "block";
         returnBeginningBlocka.style.display = "block";
 
         // deshabilito las opciones de jugar
+        startBtn.style.display = "none";
         helpBtnBlocka.style.display = "none";
         difficulty.style.display = "none";
         labelDifficultyLevel.style.display = "none";
@@ -355,25 +453,27 @@ function initBlocka(container){
     
     // Reintentar Nivel actual
     retryLevelBlocka.addEventListener("click", () => {
-        // reinicio el timer
         resetTimer();
 
-        // restauro las rotaciones iniciales de cada pieza
         pieces.forEach(p => { 
             p.rotation = p.initialRotation;
-            p.fixed = false; // permito volver a girarla la pieza(en caso que se haya acomodado sola por pedir "Ayudita")
+            p.fixed = false;
         });
 
-        // redibujo las piezas como estaban al inicio del nivel
-        drawPieces();
-
-        // Oculto el menú
         victoryMessage.textContent = "";
         messageCompletionTime.textContent = "";
         buttonsBlocka.style.display = "none";
+        helpBtnBlocka.style.display = "block";
 
-        // reinicio el juego
-        startGame();
+        drawPieces();
+
+        if (isPaused) {
+            isPaused = false;
+            startCountdown();
+        } else {
+            elapsedBeforePause = 0;
+            startCountdown();
+        }
     });
 
 
@@ -392,6 +492,7 @@ function initBlocka(container){
         difficulty.style.display = "block";
 
         // deshabilito las opciones del juego
+        continueBtn.style.display = "none";
         nextLevelBlocka.style.display = "none";
         retryLevelBlocka.style.display = "none";
         messageContainer.style.display = "none";
@@ -401,12 +502,16 @@ function initBlocka(container){
         currentLevelPlaying.style.display = "none";
         returnBeginningBlocka.style.display = "none";
 
-        // actualizo el mensaje de 
-        updateStartButtonText("Comenzar Nivel");
-
         resetTimer();
+        
+        // initFirstImage();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        previewContainer.style.display = "grid";
 
-        initFirstImage();
+        // Se reinicia el estilo de las imagenes que se seleccionan para los efectos de resuelto y seleccionado
+        images.forEach(img => {
+                img.classList.remove('hovered', 'solved');
+                });
 
     });
 
@@ -434,13 +539,46 @@ function initBlocka(container){
 
 
 
+ 
 
     // ================================================================================================
     //                                     TIMER Y CONTROL DE NIVELES
     // ================================================================================================
     // Comenzar nivel
-    function startGame(){    
+     
+    const previewContainer = container.querySelector('#previewGrid');
+    async function startGame(){    
+        
+        previewContainer.style.display = "grid";
         gameStarted = true;
+        // deshabilito el menu de pausa/menu
+        await delay(100);
+        buttonsBlocka.style.display = "none"; 
+
+        // ejecutarlo al entrar al nivel:
+        // Animación de selección
+        const chosenImage = await randomHoverEffect(1500); // 4 segundos de animación
+    
+        // Transición visual desde la miniatura hasta el canvas
+     
+        await delay(800);
+        await animateImageToCanvas(chosenImage, canvas);
+
+      
+        
+        //  Cuenta regresiva
+        await countdownBeforeStart(3);
+        const overlay = document.getElementById("transition-overlay");
+        const overlayImg = document.getElementById("transition-image");
+        overlay.style.display = "none";
+
+        // // ocultar la grilla al empezar el juego
+        previewContainer.style.display = 'none';
+
+        // Iniciar el juegocargar esa imagen para el rompecabezas
+        await loadImage(chosenImage.src);
+        createPieces();
+        drawPieces();
 
         // si habia un mensaje de una jugada anterior se limpia
         victoryMessage.textContent = "";  
@@ -457,54 +595,162 @@ function initBlocka(container){
 
         if(isPaused){
             isPaused = false;
-            startTimer();
+            startCountdown();
         }else{
             elapsedBeforePause = 0;
-            startTimer();
+            startCountdown();
         }
     }
 
+    const images = document.querySelectorAll(".preview-grid img");
+    let selectedImg;
+
+    function randomHoverEffect(duration = 3000) {
+       
+        return new Promise((resolve)=> {
+            let interval = 300; // tiempo inicial entre cambios (ms)
+            let elapsed = 0;
+            let activeIndex = -1;
+            const timer = setInterval(() => {
+                // quitar hover anterior
+                if (activeIndex >= 0) {
+                    images[activeIndex].classList.remove("hovered");
+                }
+    
+                // elegir imagen aleatoria
+                activeIndex = Math.floor(Math.random() * images.length);
+                images[activeIndex].classList.add("hovered");
+    
+                // aumentar velocidad gradualmente
+                elapsed += interval;
+                interval = Math.max(50, interval * 0.9); // acelera (reduce el delay)
+    
+                // cuando se supera la duración total, detenemos
+                if (elapsed > duration) {
+                   
+                    clearInterval(timer);
+                    images[activeIndex].classList.add("hovered"); // quito el ultimo hover
+                    
+                    selectedImg = images[activeIndex];
+                   
+                    resolve(selectedImg); // resuelve la promesa con la imagen (la devuelve)
+                }
+            }, interval);
+        });
+    }
 
     // Avanzar de nivel
     async function nextLevel(){
-        // reinicio el timer
-        resetTimer();
-
         // incremento el nivel
         level++;
+        // reinicio el timer
+        resetTimer();
         levelsToSolve.forEach((lvlElem) => {
             lvlElem.innerHTML = `${level}`;
         })
 
-        // Nueva imagen random para el siguiente nivel
-        await loadRandomImage();
-
         // Para evitar que quede algun rastro visual del nivel anterior
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // dibuja la nueva imagen
-        createPieces();
-        drawPieces();        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  
     }
 
 
-    // Arrancar el temporizador
-    function startTimer() {
-        // para evitar tener dos o más intervalos corriendo a la vez
+    // Arrancar el temporizador(cuenta regresiva)
+    function startCountdown(restartLevel=false) {
         if (timerInterval) clearInterval(timerInterval);
-        
-        // Si ya había tiempo transcurrido (por una pausa previa) lo conservo
+        isGameOver = false;
+
+        const difficulty = document.getElementById("difficultyLevelBlocka");
+        const timeLimitMs = gameDifficulty[level]?.timeLimit?.[difficulty.value];
+
+        if (!timeLimitMs) {
+            console.error(`No se encontró timeLimit para nivel ${level} y dificultad "${difficulty.value}"`);
+            return;
+        }
+
         startTime = Date.now() - elapsedBeforePause;
-        
-        // Temporizador que incrementa el timer cada 1 segundo
+        endTime = startTime + timeLimitMs + 1000; // le sumo 1 seg ya que pierde uno al iniciar el timerInterval
+
+    
+        if(restartLevel){
+            console.log("Se reinicio el nivel en : startCoundown()")
+            updateTimerDisplay(timeLimitMs / 1000);     // muestra el valor inicial
+        }
+
         timerInterval = setInterval(() => {
-            const elapsed = Math.floor((Date.now() - startTime + penaltyForHelp) / 1000);  // calcula cuántos milisegundos pasaron desde que empezó el juego
-                                                                // sumo la penalizacion por pedir ayuda
-            const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");  // obtiene los minutos completos transcurridos
-            const seconds = String(elapsed % 60).padStart(2, "0");  // elapsed % 60 obtiene los segundos que sobran después de dividir por 60
-                                                                    // padStart(2, "0") asegura que siempre haya dos dígitos
-            timerBlocka.textContent = `${minutes}:${seconds}`;
+            const now = Date.now();
+            const remaining = Math.max(0, endTime - now - penaltyForHelp);
+             
+            // Convierto a segundos
+            const totalSeconds = Math.floor((remaining) / 1000);
+            updateTimerDisplay(totalSeconds);
+
+            // Si se acaba el tiempo
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                handleTimeOut();
+            }
         }, 1000);
+    }
+
+ 
+    //   ACTUALIZAR TIMER DEL JUEGO (VISIBLE)  
+    function updateTimerDisplay(totalSeconds) {
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        timerBlocka.textContent = `${minutes}:${seconds}`;
+    }
+
+   
+    // HANDLER PARA CUANDO SE COMPLETA UN NIVEL     
+    
+    let completionTime;
+
+    function handlePuzzleSolved() {
+        if (isGameOver) return; // evita doble ejecución
+        isGameOver = true;
+        clearInterval(timerInterval);
+
+        const elapsedMs = Date.now() - startTime + penaltyForHelp - 1000;
+        const totalSeconds = Math.floor(elapsedMs / 1000);
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+        // Mostrar mensaje de victoria
+        const randomMessages = messages[Math.floor(Math.random() * messages.length)];
+              victoryMessage.innerHTML = `${randomMessages}`;
+
+        buttonsBlocka.style.display = "flex";
+        retryLevelBlocka.style.display = "none";
+        messageContainer.style.display = "flex";
+        messageCompletionTime.style.display = "block";
+        completionTime = `Tiempo empleado: ${minutes}:${seconds}`
+        messageCompletionTime.textContent = completionTime;
+
+      
+    }
+
+ 
+    //   AL AGOTAR TIEMPO LIMITE
+    function handleTimeOut() {
+        if (isGameOver) return;
+        isGameOver = true;
+        
+        document.getElementById("message").textContent = "⏰ ¡Tiempo agotado!";
+        document.getElementById("puzzle-completion-time").textContent = "";
+
+        // habilito el panel de pausa
+        buttonsBlocka.style.display = "flex";
+        messageContainer.style.display = "flex";
+        messageCompletionTime.style.display = "block";
+        retryLevelBlocka.style.display = "block";
+        returnBeginningBlocka.style.display = "block";
+
+        // deshabilito las opciones de jugar
+        startBtn.style.display = "none";
+        difficulty.style.display = "none";
+        labelDifficultyLevel.style.display = "none";
+        nextLevelBlocka.style.display = "none";
+
     }
 
 
@@ -522,42 +768,61 @@ function initBlocka(container){
 
 
     // Reseteo el timer
-    function resetTimer(){
+
+    function resetTimer() {
         clearInterval(timerInterval);
         elapsedBeforePause = 0;
         penaltyForHelp = 0;
-        timerBlocka.textContent = "00:00";
-        // startTime === null
+
+        const difficulty = document.getElementById("difficultyLevelBlocka");
+        const timeLimitMs = gameDifficulty[level]?.timeLimit?.[difficulty.value];
+
+        if (!timeLimitMs) {
+            console.error(`No se encontró timeLimit para nivel ${level} y dificultad "${difficulty.value}"`);
+            timerBlocka.textContent = "00:00";
+            return;
+        }
+
+        // Calcular minutos y segundos iniciales según el límite
+        const totalSeconds = Math.floor(timeLimitMs / 1000);
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+        // Mostrar tiempo inicial
+        timerBlocka.textContent = `${minutes}:${seconds}`;
     }
 
 
     // Verifico si gane un nivel o todos
-    function checkWin() {
+    async function checkWin() {
         // Recorro todas las piezas del arreglo pieces y devuelve true solo si todas cumplen la condición
         const allCorrect = pieces.every(p => p.rotation % 360 === p.correctRotation);
-        
+
         // Si todas están bien orientadas:
         if (allCorrect) {
             clearInterval(timerInterval);  // Detiene el cronómetro
+            // Dibujo la imagen completa sin filtros
+            drawSolvedPieces();
+            delay(1000);
             gameStarted = false;  // Evita que el jugador siga girando piezas luego de ganar
             
+            selectedImg.classList.add("solved"); // marca la imagen como resuelta
+            selectedImg.classList.remove("hovered");
+            
+            // quitar filtros 
+
             if(level < totalLevels){
                 setTimeout(() => {
                     hideGameOptions();
                     nextLevelBlocka.style.display = "block";
-
-                    const randomMessages = messages[Math.floor(Math.random() * messages.length)];
-                    victoryMessage.innerHTML = `${randomMessages}`;
-
-                    messageCompletionTime.innerHTML = "Lo lograste en: " + timerBlocka.innerHTML;
-                    
+                    handlePuzzleSolved();
                 }, 1000);
             }else{
                 hideGameOptions();
                 nextLevelBlocka.style.display = "none";
-
                 victoryMessage.innerHTML = "🎉 ¡GANASTE TODOS LOS NIVELES! 🎉";
-                messageCompletionTime.innerHTML = "";
+                messageCompletionTime.innerHTML = completionTime;     
+                initFirstImage();
             }
 
         }
@@ -570,10 +835,12 @@ function initBlocka(container){
         difficulty.style.display = "none"; 
         labelDifficultyLevel.style.display = "none"; 
         startBtn.style.display = "none";
+        continueBtn.style.display = "none";
         timerContainer.style.display = "none";
         helpBtnBlocka.style.display = "none"; 
         gameOptionsMenuBlocka.style.display = "none"; 
         nextLevelBlocka.style.display = "none";
+        retryLevelBlocka.style.display = "none";
 
         // habilito mensaje de celebracion
         buttonsBlocka.style.display = "flex"; 
@@ -581,27 +848,7 @@ function initBlocka(container){
         returnBeginningBlocka.style.display = "block";
     }
 
-   
-    // Actualizo texto de boton: comenzar nivel <--> continuar nivel
-    function updateStartButtonText(text) {
-        if(startBtn.firstChild.nodeType === Node.TEXT_NODE){
-            startBtn.firstChild.textContent = `${text} `;
-        }else{
-            // Si por alguna razón no hay texto, lo creo antes del span
-            startBtn.insertBefore(document.createTextNode(`${text}: `), level);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
+ 
     // Evita el menú del clic derecho en la seccion del canvas 
     canvas.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -635,6 +882,97 @@ function initBlocka(container){
 
         return { filterType, k };
     }
+
+    function animateImageToCanvas(selectedImg, canvas) {
+        return new Promise((resolve) => {
+            const overlay = document.getElementById("transition-overlay");
+            const overlayImg = document.getElementById("transition-image");
+            const containerRect = canvas.closest(".blocka-container").getBoundingClientRect();
+            const thumbRect = selectedImg.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+
+            const totalWidth = pieceSize * cols;
+            const totalHeight = pieceSize * rows;
+            const offsetX = (canvas.width - totalWidth) / 2;
+            const offsetY = (canvas.height - totalHeight) / 2;
+
+            const startLeft = thumbRect.left - containerRect.left;
+            const startTop = thumbRect.top - containerRect.top;
+            const finalLeft = canvasRect.left - containerRect.left + offsetX;
+            const finalTop = canvasRect.top - containerRect.top + offsetY;
+
+            overlay.style.display = "block";
+            overlayImg.src = selectedImg.src;
+            overlayImg.style.left = `${startLeft}px`;
+            overlayImg.style.top = `${startTop}px`;
+            overlayImg.style.width = `${thumbRect.width}px`;
+            overlayImg.style.height = `${thumbRect.height}px`;
+            overlayImg.style.opacity = "0";
+            overlayImg.style.filter = "blur(80px)";
+            overlayImg.getBoundingClientRect();
+
+            // Escucha el fin de la transición 
+            let settled = false;
+            
+            function finish() {
+            if (settled) return;
+            settled = true;
+            overlayImg.removeEventListener("transitionend", finish);
+            resolve();
+            }
+
+            overlayImg.addEventListener("transitionend", finish); 
+
+            requestAnimationFrame(() => {
+            overlayImg.style.left = `${finalLeft}px`;
+            overlayImg.style.top = `${finalTop}px`;
+            overlayImg.style.width = `${totalWidth}px`;
+            overlayImg.style.height = `${totalHeight}px`;
+            overlayImg.style.opacity = "1";
+            overlayImg.style.filter = "blur(0px)";
+            });
+
+            
+            setTimeout(finish, 1200);
+        });
+    }
+
+
+    // 🕒 Cuenta regresiva antes de iniciar el juego
+    function countdownBeforeStart(seconds = 3) {
+    return new Promise((resolve) => {
+        const msg = document.getElementById("countdown-message");
+        msg.style.display = "block";
+        msg.style.opacity = 0;
+
+        // Fade-in
+        setTimeout(() => (msg.style.opacity = 1), 100);
+
+        let timeLeft = seconds;
+        msg.textContent = `El juego comienza en: ${timeLeft}...`;
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            msg.textContent = `El juego comienza en: ${timeLeft}...`;
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                msg.textContent = "¡A jugar!";
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                    setTimeout(() => {
+                        msg.style.display = "none";
+                        resolve();
+                    }, 500);
+                }, 1000);
+            }
+        }, 1000);
+    });
+}
+
+    function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
 }
 
 

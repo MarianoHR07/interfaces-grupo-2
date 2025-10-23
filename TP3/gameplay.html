@@ -8,6 +8,7 @@
 
                 <div id="buttons-blocka">
                     <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel <span class="levelToSolve">1</span> </button>
+                    <button class="menu-button-blocka" id="continueBtnBlocka">Continuar Nivel <span class="levelToSolve">1</span> </button>
                     <button class="menu-button-blocka" id="nextLevelBlocka">Siguiente Nivel</button>
 
                     <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
@@ -37,6 +38,11 @@
                 </div>
 
                 <!-- <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p> -->
+                <div id="previewGrid" class="preview-grid"></div>
+                <div id="transition-overlay">
+                    <img id="transition-image" src="" alt="">
+                </div>
+                <div id="countdown-message"></div>
 
                 <canvas id="blockaCanvas" width="921" height="555"></canvas>
 
