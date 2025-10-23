@@ -107,7 +107,8 @@ function initValidation(container) {
     
         if(form){
             // Escuchar el evento de envío del formulario
-            form.addEventListener('submit', function(event) {
+            // form.addEventListener('submit', function(event) {
+            container.querySelector(".register-button")?.addEventListener("click", (event) => {
                 event.preventDefault(); // Siempre prevenir el envío por defecto para la validación
         
                 let formIsValid = true;

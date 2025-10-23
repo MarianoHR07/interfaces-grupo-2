@@ -1,6 +1,6 @@
 "use strict";
 
-function initComments(container) {
+export function initComments(container) {
     // Comentarios antiguos:
     const comments = [
         { nameUser: "thiaguitoxd", publicationDay: "7 de Enero", likes: 553, description: "juegazooo" },

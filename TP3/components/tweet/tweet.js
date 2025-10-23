@@ -1,6 +1,6 @@
 "use strict";
 
-function initTweets(container) {
+export function initTweets(container) {
     // Tweets:
     const tweets = [
         {   text: '🔥 ¡Nuevos juegos en ' +

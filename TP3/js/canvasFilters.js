@@ -90,7 +90,7 @@ function brightnessFilter(r, g, b, a, k) {
 }
 
 // --- Filter selector ---
-function setFilter(imageData, filterType, k = 1) {
+export function setFilter(imageData, filterType, k = 1) {
   switch (filterType) {
     case "none":
       return imageData;

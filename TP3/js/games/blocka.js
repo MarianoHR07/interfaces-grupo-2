@@ -1,4 +1,6 @@
-function initBlocka(container){
+import { setFilter } from "../canvasFilters.js";
+
+export function initBlocka(container){
     /** @type {HTMLCanvasElement} */
     const canvas = container.querySelector('#blockaCanvas');
     /** @type {CanvasRenderingContext2D} */
@@ -289,8 +291,8 @@ function initBlocka(container){
         // Limpia completamente el canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-        scaledWidth = pieceSize * cols;
-        scaledHeight = pieceSize * rows;
+        let scaledWidth = pieceSize * cols;
+        let scaledHeight = pieceSize * rows;
         // Dibuja la imagen original completa en el canvas
         ctx.drawImage(
             img,
@@ -437,8 +439,6 @@ function initBlocka(container){
         difficulty.style.display = "none";
         labelDifficultyLevel.style.display = "none";
         nextLevelBlocka.style.display = "none";
-
-        updateStartButtonText("Continuar Nivel");
 
         pauseTimer();
     });
@@ -668,7 +668,7 @@ function initBlocka(container){
         }
 
         startTime = Date.now() - elapsedBeforePause;
-        endTime = startTime + timeLimitMs + 1000; // le sumo 1 seg ya que pierde uno al iniciar el timerInterval
+        let endTime = startTime + timeLimitMs + 1000; // le sumo 1 seg ya que pierde uno al iniciar el timerInterval
 
     
         if(restartLevel){

@@ -1,6 +1,4 @@
-"use strict";
-
-import { loadPage } from "../../js/index.js";
+import { navigateTo } from "../../js/router.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const header = document.querySelector(".header-index");
@@ -24,8 +22,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const returnHome = document.querySelector(".header-logo");
             returnHome.addEventListener("click", () => {
-                loadPage("home.html");
+                navigateTo("home");
             });
+
+            const closeSesion = document.querySelector(".close-sesion");
+            closeSesion.addEventListener("click", () =>{
+                navigateTo("login");
+            });  
 
             // Obtiene el elemento del avatar del usuario en el header.
             // El header-user-avatar se encuentra dentro de la clase header-user.

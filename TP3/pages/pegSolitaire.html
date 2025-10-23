@@ -1,58 +1,44 @@
+<link rel="stylesheet" href="css/gameplay.css">
+
+<link rel="stylesheet" href="css/games/pegSolitaire.css">
+
+<link rel="stylesheet" href="components/game-category/game-category.css">
+<link rel="stylesheet" href="components/game-comment/game-comment.css">
+<link rel="stylesheet" href="components/tweet/tweet.css">
+
+
 <div class="game-container-playing">
 
     <article class="gameplay-container">
 
         <section class="game-running">  <!-- juego -->
 
-            <div class="blocka-container">
 
-                <div id="buttons-blocka">
-                    <button class="menu-button-blocka" id="startBtnBlocka">Comenzar Nivel <span class="levelToSolve">1</span> </button>
-                    <button class="menu-button-blocka" id="continueBtnBlocka">Continuar Nivel <span class="levelToSolve">1</span> </button>
-                    <button class="menu-button-blocka" id="nextLevelBlocka">Siguiente Nivel</button>
-
-                    <label class="title-typography-gameplay labelDifficultyLevel" for="difficultyLevelBlocka">Seleccionar dificultad:</label>
-                        <select class="menu-button-blocka" id="difficultyLevelBlocka">
-                            <option value="easy">Fácil</option>
-                            <option value="medium">Media</option>
-                            <option value="hard">Difícil</option>
-                        </select>
-
-                    <button class="menu-button-blocka" id="retryLevelBlocka">Reintentar Nivel</button>
-
-                    <button class="menu-button-blocka" id="returnBeginningBlocka">Volver al Inicio</button>
-
-                    <div id="message-container-blocka">
-                        <div class="title-typography-gameplay" id="message"></div>
-                        <div class="title-typography-gameplay" id="puzzle-completion-time"></div>
-                    </div>
-
-                </div>
-                
-                <button id="gameOptionsMenuBlocka"> <img src="images/configuracion.png" alt=""> </button>
-                <button id="helpBtnBlocka"> <img src="images/pista.png" alt=""> </button>
-                
-                <div class="timer-container-blocka">
-                    <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p>
-                    <p class="title-typography-gameplay">Tiempo: <span id="timerBlocka">00:00</span></p>
-                </div>
-
-                <!-- <p class="title-typography-gameplay currentLevelPlaying">Nivel <span class="levelToSolve">1</span> </p> -->
-                <div id="previewGrid" class="preview-grid"></div>
-                <div id="transition-overlay">
-                    <img id="transition-image" src="" alt="">
-                </div>
-                <div id="countdown-message"></div>
-
-                <canvas id="blockaCanvas" width="921" height="555"></canvas>
-
+            <div id="game-preview">     <!-- vista previa del juego -->
+                <img class="game-preview-image" src="images/Peg-Solitaire-tematica-minecraft.png" alt="">
+                <button class="button-game-running">
+                    <img class="button-play-gameplay" src="images/play.png" alt="">
+                    <p class="title-typography-gameplay">Jugar</p>
+                </button>
             </div>
 
-            
+            <div id="game-playing">   <!-- juego en ejecucion -->
+                <img src="images/inicio juego.png" alt="">
+                <div class="game-running-options">
+                    <p id="timer">0:00</p>
+                    <button id="exit-game"> <img src="images/salir.png" alt=""> </button>
+                    <button id="game-configuration"> <img src="images/configuracion.png" alt=""> </button>
+                    <button id="game-clue"> <img src="images/pista.png" alt=""> </button>
+                    <button id="game-help"> <img src="images/ayuda.png" alt=""> </button>
+                </div>
+                
+            </div>
 
-            <div class="game-bar-container-running">
+
+            
+            <div class="game-bar-container-running">    <!--  -->
                 <div class="title-bar-game">
-                    <h1 class="title-typography-gameplay name-game">Blocka</h1>
+                    <h1 class="title-typography-gameplay name-game">Peg Solitaire</h1>
                     <p class="typography-description number-of-views">+5K personas han jugado este juego.</p>
                 </div>
 
@@ -89,12 +75,12 @@
                 <div class="breadcrumb-right"> &gt; </div> 
             </div>
 
-            <p class="typography-description">Blocka</p>
+            <p class="typography-description">Peg Solitaire</p>
         </div>
 
         <section class="game-infomation-container">     <!-- informacion del juego -->
             <div class="game-title titles-gameplay">
-                <p class="title-typography-gameplay">Blocka</p>
+                <p class="title-typography-gameplay">Peg Solitaire - Steve vs Zombie</p>
             </div>
 
             <div class="container-categories-game">
@@ -117,7 +103,7 @@
                 </div>
 
                 <div class="description">
-                    <p class="typography-description">Blocka es un juego de ingenio en el que una imagen se divide en varias piezas desordenadas. El objetivo es rotarlas correctamente hasta reconstruir la imagen original. Poné a prueba tu observación y lógica para resolver el rompecabezas y completar la figura.</p>
+                    <p class="typography-description">El Peg Solitaire, también llamado Damas chinas, es un juego de suerte y habilidad. Quite las esmeraldas saltando sobre ellas, al igual que las damas, hasta que solo quede una esmeralda en el centro del tablero. Tu objetivo es eliminar todas las esmeraldas menos una. Para despejar una esmeralda, salte sobre ella y colóquela en un espacio vacío.</p>
                 </div>
 
                 <div class="how-to-play-container">
@@ -129,7 +115,7 @@
                         <div class="divider-gameplay"></div> 
                     </div>
                     <div class="description">
-                        <p class="typography-description">Al comenzar una partida, se muestra una imagen dividida en varias piezas cuadradas. Cada pieza está rotada aleatoriamente, y tu misión es girar las piezas usando el mouse hasta que todas encajen en la posición correcta, formando la imagen original.</p>
+                        <p class="typography-description">Usa el ratón para seleccionar una esmeralda. Retira todas las fichas del tablero saltando una sobre otra en un agujero vacío, dejando una sola ficha al final.</p>
                     </div>
                 </div>
 
@@ -143,8 +129,10 @@
                     </div>
 
                     <ul class="typography-description">
-                        <li>No se pueden mover las piezas de lugar, solo rotarlas.</li>
-                        <li>Solo se cuenta como finalizado el nivel cuando todas las piezas encastran correctamente.</li>
+                        <li>Saltar una esmeralda sobre una esmeralda adyacente (ortogonalmente, sin diagonales), hacia un espacio vacío inmediatamente después.</li>
+                        <li>La esmeralda saltada se retira del tablero.</li>
+                        <li>No se permiten saltos en diagonal, debes saltar en línea recta (arriba, abajo, izquierda, derecha).</li>
+                        <li>El juego termina cuando solo queda 1 esmeralda (¡ganas!) o no quedan más movimientos válidos (¡pierdes!).</li>
                     </ul>
                     
                 </div>
@@ -158,11 +146,7 @@
                         <div class="divider-gameplay"></div>
                     </div>
                     <div class="description">
-                        <!-- <p class="typography-description">Tan fácil como presionar con el ratón la esmeralda que deseas mover y arrastrar hacia un lugar libre para realizar el movimiento. </p> -->
-                         <ul class="typography-description">
-                            <li>Clic izquierdo: rota 90° hacia la izquierda (sentido antihorario).</li>
-                            <li>Clic derecho: rota 90° hacia la derecha (sentido horario).</li>
-                        </ul>
+                        <p class="typography-description">Tan fácil como presionar con el ratón la esmeralda que deseas mover y arrastrar hacia un lugar libre para realizar el movimiento. </p>
                     </div>
                     <div class="control-image">
                         <img src="images/mouse.png" alt="imagen de un mouse">
@@ -179,11 +163,10 @@
                     </div>
 
                     <div class="gameplay-images">
-                        <img src="images/blocka/Instruccions/1.png" alt="">
-                        <img src="images/blocka/Instruccions/2.png" alt="">
-                        <img src="images/blocka/Instruccions/3.png" alt="">
-                        <img src="images/blocka/Instruccions/4.png" alt="">
-                        <img src="images/blocka/Instruccions/5.png" alt="">
+                        <img src="images/indicacion 1.png" alt="">
+                        <img src="images/indicacion 2.png" alt="">
+                        <img src="images/indicacion 3.png" alt="">
+                        <img src="images/indicacion 4.png" alt="">
                     </div>
                 </div>
 
@@ -238,3 +221,14 @@
     </article>
     
 </div>
+
+
+
+
+<script type="module" src="../js/gameplay.js"></script>
+
+<script src="../js/games/pegSolitaire.js"></script>
+
+<script src="../components/game-category/game-category.js"></script>
+<script type="module" src="../components/game-comment/game-comment.js"></script>
+<script type="module" src="../components/tweet/tweet.js"></script>
