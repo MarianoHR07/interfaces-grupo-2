@@ -30,6 +30,25 @@
 #retryLevelBlocka,
 #returnBeginningBlocka {
     display: none;
+    
+}
+
+.blocka-container button,
+.blocka-container select{
+  text-shadow:
+    -2px -2px 3px #000,
+     2px -2px 3px #000,
+    -2px  2px 3px #000,
+     2px  2px 3px #000;
+  border:4px solid #000;
+}
+
+.blocka-container label{
+  text-shadow:
+    -2px -2px 3px #000,
+     2px -2px 3px #000,
+    -2px  2px 3px #000,
+     2px  2px 3px #000;
 }
 
 #startBtnBlocka {
@@ -96,11 +115,22 @@
 #message {
     font-size: var(--font-size-huge);
     color: #02ca02;
+    text-shadow:
+    -2px -2px 3px #000,
+     2px -2px 3px #000,
+    -2px  2px 3px #000,
+     2px  2px 3px #000;
+
 }
 
 #puzzle-completion-time {
     font-size: var(--font-size-huge);
     color: var(--accent-700);
+    text-shadow:
+    -2px -2px 3px #000,
+     2px -2px 3px #000,
+    -2px  2px 3px #000,
+     2px  2px 3px #000;
 }
 
 #message-container-blocka {
