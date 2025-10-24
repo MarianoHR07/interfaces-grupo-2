@@ -3,4 +3,3 @@
 ## Integrantes:
 * Ailèn Peralta Amado.
 * Mariano Jesus Hiese.
-* Agustin Ciantini.

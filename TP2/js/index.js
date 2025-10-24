@@ -16,6 +16,8 @@ export function loadPage(page) {
     fetch(`${page}`)
         .then(res => res.text())
         .then(html => {
+            const vaciar_principal=document.getElementById("container");
+            vaciar_principal.innerHTML="";
             container.innerHTML = html;
             setupEvents(page);  // después de cargar, engancho los eventos de esa página
         })

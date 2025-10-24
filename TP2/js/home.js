@@ -51,7 +51,8 @@ function initHome(container){
 
       allGames.sort(() => Math.random() - 0.5);
       const selectedGames = allGames.slice(0, 14);
-
+      ////////////////////////////////////////////////////////////////////////
+      // 🎯 featured
       const featuredGame = {
         title: "Peg Solitaire",
         image: `images/Peg-Solitaire-tematica-minecraft.png`, 
@@ -59,8 +60,8 @@ function initHome(container){
         category: ""
       };
       selectedGames.splice(4, 0, featuredGame);
-
-      // 🎯 featured
+      
+      
       const featuredCarousel = new_FeaturedCarousel({
         games: selectedGames,
         category: "",
@@ -69,7 +70,7 @@ function initHome(container){
         tag: ""
       });
       container.querySelector("#carouseles-container-1").prepend(featuredCarousel);
-  
+      ////////////////////////////////////////////////////////////////////////
       // 🎯 populares
       allGames.sort(() => Math.random() - 0.5);
       const selectedGamesPopular = allGames.slice(0, 15);
@@ -87,7 +88,7 @@ function initHome(container){
       });
 
       container.querySelector("#popular-carousele").appendChild(popularesCarousel);
-  
+      ////////////////////////////////////////////////////////////////////////
       // 🎯 nuevos
       allGames.sort(() => Math.random() - 0.5);
       const selectedGamesNew = allGames.slice(0, 15);
@@ -105,7 +106,7 @@ function initHome(container){
       });
 
       container.querySelector("#new-carousele").appendChild(newCarousel);
-  
+      ////////////////////////////////////////////////////////////////////////
       // 🎯 Aventuras
       const adventureGames = buildGameList("adventure", gamesData["adventure"], 32);
       const adventureCarousel = new_Carousel({
@@ -114,7 +115,7 @@ function initHome(container){
         quantity: 32
       });
       container.querySelector("#adventure-carousele").appendChild(adventureCarousel);
-  
+      ////////////////////////////////////////////////////////////////////////
       // 🎯 Accion
       const actionGames = buildGameList("action", gamesData["action"], 32);
       const actionCarousel = new_Carousel({
@@ -124,15 +125,43 @@ function initHome(container){
       });
       container.querySelector("#action-carousele").appendChild(actionCarousel);
 
-      // // 🎯 Disparos
-      // const actionGames = buildGameList("action", gamesData["action"], 32);
-      // const actionCarousel = new_Carousel({
-      //   games: actionGames,
-      //   category: "action",
-      //   quantity: 32
-      // });
-      // container.querySelector("#action-carousele").appendChild(actionCarousel);
+      ////////////////////////////////////////////////////////////////////////
+      // 🎯 Autos
 
+      const carsGames = buildGameList("cars", gamesData["cars"], 32);
+      const carsCarousel = new_Carousel({
+        games: carsGames,
+        category: "cars",
+        type: "",
+        quantity: 32,
+        tag: ""
+      });
+       
+      container.querySelector("#cars-carousel").appendChild(carsCarousel);
+      ////////////////////////////////////////////////////////////////////////
+      // 🎯 strategy
+      const strategyGames = buildGameList("strategy", gamesData["strategy"], 32);
+      const strategyCarousel = new_Carousel({
+        games: strategyGames,
+        category: "strategy",
+        type: "",
+        quantity: 32,
+        tag: "nuevo"
+      });
+
+      container.querySelector("#strategy-carousel").appendChild(strategyCarousel);
+      ////////////////////////////////////////////////////////////////////////
+      // 🎯 Moda
+      const fashionGames = buildGameList("fashion", gamesData["fashion"], 32);
+      const fashionCarousel = new_Carousel({
+        games: fashionGames,
+        category: "fashion",
+        type: "",
+        quantity: 30,
+        tag: "nuevo"
+      });
+
+      container.querySelector("#fashion-carousel").appendChild(fashionCarousel);
 
 
 

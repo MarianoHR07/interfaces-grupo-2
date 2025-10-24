@@ -1,0 +1,139 @@
+.game-preview:fullscreen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+#game-preview{
+    position: relative;
+    display: block;
+    width: 928px;
+    height: 617px;
+    padding: 0px;
+    object-fit: cover;
+    box-sizing: border-box;
+}
+
+.game-preview-image, .button-play-gameplay {
+    object-fit: cover; 
+    display: block;
+}
+
+.game-preview-image{
+    width: 100%;
+    height: 100%;
+}
+
+.button-play-gameplay {
+    width: 24px;
+    height: 24px;
+}
+
+.button-game-running {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    width: 117px;
+    height: 43px;
+    gap: 10px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+
+    background-color: var(--accent-700); 
+    box-shadow: 0px 0px 8px 0px var(--accent-700);
+    cursor: pointer;
+    transition: all 0.2s ease-out; 
+}
+
+.button-game-running:hover {
+    animation: glow-pulse 1.2s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+    0%, 100% {
+        box-shadow: 0 0 8px 0 var(--accent-700);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        box-shadow: 0 0 30px 5px var(--accent-700);
+        transform: translate(-50%, -50%) scale(1.02);
+    }
+}
+
+.button-game-running p {
+    position: absolute;
+    top: 20%;
+    left: 45%;
+
+    font-size: var(--font-size-large);
+    color: white; 
+    transition: color 0.6s;
+}
+
+.button-game-running img {
+    width: 24px;
+    height: 24px;
+}
+
+#game-playing{
+    display: none;
+    position: relative;
+    width: 928px;
+    height: 617px;
+    padding: 0px;
+}
+
+#game-playing img{
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover; 
+    display: block;
+}
+
+.game-running-options button{
+    background: none;
+    border: none;
+    width: fit-content;
+    height: 38px;
+    cursor: pointer;
+}
+
+#timer{
+    font-family: var(--font-base);
+    font-size: var(--font-size-extra-large);
+    color: var(--primary-500);
+    font-weight: bold;
+
+    position: absolute;
+    margin: 0px;
+    top: 2%;
+    right: 1%;
+}
+
+#exit-game{
+    position: absolute;
+    top: 2%;
+    left: 1%;
+}
+
+#game-configuration{
+    position: absolute;
+    bottom: 2%;
+    right: 1%;
+}
+
+#game-help{
+    position: absolute;
+    bottom: 2%;
+    right: 6%;
+}
+
+#game-clue{
+    position: absolute;
+    bottom: 2%;
+    right: 10%;
+}

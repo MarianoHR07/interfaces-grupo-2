@@ -1,0 +1,234 @@
+<link rel="stylesheet" href="css/gameplay.css">
+
+<link rel="stylesheet" href="css/games/pegSolitaire.css">
+
+<link rel="stylesheet" href="components/game-category/game-category.css">
+<link rel="stylesheet" href="components/game-comment/game-comment.css">
+<link rel="stylesheet" href="components/tweet/tweet.css">
+
+
+<div class="game-container-playing">
+
+    <article class="gameplay-container">
+
+        <section class="game-running">  <!-- juego -->
+
+
+            <div id="game-preview">     <!-- vista previa del juego -->
+                <img class="game-preview-image" src="images/Peg-Solitaire-tematica-minecraft.png" alt="">
+                <button class="button-game-running">
+                    <img class="button-play-gameplay" src="images/play.png" alt="">
+                    <p class="title-typography-gameplay">Jugar</p>
+                </button>
+            </div>
+
+            <div id="game-playing">   <!-- juego en ejecucion -->
+                <img src="images/inicio juego.png" alt="">
+                <div class="game-running-options">
+                    <p id="timer">0:00</p>
+                    <button id="exit-game"> <img src="images/salir.png" alt=""> </button>
+                    <button id="game-configuration"> <img src="images/configuracion.png" alt=""> </button>
+                    <button id="game-clue"> <img src="images/pista.png" alt=""> </button>
+                    <button id="game-help"> <img src="images/ayuda.png" alt=""> </button>
+                </div>
+                
+            </div>
+
+
+            
+            <div class="game-bar-container-running">    <!--  -->
+                <div class="title-bar-game">
+                    <h1 class="title-typography-gameplay name-game">Peg Solitaire</h1>
+                    <p class="typography-description number-of-views">+5K personas han jugado este juego.</p>
+                </div>
+
+                <div class="interactions">
+                    <button class="likeBtn"> <img src="images/me gusta.png" alt="Me gusta"> </button>
+                    <button id="dislikeBtn"> <img src="images/no me gusta.png" alt="No me gusta"> </button>
+                    <button id="favBtn"> <img src="images/favoritos.png" alt="Favoritos"> </button>
+                    <button id="controlsBtn"> <img src="images/controles.png" alt="Controles"> </button>
+                    <button id="shareBtn"> <img src="images/compartir.png" alt="Compartir"> </button>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="breadcrumbs-gameplay">
+            <img class="retun-home-gameplay" src="images/retun-house.png" alt="">
+
+            <div class="breadcrumb-right-container">
+                <div class="breadcrumb-right"> &gt; </div>
+                <div class="breadcrumb-right"> &gt; </div> 
+            </div>
+
+            <p class="typography-description">Juegos</p>
+
+            <div class="breadcrumb-right-container">
+                <div class="breadcrumb-right"> &gt; </div>
+                <div class="breadcrumb-right"> &gt; </div> 
+            </div>
+
+            <p class="typography-description">Estrategia</p>
+
+            <div class="breadcrumb-right-container">
+                <div class="breadcrumb-right"> &gt; </div>
+                <div class="breadcrumb-right"> &gt; </div> 
+            </div>
+
+            <p class="typography-description">Peg Solitaire</p>
+        </div>
+
+        <section class="game-infomation-container">     <!-- informacion del juego -->
+            <div class="game-title titles-gameplay">
+                <p class="title-typography-gameplay">Peg Solitaire - Steve vs Zombie</p>
+            </div>
+
+            <div class="container-categories-game">
+                <div class="titles-gameplay">
+                    🏷️
+                    <p class="title-typography-gameplay">CATEGORIAS</p>
+                </div>
+                <div class="game-categories">
+                    <div id="categories"><!--se llena desde js--></div> 
+                </div>
+            </div>
+
+            <div class="game-information">
+                <div class="descrption-game">
+                    <div class="title-description titles-gameplay">
+                        <img src="images/exclamacion.png" alt="">
+                        <p class="title-typography-gameplay">Descripción del Juego</p>    
+                    </div>
+                    <div class="divider-gameplay"></div> 
+                </div>
+
+                <div class="description">
+                    <p class="typography-description">El Peg Solitaire, también llamado Damas chinas, es un juego de suerte y habilidad. Quite las esmeraldas saltando sobre ellas, al igual que las damas, hasta que solo quede una esmeralda en el centro del tablero. Tu objetivo es eliminar todas las esmeraldas menos una. Para despejar una esmeralda, salte sobre ella y colóquela en un espacio vacío.</p>
+                </div>
+
+                <div class="how-to-play-container">
+                    <div class="how-to-play">
+                        <div class="titles-gameplay">
+                            🎮
+                            <p class="title-typography-gameplay">¿Cómo Jugar?</p>
+                        </div>
+                        <div class="divider-gameplay"></div> 
+                    </div>
+                    <div class="description">
+                        <p class="typography-description">Usa el ratón para seleccionar una esmeralda. Retira todas las fichas del tablero saltando una sobre otra en un agujero vacío, dejando una sola ficha al final.</p>
+                    </div>
+                </div>
+
+                <div class="rules-of-the-game">
+                    <div class="title-rules-container">
+                        <div class="titles-gameplay">
+                            📖
+                            <p class="title-typography-gameplay">Reglas del juego:</p>
+                        </div>
+                        <div class="divider-gameplay"></div> 
+                    </div>
+
+                    <ul class="typography-description">
+                        <li>Saltar una esmeralda sobre una esmeralda adyacente (ortogonalmente, sin diagonales), hacia un espacio vacío inmediatamente después.</li>
+                        <li>La esmeralda saltada se retira del tablero.</li>
+                        <li>No se permiten saltos en diagonal, debes saltar en línea recta (arriba, abajo, izquierda, derecha).</li>
+                        <li>El juego termina cuando solo queda 1 esmeralda (¡ganas!) o no quedan más movimientos válidos (¡pierdes!).</li>
+                    </ul>
+                    
+                </div>
+
+                <div class="controls">
+                    <div class="title-controls-container">
+                        <div class="titles-gameplay">
+                            ⌨️
+                            <p class="title-typography-gameplay">Controles:</p>
+                        </div>
+                        <div class="divider-gameplay"></div>
+                    </div>
+                    <div class="description">
+                        <p class="typography-description">Tan fácil como presionar con el ratón la esmeralda que deseas mover y arrastrar hacia un lugar libre para realizar el movimiento. </p>
+                    </div>
+                    <div class="control-image">
+                        <img src="images/mouse.png" alt="imagen de un mouse">
+                    </div>
+                </div>
+
+                <div class="gameplay-information">
+                    <div class="title-gameplay-container">
+                        <div class="titles-gameplay">
+                            🖼️
+                            <p class="title-typography-gameplay">Jugabilidad:</p>
+                        </div>
+                        <div class="divider-gameplay"></div>
+                    </div>
+
+                    <div class="gameplay-images">
+                        <img src="images/indicacion 1.png" alt="">
+                        <img src="images/indicacion 2.png" alt="">
+                        <img src="images/indicacion 3.png" alt="">
+                        <img src="images/indicacion 4.png" alt="">
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="comments-seccion">  <!-- Seccion de comentarios -->
+            
+            <div class="title-gameplay-container">
+                <div class="titles-gameplay">
+                    💬
+                    <p class="title-typography-gameplay">Comentarios:</p>
+                </div>
+                <div class="divider-gameplay"></div>
+            </div>
+
+            <article class="comment-post-container">
+                <div class="comment-post">
+                    <img class="active-session-logo" src="images/sesion activa.png" alt="">
+                    <input class="input-opinion" type="text" placeholder="¿Qué opinas sobre este juego?">
+                    <button class="post-button title-typography-gameplay">Postear</button>
+                </div>
+            </article>
+
+            
+            <div id="comments-others"> <!-- se llena desde js --> </div>
+
+            
+        </section>
+    </article>
+
+    <article class="additional-container">  <!-- Juegos adicionales -->
+        <aside class="recommended-games">
+            <div class="images-recommended-games-container">
+                <!-- Se llenan las imagenes desde js -->
+            </div>
+        </aside>
+
+        <aside class="latest-news-container">      <!-- Seccion de tweets -->
+            <div class="latest-news">
+                <div class="titles-gameplay">
+                    📢
+                    <p class="title-typography-gameplay">Ultimas Novedades:</p>
+                </div>
+                <div class="divider-gameplay"></div>
+            </div>
+
+            <div id="tweets-container"> <!-- se llena desde js --> </div>  
+
+        </aside>
+    </article>
+    
+</div>
+
+
+
+
+<script type="module" src="../js/gameplay.js"></script>
+
+<script src="../js/games/pegSolitaire.js"></script>
+
+<script src="../components/game-category/game-category.js"></script>
+<script type="module" src="../components/game-comment/game-comment.js"></script>
+<script type="module" src="../components/tweet/tweet.js"></script>

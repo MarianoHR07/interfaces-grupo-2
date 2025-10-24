@@ -39,10 +39,10 @@ window.new_Carousel = ({ games, category, quantity = 14, extraClasses = "" }) =>
     const img = itemClone.querySelector("img")
     const title = itemClone.querySelector("h3")
     link.href = game.link
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      loadPage("gameplay.html");
-    })
+    // link.addEventListener('click', (event) => {
+    //   event.preventDefault();
+    //   loadPage("gameplay.html");
+    // })
     img.src = game.image
     img.alt = game.title
     title.textContent = game.title
@@ -176,10 +176,10 @@ window.new_FeaturedCarousel = ({ games, category, quantity = 14 }) => {
       img.alt = game.title
       title.textContent = game.title
 
-      card.addEventListener("click", (event) => {
-        event.preventDefault()
-        loadPage("gameplay.html");
-      })
+      // card.addEventListener("click", (event) => {
+      //   event.preventDefault()
+      //   loadPage("gameplay.html");
+      // })
 
       gridContainer.appendChild(card)
     }
