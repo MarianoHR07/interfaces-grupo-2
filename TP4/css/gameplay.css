@@ -1,0 +1,651 @@
+
+.title-typography-gameplay{
+    font-family: var(--font-base);
+    font-size: var(--font-size-medium);
+    color: var(--secondary-200);
+    font-weight: bold;
+
+    margin: 0px 0px;
+    text-align: center;     
+}
+
+.typography-description{
+    font-family: var(--font-base);
+    font-size: var(--font-size-small);
+    color: var(--secondary-200);
+
+    width: 100%;
+    height: fit-content;
+    margin: 3px 0px;
+    box-sizing: border-box;
+}
+
+.titles-gameplay{
+    display: flex;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px;
+    margin: 3px 0px;
+}
+
+.gameplay-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.additional-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.game-container-playing{
+    display: flex;
+    gap: 33px;
+    padding: 10px 24px 10px 24px;
+    box-sizing: border-box;
+}
+
+
+/* ---------------------------------------------- Juego en ejecucion --------------------------------------------- */
+
+
+.game-running{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    max-width: 928px;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.game-running:fullscreen{
+  background: black;
+}
+
+.game-running:fullscreen #game-preview,
+.game-running:fullscreen #game-playing {
+  width: 80%;
+  height: 90%;  
+}
+
+
+.game-bar-container-running{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 55px;
+    padding: 0px 12px;
+    background-color: var(--primary-500);
+    box-sizing: border-box;
+    border-radius: 0px 0px 15px 15px;
+}
+
+.title-bar-game{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+    gap: 0px;
+    padding: 0px;
+}
+
+.name-game{
+    font-size: var(--font-size-large);
+    width: 100%;
+    text-align: left;
+}
+
+.number-of-views{
+    width: 100%;
+    font-size: var(--font-size-tiny);
+    text-align: center;
+    white-space: nowrap;  
+}
+
+.interactions{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+    gap: 12px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.interactions button {
+  border: none;
+  background: var(--primary-300);
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.likeBtn {
+    position: relative; 
+    z-index: 1; 
+    transition: transform 0.4s ease-out; 
+    cursor: pointer; 
+    outline: none;
+    user-select: none; 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.likeBtn:active {
+    transform: scale(0.85) translateY(2px);
+}
+
+.likeBtn:active img {
+    transform: scale(0.70) rotate(10deg);
+    transition: transform 0.4s ease-out; 
+}
+
+.likeBtn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px; 
+    height: 4px;
+    border-radius: 50%;
+    background-color: hotpink;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: 
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink;
+    
+}
+
+/* Dispara la animación con :active y la resetea al soltar */
+.likeBtn:active::before {
+    animation: sparkle-burst-max 2.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+}
+
+@keyframes sparkle-burst-max {
+    0% {
+        width: 4px; 
+        height: 4px;
+        opacity: 1;
+        box-shadow: 
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink;
+    }
+    100% {
+        width: 4px;
+        height: 4px;
+        opacity: 0;
+        box-shadow: 
+
+            -120px -120px 0 rgba(255, 105, 180, 0), 120px -120px 0 rgba(255, 105, 180, 0),
+            -130px 0px 0 rgba(255, 105, 180, 0), 130px 0px 0 rgba(255, 105, 180, 0),
+            -110px 110px 0 rgba(255, 105, 180, 0), 110px 110px 0 rgba(255, 105, 180, 0),
+            0px 130px 0 rgba(255, 105, 180, 0), 0px -130px 0 rgba(255, 105, 180, 0),
+
+
+            -75px -35px 0 rgba(255, 105, 180, 0), 75px -35px 0 rgba(255, 105, 180, 0),
+            -75px 35px 0 rgba(255, 105, 180, 0), 75px 35px 0 rgba(255, 105, 180, 0),
+            -35px -75px 0 rgba(255, 105, 180, 0), 35px -75px 0 rgba(255, 105, 180, 0),
+            -35px 75px 0 rgba(255, 105, 180, 0), 35px 75px 0 rgba(255, 105, 180, 0),
+            
+
+            -55px -15px 0 rgba(255, 105, 180, 0), 55px -15px 0 rgba(255, 105, 180, 0),
+            -55px 15px 0 rgba(255, 105, 180, 0), 55px 15px 0 rgba(255, 105, 180, 0),
+            -15px -55px 0 rgba(255, 105, 180, 0), 15px -55px 0 rgba(255, 105, 180, 0),
+            -15px 55px 0 rgba(255, 105, 180, 0), 15px 55px 0 rgba(255, 105, 180, 0),
+            
+ 
+            -80px -40px 0 rgba(255, 105, 180, 0), 80px -40px 0 rgba(255, 105, 180, 0),
+            -80px 40px 0 rgba(255, 105, 180, 0), 80px 40px 0 rgba(255, 105, 180, 0),
+            -40px -80px 0 rgba(255, 105, 180, 0), 40px -80px 0 rgba(255, 105, 180, 0),
+            -40px 80px 0 rgba(255, 105, 180, 0), 40px 80px 0 rgba(255, 105, 180, 0);
+    }
+}
+
+button.active {
+  background: var(--primary-600); 
+} 
+
+.interactions img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.interactions:fullscreen {
+    object-fit: cover;
+}
+
+/* --------------------------------------------- Breadcrumbs ---------------------------------------- */
+
+.breadcrumbs-gameplay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+    gap: 5px;
+}
+
+.breadcrumbs-gameplay > * {
+  display: inline-flex;
+  align-items: center;
+}
+
+.retun-home-gameplay {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.breadcrumbs-gameplay p {
+    width: fit-content;
+    cursor: pointer;
+}
+
+.breadcrumb-right {
+    color: var(--secondary-200);
+    width: 14px;
+    height: 14px;
+    font-size: var(--font-size-small);
+    margin: 0 -3px;
+}
+
+.breadcrumb-right-container {
+    display: flex;
+    margin: 0 0 0 3px;
+}
+
+.breadcrumb-right-container > * {
+  display: inline-flex;
+  align-items: center;
+}
+
+
+/* --------------------------------------------- Informacion del Juego ---------------------------------------- */
+.game-infomation-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    overflow: hidden;   /* equivale a Clip content */
+    height: fit-content;
+    width: 928px;
+    padding: 0px 22px;
+    gap: 10px;
+    box-sizing: border-box; /* incluye padding/borde en el tamaño */
+    background-color: var(--primary-600);
+    border-radius: 15px;
+}
+
+.game-title{
+    padding: 5px 0px;
+    box-sizing: border-box;
+}
+
+.game-title p{
+    width: 100%;
+    height: 100%;
+    
+    font-size: var(--font-size-extra-large);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.container-categories-game{     
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 9px;
+    padding: 0px 10px;
+}
+
+.game-categories{           
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    width: fit-content;
+    height: fit-content;
+    padding: 0px;
+    gap: 15px;
+}
+
+#categories{
+    display: flex;
+    gap: 15px;
+}
+
+.game-information{      
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 5px;
+    padding: 0px;
+}
+
+.descrption-game{       
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 12px;
+    padding: 0px 10px;
+    color: var(--secondary-200);
+    box-sizing: border-box;
+}
+
+.title-description img{
+    width: fit-content;
+    height: 20px;
+    padding: 3px;
+}
+
+.divider-gameplay{
+    background-color: var(--secondary-200);
+    width: 100%;
+    height: 1px;
+}
+
+.description{      
+    padding: 0px 10px;
+}
+
+.how-to-play-container{  
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 3px;
+    padding: 10px 0px;
+}
+
+.how-to-play{     
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+
+.rules-of-the-game{   
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 3px;
+    padding: 0px;
+}
+ 
+.title-rules-container{     
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+  
+.rules-of-the-game ul li,
+.description ul li{
+    gap: 10px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+  
+.controls{     
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 3px;
+    padding: 0px;
+}
+
+.title-controls-container{
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+
+.control-image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+}
+
+.control-image img{
+    width: 100px;
+    height: 120px;
+}
+
+.gameplay-information{  
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 5px;
+    padding: 0px;
+}
+
+.title-gameplay-container{     
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+
+.gameplay-images{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    width: 100%;    /* equivalente a fill container en ancho */ 
+    height: 100%;   /* equivalente a fill container en alto */ 
+    gap: 5px;
+    padding: 0px 10px 10px 10px;
+    overflow: hidden;   /* equivale a Clip content */
+    box-sizing: border-box; /* asegura que padding se incluya en el tamaño */
+}
+
+.gameplay-images img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* hace que las imágenes llenen la celda sin deformarse */
+}
+
+/* ------------------------------------------- Comentarios --------------------------------------------- */
+
+.comments-seccion {
+    display: flex;
+    flex-direction: column;
+
+    width: 928px;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px;
+}
+
+.comment-post-container {
+    width: 100%;
+    height: fit-content;
+    padding: 8px 0px;
+    border-radius: 10px;
+    background-color: var(--primary-600);
+}
+
+.comment-post {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+
+.active-session-logo {
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+}
+
+.input-opinion {
+    width: 100%;
+    height: fit-content;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background-color: var(--secondary-200);
+}
+
+.post-button {
+    width: 10%;
+    height: fit-content;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: var(--accent-700);
+    font-size: var(--font-size-small);
+    cursor: pointer;
+}
+
+#comments-others {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* ------------------------------------------- Juegos adicionales --------------------------------------------- */
+
+.recommended-games{
+    width: fit-content;
+    height: fit-content;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: var(--primary-600);
+}
+
+.images-recommended-games-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.images-recommended-games-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+
+/* ----------------------------------------------- Tweets ----------------------------------------------- */
+
+.latest-news-container{    
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: fit-content;
+}
+
+.latest-news {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+}
+
+#tweets-container {
+    display: flex;
+    flex-direction: column;
+
+    gap: 17px;
+}
+

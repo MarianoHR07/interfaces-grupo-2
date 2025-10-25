@@ -1,0 +1,310 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  background-color: var(--primary-700);
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  /* max-width: 1520px;  */
+  /* max-width: 1550px; */
+  /* height: 100%; */
+}
+.categories-link {
+  font-family: var(--font-base);
+  font-size: var(--font-size-small);
+  color: var(--grey-200);
+  font-weight: bold;
+  padding: 0 2px;
+}
+.categories-link span {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.categories-link span:last-child {
+  margin-right: 0;
+}
+.see-more-link {
+  color: var(--accent-700);
+  cursor: pointer;
+}
+/* -----------------------CARUSEL CATEGORIAS */
+        /* CONTENEDOR DE TARJETAS DE JUEGO - CARUSEL CATEGORIAS */
+.carousel {
+  position: relative;
+  display: flex;
+  padding: 4px;
+  gap: 10px;
+  scroll-behavior: smooth;
+  overflow: hidden;
+  /* align-items: flex-end; */
+  align-items: center;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
+
+        /* TARJETAS DE JUEGOS- CARUSEL CATEGORIAS */
+.game-card {
+  position: relative;
+  flex: 0 0 clamp(150px, 20vw, 240px);
+  height: clamp(100px, 15vw, 140px);
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover, 
+.most-liked-container img:hover {
+  position: relative;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  border: 3px solid var(--accent-700);
+  border-radius: 10px;
+}
+
+.game-card img,
+.most-liked-container img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* mantiene proporciones sin deformar */
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.game-card img:hover {
+  border-radius: 6px;
+  transform: scale(1.1);
+}
+
+.tag-card-new, 
+.tag-card-popular {
+  position: absolute;
+  display: none;
+  top: -6px;
+  left: -2.5px;
+  width: fit-content;
+  height: 25px;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.tag-card-new {
+  background: linear-gradient(to right, var(--primary-100) 0%, var(--primary-300) 100%);
+}
+
+.tag-card-popular {
+  background: linear-gradient(to right, var(--accent-700) 0%, var(--red) 100%);
+}
+
+.tag-card-new.active,
+.tag-card-popular.active {
+  display: block;
+}
+
+.tag-name {
+  font-size: var(--font-size-small);
+}
+
+/* .tag-card-popular {
+
+} */
+
+.game-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0; 
+  
+  background: linear-gradient(   /* degradado con varios niveles */
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,   /* negro intenso al fondo */
+    rgba(0, 0, 0, 0.65) 40%, /* un poco mas claro hasta aprox la altura del texto */
+    rgba(0, 0, 0, 0.6) 70%,  /* se va aclarando más arriba */
+    transparent 100%         /* completamente transparente */
+  );
+  padding: 20px 0 5px 5px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.game-card:hover .game-info {
+  transform: translateY(0);
+}
+
+.game-info h3 {
+  font-family: var(--font-base);
+  font-size: var(--font-size-small);
+  color: var(--secondary-200);
+  font-weight: bold;
+  margin-bottom: 5px;
+
+  white-space: nowrap;        /* evita que salte de línea */
+  overflow: hidden;          
+  text-overflow: ellipsis;    /* muestra los "..." */
+  
+}
+.game-card:hover .game-info h3 {
+  opacity: 1;
+  border-radius: 10px;
+}
+        /* BOTONES de .carousel */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.816);
+  border: none;
+  color:var(--grey-200);
+  font-size: 30px;
+  padding: 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 30;
+}
+
+.carousel-btn.left {
+  left: 0px;
+  height: 100%;
+}
+.carousel-btn.right {
+  right: 0px;
+  height: 100%;
+}
+.carousel-btn.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.carousel-container:hover .carousel-btn {
+  opacity: 0;
+}
+
+/* ---- GRUPOS Y TARJETAS FEATURED CAROUSELE---- */
+/* ---------------------------GAME-CARDS *4 */
+.game-grid {
+  box-sizing: border-box;
+  width: 100%;
+  /* height: 100%; */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+  padding: 1.5px;
+  align-items: center;
+  transition: all 0.3s ease;
+} 
+
+/* Mantiene proporciones uniformes entre los grupos de card (game-grid) y la game-card grande*/
+.game-grid, 
+.carousel-track .game-card.large {
+  flex: 0 0 clamp(300px, 40vw, 490px);
+  height: clamp(250px, 30vw, 290px);
+}
+ 
+.game-card {
+  position: relative;
+  flex: 0 0 clamp(150px, 20vw, 240px);
+  height: clamp(90px, 15vw, 138px);
+}
+
+
+/* Track del carrusel con animación  */
+.carousel-track {
+  display: flex;
+  gap: 10px;
+  /* Transición con cubic-bezier para frenar al final */
+  transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+
+/* Cuando está animando, usa una transición más rápida al inicio */
+.carousel-track.animating {
+  transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.carousel {
+  position: relative;
+  display: flex;
+  padding: 4px;
+  gap: 10px;
+  scroll-behavior: smooth;
+  overflow: hidden;
+   overflow-x: auto;
+  align-items: center;
+  /* Transición suave para el efecto de scale */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow-x: auto; /*permite desplazarce en el eje x*/
+  scroll-snap-type:x mandatory; /*al deslizar, siempre se detendra en una imagen completa*/
+  scrollbar-width: none; /*oculta scrollbar en Firefox*/
+}
+
+.carousel::-webkit-scrollbar{ display: none; }
+
+/* Clase para animar el carrusel cuando se desplaza */
+.carousel.sliding {
+  transform: scale(0.85);
+}
+
+/* Crecimiento del hover  */
+.game-grid:has(.game-card.small:hover) {
+  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-rows: 1.1fr 0.9fr;
+}
+/* [1][1] */
+.game-grid:has(.game-card.small:nth-child(1):hover) {
+  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-rows: 1.1fr 0.9fr;
+}
+/* [1][2] */
+.game-grid:has(.game-card.small:nth-child(2):hover) {
+  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-rows: 1.1fr 0.9fr;
+}
+/* [1][2] */
+.game-grid:has(.game-card.small:nth-child(3):hover) {
+  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-rows: 0.9fr 1.1fr;
+}
+/* [2][2] */
+.game-grid:has(.game-card.small:nth-child(4):hover) {
+  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-rows: 0.9fr 1.1fr;
+}
+
+.game-card.small:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.game-card.large {
+
+  flex: 0 0 clamp(300px, 20vw, 480px);
+  height: clamp(250px, 15vw, 280px);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card.large:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+ 
+@media (min-width:768px) {
+  
+  .carousel-container:hover .carousel-btn {
+    opacity: 1;
+  }
+  
+}

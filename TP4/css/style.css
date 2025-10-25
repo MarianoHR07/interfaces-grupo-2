@@ -1,0 +1,136 @@
+/* ============================================
+   Paleta de Colores/Tipografia - Variables CSS
+=============================================== */
+
+:root{
+    /* colores */
+    --primary-100: #574fdd;
+    --primary-200: #4940E3;
+    --primary-300: #3A30E5;
+    --primary-400: #1004D7;
+    --primary-500: #1717AF;
+    --primary-600: #060672;
+    --primary-700: #010132;
+
+    --secondary-200: #D6DAE0;
+    --secondary-300: #B0C4DE;
+    --secondary-400: #82ADE6;
+    --secondary-500: #5E98E4;
+    --secondary-600: #307EE5;
+    --secondary-700: #035ED5;
+
+    --accent-100: #f5d7b7;
+    --accent-200: #FFCF9A;
+    --accent-300: #FFBF78;
+    --accent-400: #FFB35F;
+    --accent-500: #FFA744;
+    --accent-600: #FF9723;
+    --accent-700: #FB8501;
+
+    --grey-100: #ffffff;
+    --grey-200: #ECECEC;
+    --grey-300: #C3C3C3;
+    --grey-400: #A4A2A2;
+    --grey-500: #808080;
+    --grey-600: #515151;
+    --grey-700: #363636;
+    --grey-800: #1d1d1d;
+
+    --light-purple: #BBB6FF;
+    --red: #CA4B46;
+
+    /* fuente */
+    --font-base: "Jaldi", sans-serif;
+
+    /* tamaños fuente */
+    --font-size-huge: 36px;
+    --font-size-extra-large: 30px;
+    --font-size-large: 20px;
+    --font-size-medium: 18px;
+    --font-size-small: 16px;
+    --font-size-tiny: 14px;
+    --font-size-micro: 12px;
+
+    background-color: var(--primary-700);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.body-index {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  min-height: 100vh;
+  background-color: var(--primary-700);
+  font-family: var(--font-base);
+}
+
+.header-index { /* Header fijo arriba */
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+#main-container{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 70px;
+}
+ 
+#container {
+  overflow: hidden;
+}
+
+footer.footer-index {
+    flex-shrink: 0;
+    width: 100%;
+    position: relative;
+    padding: 20px 10px 10px;
+    background-image: linear-gradient(to bottom, var(--primary-600), var(--primary-700));
+}
+
+.footer-bottom {
+  text-align: center;
+  font-size: 0.8em;
+  padding: 8px;
+  background-color: var(--primary-900);
+  color: #ccc;
+}
+
+.logo-name {
+    font-size: var(--font-size-large);
+    font-family: var(--font-base);
+    font-weight: bold;
+    background-image: linear-gradient(to right, #1ABC9C 0%, #16A085 20%,#66797B 50%,#C0392B 80%,#E74C3C 100%);
+    background-clip: text;
+    color: transparent;
+    width: 100%;
+    height: fit-content;
+    margin: 0;
+}
+
+
+@media (min-width:768px) {
+  
+  #main-container{
+
+    gap: 48px;
+    gap: 30px;
+    
+   
+  }
+
+  #container {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    margin-left: 30px;
+  }
+  
+}
