@@ -1,0 +1,202 @@
+
+.comment {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: fit-content;
+    padding: 0px 10px;
+    border-radius: 10px;
+    background-color: var(--primary-600);
+    box-sizing: border-box;
+}
+
+.divider-comment {
+    height: 1px;
+    background-color: var(--secondary-200);
+    width: 100%;
+}
+
+.information-comment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    height: fit-content;
+    padding: 5px 0px;
+}
+
+.user-information {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100%;
+    height: fit-content;
+    gap: 6px;
+    padding: 0px;
+}
+
+.user-information img {
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+    border-radius: 20px;
+}
+
+.name-and-day {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: fit-content;
+    padding: 0px;
+}
+
+.name-user {
+    width: fit-content;
+    height: fit-content;
+    font-size: var(--font-size-small);
+}
+
+.publication-day {
+    width: fit-content;
+    height: fit-content;
+    font-size: var(--font-size-micro);
+    color: var(--grey-300);
+}
+
+.like-post {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+    gap: 5px;
+    padding: 0px;
+}
+
+.like-count {
+    display: flex;
+    width: 100%;
+    gap: 5px;
+    font-size: var(--font-size-tiny);
+}
+
+.post-description {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    width: 100%;
+    height: fit-content;
+    padding: 5px 0px;
+    gap: 10px;
+}
+
+.post-description p {
+    background: none;
+    font-size: var(--font-size-small);
+
+    word-break: break-word;    /* corta palabras largas */
+}
+
+.post-description button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.post-description img {
+    width: 25px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.likeCommentBtn {
+    position: relative; 
+    z-index: 1; 
+    transition: transform 0.4s ease-out; 
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.likeCommentBtn:active {
+    transform: scale(0.85) translateY(2px);
+}
+
+.likeCommentBtn:active img {
+    transform: scale(0.70) rotate(10deg);
+    transition: transform 0.4s ease-out; 
+}
+
+.likeCommentBtn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px; 
+    height: 4px;
+    border-radius: 50%;
+    background-color: hotpink;
+    pointer-events: none;
+    opacity: 0;
+
+    box-shadow: 
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+        0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink;
+}
+
+.likeCommentBtn:active::before {
+    animation: sparkle-burst-max 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+}
+
+@keyframes sparkle-burst-max {
+    0% {
+        width: 4px; 
+        height: 4px;
+        opacity: 1;
+        box-shadow: 
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink,
+            0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink, 0 0 0 hotpink;
+    }
+    100% {
+        width: 4px;
+        height: 4px;
+        opacity: 0;
+        box-shadow: 
+            -120px -120px 0 rgba(255, 105, 180, 0), 120px -120px 0 rgba(255, 105, 180, 0),
+            -130px 0px 0 rgba(255, 105, 180, 0), 130px 0px 0 rgba(255, 105, 180, 0),
+            -110px 110px 0 rgba(255, 105, 180, 0), 110px 110px 0 rgba(255, 105, 180, 0),
+            0px 130px 0 rgba(255, 105, 180, 0), 0px -130px 0 rgba(255, 105, 180, 0),
+            -75px -35px 0 rgba(255, 105, 180, 0), 75px -35px 0 rgba(255, 105, 180, 0),
+            -75px 35px 0 rgba(255, 105, 180, 0), 75px 35px 0 rgba(255, 105, 180, 0),
+            -35px -75px 0 rgba(255, 105, 180, 0), 35px -75px 0 rgba(255, 105, 180, 0),
+            -35px 75px 0 rgba(255, 105, 180, 0), 35px 75px 0 rgba(255, 105, 180, 0),
+            -55px -15px 0 rgba(255, 105, 180, 0), 55px -15px 0 rgba(255, 105, 180, 0),
+            -55px 15px 0 rgba(255, 105, 180, 0), 55px 15px 0 rgba(255, 105, 180, 0),
+            -15px -55px 0 rgba(255, 105, 180, 0), 15px -55px 0 rgba(255, 105, 180, 0),
+            -15px 55px 0 rgba(255, 105, 180, 0), 15px 55px 0 rgba(255, 105, 180, 0),
+            -80px -40px 0 rgba(255, 105, 180, 0), 80px -40px 0 rgba(255, 105, 180, 0),
+            -80px 40px 0 rgba(255, 105, 180, 0), 80px 40px 0 rgba(255, 105, 180, 0),
+            -40px -80px 0 rgba(255, 105, 180, 0), 40px -80px 0 rgba(255, 105, 180, 0),
+            -40px 80px 0 rgba(255, 105, 180, 0), 40px 80px 0 rgba(255, 105, 180, 0);
+    }
+}
