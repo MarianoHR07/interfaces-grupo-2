@@ -11,3 +11,5 @@ export const PEG = 1;
 
 // tiempo limite por defecto
 export const DEFAULT_TIME_LIMIT = 5 * 60; // 5 minutes
+
+export const JSON_SLOTS = "slots.json";

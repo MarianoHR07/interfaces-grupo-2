@@ -3,38 +3,57 @@
 // ################################
 
 export class Piece {
-    constructor(row, col, img, type = 'default') {
-        this.row = row;
-        this.col = col;
+    // constructor(id, row, col, img, type = 'default') {
+    //     this.id = id;
+    //     this.row = row;
+    //     this.col = col;
+    //     this.img = img;
+    //     this.type = type;
+    //     this.x = col * 80 + 40; // pixel center
+    //     this.y = row * 80 + 40;
+    //     this.radius = 30;
+    //     this.isDragging = false;
+    // }
+
+
+    constructor(id, img, x, y, size) {
+        this.id = id;
         this.img = img;
-        this.type = type;
-        this.x = col * 80 + 40; // pixel center
-        this.y = row * 80 + 40;
-        this.radius = 30;
+        this.x = x;       // coordenada X del centro del slot
+        this.y = y;       // coordenada Y del centro del slot
+        this.width = size.width;
+        this.height = size.height;
         this.isDragging = false;
     }
 
     draw(ctx) {
         ctx.save();
-        ctx.beginPath();
+        // Dibuja la imagen centrada en (x, y)
         ctx.translate(this.x, this.y);
-        // draw image centered
-        ctx.drawImage(this.img, -30, -30, 60, 60);
+        ctx.drawImage(
+            this.img,
+            -this.width / 2,
+            -this.height / 2,
+            this.width,
+            this.height
+        );
         ctx.restore();
     }
 
     containsPoint(px, py) {
-        return Math.hypot(px - this.x, py - this.y) <= this.radius;
+        return (
+            px >= this.x - this.width / 2 &&
+            px <= this.x + this.width / 2 &&
+            py >= this.y - this.height / 2 &&
+            py <= this.y + this.height / 2
+        );
     }
 
-    moveToCell(row, col) {
-        this.row = row; 
-        this.col = col;
-        const c = Helpers.cellToCenter(row, col);
-        this.x = c.x; this.y = c.y;
-    }
 
-    setPixelPos(x, y) { this.x = x; this.y = y; }
+    setPixelPos(x, y) {
+        this.x = x;
+        this.y = y;
+    }
 
 }
 
