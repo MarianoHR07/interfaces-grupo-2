@@ -11,6 +11,7 @@ export class DragController {
         this.board = board;
         this.hint = hintAnimator;
         this.assets = assets;
+        /** @type {Piece} */
         this.draggingPiece = null;
         this.mouse = { x: 0, y: 0 };
         this.onMoveCallbacks = [];
@@ -20,38 +21,43 @@ export class DragController {
         Helpers.setCanvasRect(canvas.getBoundingClientRect());
     }
 
-    // #############################
-    // EVENTOS PRINCIPALES
-    // #############################
+
     attachEvents() {
         const c = this.canvas;
-         // Eventos de mouse
+        // Eventos de mouse
         c.addEventListener('mousedown', e => this.onDown(e)); //se ejecuta cuando el usuario hace clic sobre el canvas.
         c.addEventListener('mousemove', e => this.onMove(e));  //se ejecuta cuando el mouse se mueve sobre el canvas arrastrando la ficha.
         window.addEventListener('mouseup', e => this.onUp(e));  //se ejecuta cuando el usuario suelta el botón del mouse.
     }
 
+
     // Cuando se hace clic sobre una pieza
     onDown(event) {
-        const { offsetX, offsetY } = this.getMousePos(event);
+        const { offsetX, offsetY } = this.getMousePos(event); // obtengo el punto (x,y) donde tengo el mouse
         this.mouse = { x: offsetX, y: offsetY };
 
-        // Busco la pieza más cercana al click
+        // Busco si el mouse esta posicionado sobre una pieza y si el slot contiene esta pieza
         const piece = this.board.pieces.find((p) =>
-            p.containsPoint(offsetX, offsetY)
+            p.containsPoint(offsetX, offsetY)// && this.board.getPieceAtSlot(p.id)
         );
 
         if (piece) {
-            this.draggingPiece = piece;
+            this.draggingPiece = piece; // le damos al controlador la pieza con la cual debera interactuar (redibujar)
+            
+            // Guardo la posición original de la pieza antes de arrastrarla.
+            // Sirven para poder volver la ficha a su lugar original si el jugador suelta en una posición inválida
             piece.startX = piece.x;
             piece.startY = piece.y;
 
             if (this.hint) {
-                this.hint.computeHintsForPiece(piece.slotId);
+                console.log("pieza de onDown:", piece);
+                this.hint.computeHintsForPiece(piece.id);
                 this.hint.start();
             }
+
         }
     }
+
 
     // Cuando se mueve el mouse con una pieza agarrada
     onMove(event) {
@@ -61,6 +67,7 @@ export class DragController {
         this.draggingPiece.x = offsetX;
         this.draggingPiece.y = offsetY;
     }
+
 
     // Cuando se suelta la pieza
     onUp(event) {
@@ -83,10 +90,10 @@ export class DragController {
         let moved = false;
         if (nearestSlot && nearestSlot.dist < nearestSlot.slot.size * 0.6) {
             // Intento movimiento
-            moved = this.board.tryMove(this.draggingPiece.slotId, nearestSlot.slot.id);
+            moved = this.board.tryMove(this.draggingPiece.id, nearestSlot.slot.id);
         }
 
-        // Si no se pudo mover, vuelvo la ficha a su posición original
+        // Si me intento mover a una posicion invalida, vuelvo la ficha a su posición original
         if (!moved) {
             this.draggingPiece.setPixelPos(this.draggingPiece.startX, this.draggingPiece.startY);
         }
@@ -97,16 +104,16 @@ export class DragController {
         this.draggingPiece = null;
     }
 
-    // #############################
-    // UTILIDADES
-    // #############################
+   
     getMousePos(event) {
-        const rect = this.canvas.getBoundingClientRect();
+        const rect = this.canvas.getBoundingClientRect(); // dimensiones del canvas 
         return {
-            offsetX: event.clientX - rect.left,
-            offsetY: event.clientY - rect.top,
+            // distancia del mouse a la ventana del navegador(pared izquierda) - distancia del canvas a la ventana del navegador 
+            offsetX: event.clientX - rect.left, // offsetX = posicion del mouse en eje X en el canvas 
+            offsetY: event.clientY - rect.top, // offsetY = posicion del mouse en eje Y en el canvas
         };
     }
+
 
     // Animación (opcional, por si querés suavizar el movimiento futuro)
     animatePieceToSlot(piece, targetSlot) {
@@ -130,6 +137,7 @@ export class DragController {
             requestAnimationFrame(step);
         });
     }
+
 
     onMoveMade(cb) {
         this.onMoveCallbacks.push(cb);
