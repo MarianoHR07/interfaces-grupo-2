@@ -16,12 +16,12 @@ export class Board {
     }
    
 
-    // Carga el JSON (ajustá la ruta según tu estructura real)
+    // Carga los slots desde el JSON
     async loadSlots(jsonFilePath) {
         try {
             const response = await fetch(jsonFilePath);
             this.slots = await response.json();
-            console.log("Slots cargados:", this.slots);
+            // console.log("JSON_SLOTS",this.slots);
         } catch (err) {
             console.error("❌ Error cargando slots:", err);
         }
@@ -36,7 +36,7 @@ export class Board {
         for (const slot of this.slots) {
             if (slot.id !== emptySlotId) {
                 const { x, y } = slot.center;
-                const piece = new Piece(slot.id, img, x, y, slot.size);
+                const piece = new Piece(slot.id, img, x, y);
                 this.pieces.push(piece);
                 slot.piece = piece; // asociar pieza al slot
             }else {
@@ -62,13 +62,9 @@ export class Board {
     }
 
 
-    // getPieceAt(row,col) {
-    //     return this.pieces.find(p => p.row === row && p.col === col);
-    // }
-
     isValidMove(fromSlot, toSlot) {
         // ####################################################################
-        // Aquí podrías definir reglas personalizadas, p.ej.:
+        // Aquí podriamos definir reglas personalizadas, p.ej.:
         // - Debe haber una pieza en fromSlot
         // - toSlot debe estar vacío
         // - La distancia entre ambos debe ser aprox. el doble de un “salto”
@@ -90,62 +86,19 @@ export class Board {
     }
 
 
-
     applyMove(fromSlot, toSlot) {
-        if (!this.isValidMove(fromSlot, toSlot)) return false;
-
-        // Encontrar el slot intermedio (a mitad de camino)
-        const midX = (fromSlot.center.x + toSlot.center.x) / 2;
-        const midY = (fromSlot.center.y + toSlot.center.y) / 2;
-        const jumpedSlot = this.getSlotAt(midX, midY);
-
-        if (!jumpedSlot || !jumpedSlot.piece) return false;
-
-        // Actualizar estados
-        toSlot.piece = fromSlot.piece;
-        fromSlot.piece = null;
-        jumpedSlot.piece = null;
-
-        // Actualizar posición visual
-        toSlot.piece.setPixelPos(toSlot.center.x, toSlot.center.y);
-
-        // Eliminar pieza saltada del array de piezas
-        this.pieces = this.pieces.filter(p => p !== jumpedSlot.piece);
-
-        return true;
+        return this.tryMove(fromSlot.id, toSlot.id);
     }
 
+
     hasAnyMoves() {
-        // Para cada pieza, comprobamos si puede saltar en alguna dirección
         for (const piece of this.pieces) {
-            const fromSlot = this.slots.find(s => s.id === piece.slotId);
-            if (!fromSlot) continue;
-
-            // Cada dirección posible: arriba, abajo, izquierda, derecha
-            const directions = [
-                { dr: -1, dc: 0 }, // arriba
-                { dr: 1, dc: 0 },  // abajo
-                { dr: 0, dc: -1 }, // izquierda
-                { dr: 0, dc: 1 }   // derecha
-            ];
-
-            for (const dir of directions) {
-                const mid = this.getSlotByOffset(fromSlot, dir, 1);
-                const target = this.getSlotByOffset(fromSlot, dir, 2);
-
-                if (!mid || !target) continue;
-
-                const hasMidPiece = this.getPieceAtSlot(mid.id);
-                const targetOccupied = this.getPieceAtSlot(target.id);
-
-                // Movimiento válido = hay ficha intermedia y destino vacío
-                if (hasMidPiece && !targetOccupied) {
-                    return true;
-                }
-            }
+            const moves = this.getValidMovesFrom(piece.id);
+            if (moves.length > 0) return true;
         }
         return false;
     }
+
 
     draw(ctx = this.ctx) {
         for (const piece of this.pieces) {
@@ -153,66 +106,136 @@ export class Board {
         }
     }
 
+
     // ejecuta el salto real: mueve la ficha y elimina la intermedia.
     tryMove(fromSlotId, toSlotId) {
-        const fromPiece = this.getPieceAtSlot(fromSlotId);
-        if (!fromPiece) return false;
-
-        const fromSlot = this.slots.find(s => s.id === fromSlotId);
-        const toSlot = this.slots.find(s => s.id === toSlotId);
-        if (!fromSlot || !toSlot) return false;
+        const fromSlot = this.getSlotById(fromSlotId);
+        const toSlot = this.getSlotById(toSlotId);
+        if (!fromSlot || !toSlot || !fromSlot.piece || toSlot.piece) return false;
 
         const dir = this.getDirection(fromSlot, toSlot);
         if (!dir) return false; // No es una dirección válida (salto recto)
 
         const midSlot = this.getSlotByOffset(fromSlot, dir, 1);
-        if (!midSlot) return false;
+        if (!midSlot || !midSlot.piece) return false;
 
-        const jumpedPiece = this.getPieceAtSlot(midSlot.id);
-        const targetOccupied = this.getPieceAtSlot(toSlot.id);
+        // Movimiento válido: eliminar la del medio y mover la ficha
+        const movingPiece = fromSlot.piece;
+        const jumpedPiece = midSlot.piece;
 
-        if (!jumpedPiece || targetOccupied) return false;
+        fromSlot.piece = null;
+        midSlot.piece = null;
+        toSlot.piece = movingPiece;
 
-        // Movimiento válido: eliminamos la del medio y movemos la ficha
+        movingPiece.id = toSlot.id;
+        movingPiece.setPixelPos(toSlot.center.x, toSlot.center.y);
+
         this.pieces = this.pieces.filter(p => p !== jumpedPiece);
-        fromPiece.slotId = toSlot.id;
-        fromPiece.setPixelPos(toSlot.center.x, toSlot.center.y);
 
         return true;
     }
 
+
     getPieceAtSlot(slotId) {
-        return this.pieces.find(p => p.slotId === slotId);
+        return this.pieces.find(p => p.id === slotId);
     }
+
 
     // Calcula la dirección (vertical u horizontal)
     getDirection(fromSlot, toSlot) {
+        // { dr: 0, dc: 1 } = derecha
+        // { dr: 0, dc: -1 } = izquierda
+        // { dr: 1, dc: 0 } = abajo
+        // { dr: -1, dc: 0 } = arriba
         const dx = toSlot.center.x - fromSlot.center.x;
         const dy = toSlot.center.y - fromSlot.center.y;
-        const dist = Math.hypot(dx, dy);
 
-        // Si no están alineados horizontal o verticalmente, no es válido
-        if (Math.abs(dx) > 1 && Math.abs(dy) > 1) return null;
-
-        const step = fromSlot.size * 1.05; // separación entre centros
+        // Alineación más fuerte define la dirección
         if (Math.abs(dx) > Math.abs(dy)) {
-            return dx > 0 ? { dr: 0, dc: 1 } : { dr: 0, dc: -1 };
-        } else if (Math.abs(dy) > 0) {
-            return dy > 0 ? { dr: 1, dc: 0 } : { dr: -1, dc: 0 };
+            return { dr: 0, dc: Math.sign(dx) };
+        } else {
+            return { dr: Math.sign(dy), dc: 0 };
         }
-        return null;
     }
 
-    // Encuentra slot desplazado desde otro
+
+    // Busca el slot vecino más cercano en la dirección dada, ya que los slots no están perfectamente alineados (tienen un espaciado irregular)
     getSlotByOffset(fromSlot, dir, steps = 1) {
-        const dx = dir.dc * fromSlot.size * 1.05 * steps;
-        const dy = dir.dr * fromSlot.size * 1.05 * steps;
-        const targetX = fromSlot.center.x + dx;
-        const targetY = fromSlot.center.y + dy;
-        return this.slots.find(s => Math.hypot(s.center.x - targetX, s.center.y - targetY) < 5);
+        // Definimos cuánto margen de diferencia aceptamos para considerar que dos slots están en la misma fila o columna
+        const tolerance = 15; 
+
+        const candidates = this.slots
+            .map(s => ({
+                slot: s,
+                dx: s.center.x - fromSlot.center.x, // cuánto se desplaza en el eje X respecto al slot origen
+                dy: s.center.y - fromSlot.center.y  // cuánto se desplaza en el eje Y respecto al slot origen
+            }))
+            .filter(c => {  // Filtramos los slots que realmente están alineados y en la dirección correcta
+                // Si nos movemos verticalmente (dr ≠ 0), los X deben ser casi iguales (|dx| < tolerance)
+                if (dir.dr !== 0 && Math.abs(c.dx) > tolerance) return false;
+                // Si nos movemos horizontalmente (dc ≠ 0), los Y deben ser casi iguales (|dy| < tolerance)
+                if (dir.dc !== 0 && Math.abs(c.dy) > tolerance) return false;
+
+                // verifico que el slot esté hacia adelante en la dirección elegida
+                // descarta diagonales o slots que estén a los costados
+                const dot = c.dx * dir.dc + c.dy * dir.dr;
+                return dot > 0;
+            })
+            .map(c => ({
+                ...c,
+                dist: Math.hypot(c.dx, c.dy)  // Calcula la distancia euclidiana entre el slot actual y el origen
+                                              // Sirve para saber cuál está “más cerca” en esa dirección
+            }))
+            .sort((a, b) => a.dist - b.dist);  // Ordena los candidatos por distancia desde el slot origen, asi l más cercano está primero (steps=1) y el siguiente después (steps=2),...
+
+        return candidates[steps - 1]?.slot || null;  // Devuelve el slot correspondiente a la cantidad de pasos deseada
+                                                        // steps=1 → el slot inmediatamente contiguo.
+                                                        // steps=2 → el siguiente después de ese.
+                                                        // Si no hay suficientes slots alineados, devuelve null.
     }
+
+
+
+    // Obtener movimientos válidos que puede realizar el slot especificado
+    getValidMovesFrom(slotId) {
+        console.log("entre a get valid board", slotId);
+        const fromSlot = this.getSlotById(slotId); // obtengo el slot con ID = slotId
+        console.log("Fom slot:", fromSlot);
+        if (!fromSlot || !fromSlot.piece) return [];
+
+        const validTargets  = [];
+
+        // Direcciones posibles: arriba, abajo, izquierda, derecha
+        const directions = [
+            // 0: no me muevo
+            // 1: me muevo una posicion hacia abajo/derecha
+            // -1: me muevo una posicion a arriba/izquierda
+            { dr: -1, dc: 0 }, // arriba
+            { dr: 1, dc: 0 },  // abajo
+            { dr: 0, dc: -1 }, // izquierda
+            { dr: 0, dc: 1 }   // derecha
+        ];
+
+        for (const dir of directions) {
+            const midSlot = this.getSlotByOffset(fromSlot, dir, 1);   // Slot intermedio/salteado (1 paso)
+            const targetSlot = this.getSlotByOffset(midSlot, dir, 1);  // Slot destino (2 pasos)
+            console.log("mid slot----", midSlot);
+            console.log("target slot+++++", targetSlot);
+            
+            // Si no existe pieza en el slot que quiero saltar o no existe pieza en el slot al que quiero saltar, saltá este ciclo y probá la siguiente dirección.
+            if (!midSlot || !targetSlot) continue;
+
+            if (midSlot.piece && !targetSlot.piece) {
+                console.log("aquiii en for de tranqui");
+                validTargets.push(targetSlot);
+            }
+
+        }
+
+        return validTargets;
+    }
+
 
 }
 
-// window.Board = Board;
 

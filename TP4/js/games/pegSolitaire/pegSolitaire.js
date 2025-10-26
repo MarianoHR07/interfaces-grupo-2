@@ -7,10 +7,10 @@ import { DragController } from "./controllers/dragControllers.js";
 import { AssetsManager } from "./controllers/assetsManager.js";
 import { HintAnimator } from "./controllers/hintAnimator.js";
 import { JSON_SLOTS } from "./utils/constants.js"
-// import { detectSlots } from "../../../generateSlotCoordinates.js";
+
 
 export async function initPegSolitaire(){
-    console.log("En PegSolitaire.js")
+    console.log("En PegSolitaire.js");
 // document.addEventListener('DOMContentLoaded', async () => {
     /** @type {HTMLCanvasElement} */
     const canvas = document.getElementById('pegCanvas');
@@ -25,6 +25,7 @@ export async function initPegSolitaire(){
     ]);
 
 
+    // PARA CARGAR EL JSON::::
     // detectSlots(canvas,assets.get('slotsToJson'),canvas.width, canvas.height);
 
     const board = new Board(canvas);
@@ -70,7 +71,6 @@ export async function initPegSolitaire(){
         board.draw(ctx);
         hint.draw(ctx);
         requestAnimationFrame(render);
-        
     }
 
     render();
