@@ -37,9 +37,7 @@ export class DragController {
         this.mouse = { x: offsetX, y: offsetY };
 
         // Busco si el mouse esta posicionado sobre una pieza y si el slot contiene esta pieza
-        const piece = this.board.pieces.find((p) =>
-            p.containsPoint(offsetX, offsetY)// && this.board.getPieceAtSlot(p.id)
-        );
+        const piece = this.board.getPieceAtSlot(this.mouse.x, this.mouse.y)
 
         if (piece) {
             this.draggingPiece = piece; // le damos al controlador la pieza con la cual debera interactuar (redibujar)
@@ -50,7 +48,6 @@ export class DragController {
             piece.startY = piece.y;
 
             if (this.hint) {
-                console.log("pieza de onDown:", piece);
                 this.hint.computeHintsForPiece(piece.id);
                 this.hint.start();
             }
@@ -75,24 +72,22 @@ export class DragController {
 
         const { offsetX, offsetY } = this.getMousePos(event);
         this.mouse = { x: offsetX, y: offsetY };
-
-        // Busco el slot más cercano al punto donde soltó
-        const nearestSlot = this.board.slots.reduce((closest, slot) => {
-            const dist = Math.hypot(
-                slot.center.x - offsetX,
-                slot.center.y - offsetY
-            );
-            if (!closest || dist < closest.dist)
-                return { slot, dist };
-            return closest;
-        }, null);
-
+        
+         // a la pieza que estoy desplazando le agrego el arr de movimientos validos
+        this.draggingPiece.validTargets = this.board.getValidMovesFrom(this.draggingPiece.id);
+        const validTargets = this.draggingPiece.validTargets;
+        
         let moved = false;
-        if (nearestSlot && nearestSlot.dist < nearestSlot.slot.size * 0.6) {
-            // Intento movimiento
-            moved = this.board.tryMove(this.draggingPiece.id, nearestSlot.slot.id);
-        }
+        if(validTargets){
+            validTargets.forEach(slot => { 
+                if (this.board.isValidArea(this.mouse.x, this.mouse.y, slot.id)){
+                    moved = this.board.tryMove(this.draggingPiece.id,  this.mouse);
+                }
+            });
+            
 
+        } 
+        
         // Si me intento mover a una posicion invalida, vuelvo la ficha a su posición original
         if (!moved) {
             this.draggingPiece.setPixelPos(this.draggingPiece.startX, this.draggingPiece.startY);

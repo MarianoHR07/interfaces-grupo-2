@@ -8,14 +8,13 @@ export class HintAnimator {
     constructor(board) {
         this.board = board;
         this.animTime = 0;
-        this.active = false;
+        this.active = false; // interaccion del usuario con una pieza del tablero (mouseDown)
         this.validTargets = []; // posiciones validas a las que se puede mover X ficha
     }
 
 
     computeHintsForPiece(slotId) {
         this.validTargets = this.board.getValidMovesFrom(slotId);
-        console.log("Movimiento validos:", this.validTargets);
     }
 
 
@@ -33,7 +32,7 @@ export class HintAnimator {
     }
 
 
-    draw(ctx) {
+    draw(ctx) { // Si la pieza esta activa (mouseDown) anima los slots validos(movimientos disponibles)
         if (!this.active || this.validTargets.length === 0) return;
 
         this.animTime += 0.05;

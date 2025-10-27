@@ -60,6 +60,14 @@ export class Board {
             return dist < slot.size.width / 2;
         });
     }
+    // Determina si el mouse se encuentra posicionado en el area que contiene el slot
+    isValidArea(mouseX, mouseY, slotId) {
+        const slot = this.getSlotById(slotId);
+        return (
+            (mouseX >= slot.center.x - slot.size.width / 2 && mouseX <= slot.center.x + slot.size.width / 2 ) &&
+            (mouseY >= slot.center.y - slot.size.height / 2 && mouseY <= slot.center.y + slot.size.height / 2)
+        );
+    }
 
 
     isValidMove(fromSlot, toSlot) {
@@ -108,39 +116,81 @@ export class Board {
 
 
     // ejecuta el salto real: mueve la ficha y elimina la intermedia.
-    tryMove(fromSlotId, toSlotId) {
+    tryMove(fromSlotId, mousePos) {
+        const validTargets = this.getValidMovesFrom(fromSlotId);
+        //const validTargets = this.draggingPiece.validTargets;
         const fromSlot = this.getSlotById(fromSlotId);
-        const toSlot = this.getSlotById(toSlotId);
-        if (!fromSlot || !toSlot || !fromSlot.piece || toSlot.piece) return false;
+        let toSlot = null;
+        let moved = false;
+        if(validTargets){
+            validTargets.forEach(slot => { 
+                // si donde se solto la pieza es una posicion valida
+                if (this.isValidArea(mousePos.x, mousePos.y, slot.id)){
+                    moved = true
+                    toSlot = this.getSlotById(slot.id);
+                }
+            });
+        } 
+        
 
-        const dir = this.getDirection(fromSlot, toSlot);
-        if (!dir) return false; // No es una dirección válida (salto recto)
+        // Si el slot donde el usuario solto la pieza era invalido 
+        if (!fromSlot || !toSlot || !fromSlot.piece || toSlot.piece) return moved;
 
-        const midSlot = this.getSlotByOffset(fromSlot, dir, 1);
-        if (!midSlot || !midSlot.piece) return false;
+        this.#movePiece(fromSlot,toSlot)
 
+        return moved;
+    }
+
+    #removePice(jumpedPiece){
+        this.pieces = this.pieces.filter(p => p !== jumpedPiece);
+    }
+
+    #movePiece(fromSlot,toSlot){
         // Movimiento válido: eliminar la del medio y mover la ficha
         const movingPiece = fromSlot.piece;
+        const dir = this.getDirection(fromSlot, toSlot);
+        const midSlot = this.getSlotByOffset(fromSlot, dir, 1);
         const jumpedPiece = midSlot.piece;
 
+        // quito del los slots del tablero la pieza que salto y la del origen de partida
         fromSlot.piece = null;
+        
         midSlot.piece = null;
+
+        // le asigno la pieza origen al slot destino que me quiero mover
         toSlot.piece = movingPiece;
 
+        // asigno el nuevo id de la pieza que movi para que se corresponda con el id del slot al que salto
         movingPiece.id = toSlot.id;
         movingPiece.setPixelPos(toSlot.center.x, toSlot.center.y);
 
-        this.pieces = this.pieces.filter(p => p !== jumpedPiece);
-
-        return true;
+        this.#removePice(jumpedPiece)
     }
-
 
     getPieceAtSlot(slotId) {
-        return this.pieces.find(p => p.id === slotId);
+        const piece = this.pieces.find(p => p.id === slotId);
+        const idx = this.board.pieces.indexOf(piece);
+            if (idx !== -1) {
+                this.board.pieces.splice(idx, 1);
+                this.board.pieces.push(piece);
+            }
+        return piece
+    }
+    getPieceAtSlot(mouseX, mouseY) {
+        const piece = this.pieces.find((p) =>
+            p.containsPoint(mouseX, mouseY)// && this.board.getPieceAtSlot(p.id)
+        );
+        const idx = this.pieces.indexOf(piece);
+            if (idx !== -1) {
+                this.pieces.splice(idx, 1);
+                this.pieces.push(piece);
+            }
+       
+        return piece
     }
 
-
+    #selectPieceToDraw(piece){}
+    
     // Calcula la dirección (vertical u horizontal)
     getDirection(fromSlot, toSlot) {
         // { dr: 0, dc: 1 } = derecha
@@ -163,7 +213,6 @@ export class Board {
     getSlotByOffset(fromSlot, dir, steps = 1) {
         // Definimos cuánto margen de diferencia aceptamos para considerar que dos slots están en la misma fila o columna
         const tolerance = 15; 
-
         const candidates = this.slots
             .map(s => ({
                 slot: s,
@@ -198,9 +247,7 @@ export class Board {
 
     // Obtener movimientos válidos que puede realizar el slot especificado
     getValidMovesFrom(slotId) {
-        console.log("entre a get valid board", slotId);
         const fromSlot = this.getSlotById(slotId); // obtengo el slot con ID = slotId
-        console.log("Fom slot:", fromSlot);
         if (!fromSlot || !fromSlot.piece) return [];
 
         const validTargets  = [];
@@ -218,15 +265,14 @@ export class Board {
 
         for (const dir of directions) {
             const midSlot = this.getSlotByOffset(fromSlot, dir, 1);   // Slot intermedio/salteado (1 paso)
-            const targetSlot = this.getSlotByOffset(midSlot, dir, 1);  // Slot destino (2 pasos)
-            console.log("mid slot----", midSlot);
-            console.log("target slot+++++", targetSlot);
+
+            let targetSlot = null;
+            if (midSlot) {  targetSlot = this.getSlotByOffset(midSlot, dir, 1);} // Slot destino (2 pasos)
             
             // Si no existe pieza en el slot que quiero saltar o no existe pieza en el slot al que quiero saltar, saltá este ciclo y probá la siguiente dirección.
             if (!midSlot || !targetSlot) continue;
 
             if (midSlot.piece && !targetSlot.piece) {
-                console.log("aquiii en for de tranqui");
                 validTargets.push(targetSlot);
             }
 
