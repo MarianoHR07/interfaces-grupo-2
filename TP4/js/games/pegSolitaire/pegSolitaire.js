@@ -10,7 +10,6 @@ import { JSON_SLOTS } from "./utils/constants.js"
 
 
 export async function initPegSolitaire(){
-    console.log("En PegSolitaire.js");
 // document.addEventListener('DOMContentLoaded', async () => {
     /** @type {HTMLCanvasElement} */
     const canvas = document.getElementById('pegCanvas');
@@ -37,7 +36,7 @@ export async function initPegSolitaire(){
 
     const timerDisplay = document.getElementById('timerDisplayPeg');
     const timer = new Timer(300, timerDisplay, () => {
-        alert('Se acabó el tiempo!');
+       // alert('Se acabó el tiempo!');
         drag.canvas.style.pointerEvents = 'none';  // bloquear interacción
     });
 
@@ -49,7 +48,7 @@ export async function initPegSolitaire(){
         // verificar fin de juego
         if (!board.hasAnyMoves()) {
             timer.stop();
-            setTimeout(()=> alert('Juego terminado — no hay más movimientos'), 80);
+            // setTimeout(()=> alert('Juego terminado — no hay más movimientos'), 80);
         }
     });
 
@@ -64,15 +63,19 @@ export async function initPegSolitaire(){
         drag.canvas.style.pointerEvents = 'auto';
     });
 
-    // bucle de renderizado
+    // bucle de renderizado (metodo recursivo)
     function render() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(assets.get('board'), 0, 0, canvas.width, canvas.height);
         board.draw(ctx);
         hint.draw(ctx);
-        requestAnimationFrame(render);
+        requestAnimationFrame(render); /*  método de la DedicatedWorkerGlobalScope interfaz le dice al navegador que desea 
+                                        *  realizar una solicitud de cuadro de animación y llamar a una función de devolución
+                                        *  de llamada proporcionada por el usuario antes del próximo repintado.
+                                        *  La frecuencia de actualización más común es de 60 Hz
+                                        */
     }
 
-    render();
+    render(); // se invoca una unica vez y requestAnimationFrame(render); cumple el rol de un setTimeout pero a una tasa de refresco de las pantallas
 
 }

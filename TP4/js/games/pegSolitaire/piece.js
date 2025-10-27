@@ -4,7 +4,7 @@
 
 export class Piece {
     constructor(id, img, x, y) {
-        this.id = id;
+        this.id = id;     // id dinamico, esta asociado al id del slot en el que esta posicionado actualmente
         this.img = img;
         this.x = x;       // coordenada X del centro del slot
         this.y = y;       // coordenada Y del centro del slot
@@ -38,7 +38,7 @@ export class Piece {
         );
     }
 
-
+    // Posicion de la pieza en el canvas
     setPixelPos(x, y) {
         this.x = x;
         this.y = y;
