@@ -4,15 +4,14 @@
 import { Helpers } from "../utils/chelpers.js";
 
 export class DragController {
-    constructor(canvas, board, hintAnimator, assets) {
+    constructor(canvas, board, hintAnimator) {
         this.canvas = canvas;
-        /** @type {CanvasRenderingContext2D} */
-        this.ctx = canvas.getContext("2d");
         this.board = board;
         this.hint = hintAnimator;
-        this.assets = assets;
+    
         /** @type {Piece} */
         this.draggingPiece = null;
+    
         this.mouse = { x: 0, y: 0 };
         this.onMoveCallbacks = [];
         this.moves = 0;
@@ -84,15 +83,16 @@ export class DragController {
                     moved = this.board.tryMove(this.draggingPiece.id,  this.mouse);
                 }
             });
-            
-
         } 
         
         // Si me intento mover a una posicion invalida, vuelvo la ficha a su posición original
         if (!moved) {
             this.draggingPiece.setPixelPos(this.draggingPiece.startX, this.draggingPiece.startY);
+        }else {
+            this.moves++;
+            this.board.checkGameState(); // luego de haber movido la pieza chequea el estado del juego, delegando la lógica al board
+            this.onMoveCallbacks.forEach(callback => callback(this.moves)); // notifica el cambio en moves a todos los que escuchan el evento "move made"
         }
-
         // Detengo los hints
         if (this.hint) this.hint.stop();
 
@@ -133,8 +133,8 @@ export class DragController {
         });
     }
 
-
-    onMoveMade(cb) {
-        this.onMoveCallbacks.push(cb);
+    // almacena los callback que el controlador debera disparar cuando se efectue el movimiento de una pieza(evento onUp)
+    onMoveMade(callback) {
+        this.onMoveCallbacks.push(callback);
     }
 }

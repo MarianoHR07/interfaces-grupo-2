@@ -6,10 +6,10 @@ import { Piece } from "./piece.js";
 
 
 export class Board {
-    constructor(canvas) {
+    constructor(canvas,boardImg) {
         this.slots = [] ;
         this.pieces = []; // Instancias de piezas
-
+        this.boardImg = boardImg
         this.canvas = canvas;
         /** @type {CanvasRenderingContext2D} */
         this.ctx = canvas ? canvas.getContext("2d") : null;
@@ -21,7 +21,6 @@ export class Board {
         try {
             const response = await fetch(jsonFilePath);
             this.slots = await response.json();
-            // console.log("JSON_SLOTS",this.slots);
         } catch (err) {
             console.error("❌ Error cargando slots:", err);
         }
@@ -31,8 +30,7 @@ export class Board {
     // carga inicial del tablero / reiniciar juego
     resetPieces(img) {
         this.pieces = [];
-        const emptySlotId = "slot_17";
-
+        const emptySlotId = "slot_17"; // A FUTURO DEBERIAMOS CALCULAR EL CENTRAL EN BASE AL # DE SLOT EN TODAS LAS DIRECCIONES. Si (⬆,⬇,➡,⬅)=(3,3,3,3) 3 slot en cada direccion => slot central "getSlotByOffset(fromSlot, dir, steps = 3)"
         for (const slot of this.slots) {
             if (slot.id !== emptySlotId) {
                 const { x, y } = slot.center;
@@ -69,31 +67,7 @@ export class Board {
         );
     }
 
-
-    isValidMove(fromSlot, toSlot) {
-        // ####################################################################
-        // Aquí podriamos definir reglas personalizadas, p.ej.:
-        // - Debe haber una pieza en fromSlot
-        // - toSlot debe estar vacío
-        // - La distancia entre ambos debe ser aprox. el doble de un “salto”
-        // ##################################################################
-
-        // Si se clickea un slot y no tiene una pieza, o el slot que le sigue
-        // a la pieza que desea saltar, esta ocupado, el mov es invalido
-        if (!fromSlot.piece || toSlot.piece) return false;
-
-        const dx = toSlot.center.x - fromSlot.center.x;
-        const dy = toSlot.center.y - fromSlot.center.y;
-        const dist = Math.sqrt(dx * dx + dy * dy); //distancia que me desplazo de un slot a otro
-
-        // Ejemplo de regla simple (dependerá del espaciado real):
-        
-        // ********************************************
-        return dist > 70 && dist < 140;// REEMPLAZAR CALCULOS DE DISTANCIA ENTRE DOS PIEZAS, POR DETERMINAR EL HERMANO DIRECTO DE LA QUE QUIERO SALTAR (SALTO LINEAL)
-        // ********************************************
-    }
-
-
+    
     applyMove(fromSlot, toSlot) {
         return this.tryMove(fromSlot.id, toSlot.id);
     }
@@ -109,6 +83,8 @@ export class Board {
 
 
     draw(ctx = this.ctx) {
+        ctx.drawImage(this.boardImg, 0, 0, this.canvas.width, this.canvas.height); // dibuja el tablero 
+        // dibuja cada una de las piezas sobre el tablero
         for (const piece of this.pieces) {
             piece.draw(ctx);
         }
@@ -137,15 +113,19 @@ export class Board {
         if (!fromSlot || !toSlot || !fromSlot.piece || toSlot.piece) return moved;
 
         this.#movePiece(fromSlot,toSlot)
-
+                            // chequear si hay que dibujar, antes de ejecutar this.board.checkGameState(); y podria finalizar el juego,
+                            //  antes de que el usuario perciba el ultimo movimiento
+                            //  this.draw(this.ctx);
+        // this.board.checkGameState(); // corrobora el estado del juego [si gano,perdio o hay movimientos posibles]
         return moved;
     }
 
     #removePice(jumpedPiece){
         this.pieces = this.pieces.filter(p => p !== jumpedPiece);
     }
-
-    #movePiece(fromSlot,toSlot){
+    
+    // maneja el estado logico de las piezas de cada slot (origen y destino)
+    #movePiece(fromSlot,toSlot){ 
         // Movimiento válido: eliminar la del medio y mover la ficha
         const movingPiece = fromSlot.piece;
         const dir = this.getDirection(fromSlot, toSlot);
@@ -281,6 +261,35 @@ export class Board {
         return validTargets;
     }
 
+    checkGameState() {
+        // Contar cuántas piezas quedan
+        const pieces = this.slots.filter(s => s.piece !== null);
+
+        // Si solo queda una, el jugador ganó
+        if (pieces.length === 1) {
+            console.log("🎉 ¡Ganaste! Solo queda una ficha.");
+            this.emitGameEnd(true);
+            return;
+        }
+
+        // Si no quedan movimientos válidos, el juego terminó
+        const anyValidMoves = pieces.some(slot => {
+            const moves = this.getValidMovesFrom(slot.id);
+            return moves.length > 0;
+        });
+
+        if (!anyValidMoves) {
+            console.log("💀 No quedan movimientos válidos. Fin del juego.");
+            this.emitGameEnd(false);
+            return;
+        }
+    }
+
+    emitGameEnd(win) {
+        if (typeof this.onGameEnd === "function") {
+            this.onGameEnd(win);
+        }
+    }
 
 }
 

@@ -17,7 +17,17 @@
             <div class="peg-container">
 
                 <canvas id="pegCanvas" width="921" height="555"></canvas>
-
+                <div id="menu-Peg-Solitaire">
+                    <p class="title-Peg-Solitaire">Peg Solitaire</p>
+                    <p class="text-piece-select">Elije tu ficha favorita</p>
+                    <div id="peg-pieces-container">
+                        <button id="piece-1"><img src="" alt=""></button>
+                        <button id="piece-2"><img src="" alt=""></button>
+                        <button id="piece-3"><img src="" alt=""></button>
+                        <button id="piece-4"><img src="" alt=""></button>
+                    </div>
+                    <button id="starBtnPeg">Comenzar</button>
+                </div>
                 <div class="controlsPegSolitaire">
                     <div class="infoPegSolitaire">
                         <div>Tiempo restante: <span id="timerDisplayPeg">--:--</span></div>
@@ -25,9 +35,10 @@
                     </div>
                     <div class="buttonsPegSolitaire">
                         <button id="btnRestartPeg">Reiniciar</button>
-                        <button id="btnHelpPeg">Cómo jugar</button>
                     </div>
                 </div>
+
+                <div id="game-overlay"></div>
 
             </div>
 
