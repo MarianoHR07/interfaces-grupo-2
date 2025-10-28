@@ -18,11 +18,10 @@ export const ASSETS = {
         board :{ name: 'board', src: 'images/pegSolitaire/tablero0.png' },
         // { name: 'board-2', src: 'images/pegSolitaire/tablero2.png' },
         pieces: [
-            {id:"piece-1", name: 'p-esmeralda', src: 'images/pegSolitaire/ficha-esmeralda.png' }, ///ELIMINAR ESTA
-            // {id:"piece-1", name: 'p-esmeralda', src: 'images/pegSolitaire/pieces/ficha-esmeralda.png' },
-            // {id:"piece-2", name: 'p-cesped', src: 'images/pegSolitaire/pieces/ficha-cesped.png' },
-            // {id:"piece-3", name: 'p-diamante', src: 'images/pegSolitaire/pieces/ficha-diamante.png' },
-            // {id:"piece-4", name: 'p-perla-del-ender', src: 'images/pieces/pegSolitaire/ficha-perla-del-ender.png' }
+            {id:"piece-1", name: 'p-esmeralda', src: 'images/pegSolitaire/pieces/ficha-esmeralda.png' },
+            {id:"piece-2", name: 'p-cesped', src: 'images/pegSolitaire/pieces/ficha-cesped.png' },
+            {id:"piece-3", name: 'p-diamante', src: 'images/pegSolitaire/pieces/ficha-diamante.png' },
+            {id:"piece-4", name: 'p-perla-del-ender', src: 'images/pegSolitaire/pieces/ficha-perla-del-ender.png' }
         ],
         boardSlots:{ 
             name: 'slotsToJson',

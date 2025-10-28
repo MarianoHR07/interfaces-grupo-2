@@ -14,8 +14,8 @@ export class Piece {
     }
 
     draw(ctx) {
-        ctx.font = "12px Arial";
-        ctx.fillStyle = "yellow";
+        // ctx.font = "12px Arial";
+        // ctx.fillStyle = "yellow";
         ctx.save();
         // Dibuja la imagen centrada en (x, y)
         ctx.translate(this.x, this.y);
@@ -26,7 +26,7 @@ export class Piece {
             this.width,
             this.height
         );
-        ctx.fillText(this.id, -this.width / 2, -this.height / 2);
+        // ctx.fillText(this.id, -this.width / 2, -this.height / 2);
         ctx.restore();
     }
 
