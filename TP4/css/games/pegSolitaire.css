@@ -50,15 +50,14 @@ canvas#pegCanvas {
     position: absolute;
     top:0;
     right: 0;
-    margin-left:16px;
     display:flex;
     flex-direction:column;
     gap:10px
 }
 
-.controlsPegSolitaire .infoPegSolitaire{
+/* .controlsPegSolitaire .infoPegSolitaire{
     margin-bottom:6px
-}
+} */
 
 .controlsPegSolitaire button{
     padding:8px 12px;
@@ -85,11 +84,12 @@ canvas#pegCanvas {
 #menu-Peg-Solitaire{
     display: flex;
     flex-direction: column;
-
+    position: absolute;
+    gap: 20px;
 }
 
 #menu-Peg-Solitaire p {
-    color: rgb(3, 105, 18);
+    color: #036912;
     font-family: var(--font-base);
     font-weight: bold;
 }
@@ -97,19 +97,70 @@ canvas#pegCanvas {
 #menu-Peg-Solitaire p.title-Peg-Solitaire {
     font-size: var(--font-size-extra-large);
 }
+
 #menu-Peg-Solitaire p.text-piece-select{
     font-size: var(--font-size-medium);
 }
 
-#peg-pieces-container button.selected {
-  outline: 3px solid #00ff00;
-  transform: scale(1.1);
-  transition: transform 0.2s, outline 0.2s;
-}
-#menu-Peg-Solitaire{
-    position: absolute;
-}
 #menu-Peg-Solitaire button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+#peg-pieces-container button.selected {
+  /* outline: 3px solid #00ff00; */
+  transform: scale(1.1);
+  transition: transform 0.2s, outline 0.2s;
+  filter: drop-shadow(-2px -2px 3px #00ff00)
+          drop-shadow(2px -2px 3px #00ff00)
+          drop-shadow(-2px 2px 3px #00ff00)
+          drop-shadow(2px 2px 3px #00ff00);
+}
+
+
+#peg-pieces-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 30px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+#peg-pieces-container img{
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+#peg-pieces-container button{
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+}
+
+/* #peg-pieces-container img.selected{
+filter: drop-shadow(-2px -2px 3px white)
+          drop-shadow(2px -2px 3px white)
+          drop-shadow(-2px 2px 3px white)
+          drop-shadow(2px 2px 3px white);
+} */
+
+.gameplay-images{
+    grid-template-columns: 1fr 1fr 1fr ;
+}
+
+#starBtnPeg {
+    padding: 10px;
+    border-radius: 15px;
+    background-color: #00ff00;
+    font-size: var(--font-size-large);
+    color: #054305;
+    cursor: pointer;
 }

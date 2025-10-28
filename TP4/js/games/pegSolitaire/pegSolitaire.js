@@ -101,7 +101,7 @@ export async function initPegSolitaire(){
             showEndOverlay(win);
         };
 
-
+    
         function showEndOverlay(win) {
             const overlay = document.getElementById("game-overlay");
             overlay.classList.add("visible");

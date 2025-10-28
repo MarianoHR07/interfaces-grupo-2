@@ -522,6 +522,8 @@ button.active {
     padding: 0px 10px 10px 10px;
     overflow: hidden;   /* equivale a Clip content */
     box-sizing: border-box; /* asegura que padding se incluya en el tamaño */
+    justify-content: center;
+    align-items: center;
 }
 
 .gameplay-images img{
