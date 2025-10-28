@@ -15,6 +15,8 @@ export const DEFAULT_TIME_LIMIT = 5 * 60; // 5 minutes
 export const JSON_SLOTS = "slots.json";
 
 export const ASSETS = {
+        menuBackground :{ name: 'menuBackground', src: 'images/background-login.png' }, ///ELIMINAR ESTE
+        // menuBackground :{ name: 'menuBackground', src: 'images/pegSolitaire/fondo-menu-peg-solitaire.png' },
         board :{ name: 'board', src: 'images/pegSolitaire/tablero0.png' },
         // { name: 'board-2', src: 'images/pegSolitaire/tablero2.png' },
         pieces: [
