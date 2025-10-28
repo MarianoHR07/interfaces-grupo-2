@@ -22,6 +22,7 @@ export async function initPegSolitaire(){
 
     // Precargamos el tablero y las piezas (no hace falta cargar todas las piezas en runtime todavía)
     await assets.loadAll([
+        ASSETS.menuBackground,
         ASSETS.board,
         ASSETS.boardSlots,
         ...ASSETS.pieces
@@ -36,6 +37,15 @@ export async function initPegSolitaire(){
     const startBtn = menu.querySelector('#starBtnPeg'); 
     startBtn.disabled = true; // bloqueado hasta que se elija una pieza
     let selectedPiece = null;
+
+    // --- Botones de control del juego ---
+    const btnRestart = document.getElementById('btnRestartPeg');
+    btnRestart.style.display = 'none';
+    const btnMenu = document.getElementById('btnMenuPeg');
+    btnMenu.style.display = 'none';
+
+    const gameStatistics = document.querySelector('.infoPegSolitaire');
+    gameStatistics.style.display = 'none';
 
     // Mostrar imágenes en los botones
     buttons.forEach((btn, i) => {
@@ -55,27 +65,44 @@ export async function initPegSolitaire(){
             selectedPiece = piece.id; // guardamos temporalmente el ID
         });
     });   
+
+    drawMenuBackground(ctx, assets);
     
     // --- CUANDO SE PRESIONA “COMENZAR” ---
-    startBtn.addEventListener('click', async () => {
-        menu.style.display = 'none'; // ocultar menú
+    startBtn.addEventListener('click', () => {
+        menu.style.display = 'none';
+        startGame(selectedPiece);
+        btnMenu.style.display = 'block';
+        btnRestart.style.display = 'block';
+        gameStatistics.style.display = 'block';
+    });
+
+// =====================================================
+//              FUNCIÓN PRINCIPAL DEL JUEGO
+// ===================================================== 
+async function startGame(selectedPieceId) {
+
+        let animationId = null; // se utiliza para detener el render loop cuando se pausa o vuelve al menú.
  
         const board = new Board(canvas, assets.get(ASSETS.board.name));
+
         // Cargamos el JSON con la informacion de los slots del tablero ::::
         await board.loadSlots(JSON_SLOTS);
-        let assetPiece = ASSETS.pieces.find(p => p.id === selectedPiece) 
+        // Buscamos la pieza que selecciono el usuario
+        let assetPiece = ASSETS.pieces.find(p => p.id === selectedPieceId) 
        
         board.resetPieces(assets.get(assetPiece.name));
 
         const hint = new HintAnimator(board);
-        const drag = new DragController(canvas, board, hint);
 
+        const drag = new DragController(canvas, board, hint);
+        enableCanvas();// habilita la interaccion con el canvas
+
+        // --- Timer y contador ---
         const timerDisplay = document.getElementById('timerDisplayPeg');
         const timer = new Timer(300, timerDisplay, () => {
-             // alert('Se acabó el tiempo!');
             drag.canvas.style.pointerEvents = 'none';  // bloquear interacción
         });
-
         timer.start();
 
         const movesCountEl = document.getElementById('movesCountPeg');
@@ -85,8 +112,9 @@ export async function initPegSolitaire(){
             movesCountEl.innerHTML = renderMovesQuantity;
         });
 
-        // botones help/restart
-        document.getElementById('btnRestartPeg').addEventListener('click', () => {
+        
+        // --- Evento restart ---
+        btnRestart.addEventListener('click', () => {
             board.resetPieces(assets.get(assetPiece.name));
             drag.moves = 0;
             movesCountEl.textContent = '0';
@@ -95,6 +123,19 @@ export async function initPegSolitaire(){
             //drag.canvas.style.pointerEvents = 'auto';
         });
 
+
+        btnMenu.addEventListener('click', () => {
+            // Detener el juego y volver al menú
+            timer.stop();
+            cancelAnimationFrame(animationId);
+            disableCanvas();  // Al menu principal deshabilita el canvas al volver 
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawMenuBackground(ctx, assets);
+            menu.style.display = 'flex';
+            btnMenu.style.display = 'none';
+        });
+
+        // --- Evento de fin del juego ---
         // Se suscribe al evento de onGameEnd del board, cuando cambia win=true finaliza el juego
         board.onGameEnd = (win) => {
             timer.stop();
@@ -115,7 +156,7 @@ export async function initPegSolitaire(){
             ctx.clearRect(0,0,canvas.width,canvas.height);
             board.draw(ctx);
             hint.draw(ctx);
-            requestAnimationFrame(render); /*  método de la DedicatedWorkerGlobalScope interfaz le dice al navegador que desea 
+            animationId = requestAnimationFrame(render); /*  método de la DedicatedWorkerGlobalScope interfaz le dice al navegador que desea 
                                             *  realizar una solicitud de cuadro de animación y llamar a una función de devolución
                                             *  de llamada proporcionada por el usuario antes del próximo repintado.
                                             *  La frecuencia de actualización más común es de 60 Hz
@@ -123,5 +164,23 @@ export async function initPegSolitaire(){
         }
 
         render(); // se invoca una unica vez y requestAnimationFrame(render); cumple el rol de un setTimeout pero a una tasa de refresco de las pantallas
-    })
+
+        function enableCanvas() {
+            canvas.style.pointerEvents = 'auto';
+        }
+
+        function disableCanvas() {
+            canvas.style.pointerEvents = 'none';  
+        }
+    }
+
+    // =====================================================
+    //              FONDO DEL MENÚ PRINCIPAL
+    // =====================================================
+    function drawMenuBackground(ctx, assets) {
+        const bg = assets.get('menuBackground');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (bg) ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+    }
+
 }
