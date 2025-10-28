@@ -1,5 +1,5 @@
 // ########################################################
-//      Manejo de los movimientos validos en el tablero
+//      Manejo de los movimientos validos en el tablero, o sugerencias visuales
 // ########################################################
 import { Helpers } from "../utils/chelpers.js";
 

@@ -69,3 +69,47 @@ canvas#pegCanvas {
     font-weight:600;
     cursor:pointer
 }
+
+#game-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+#game-overlay.visible {
+    display: block;
+}
+
+#menu-Peg-Solitaire{
+    display: flex;
+    flex-direction: column;
+
+}
+
+#menu-Peg-Solitaire p {
+    color: rgb(3, 105, 18);
+    font-family: var(--font-base);
+    font-weight: bold;
+}
+
+#menu-Peg-Solitaire p.title-Peg-Solitaire {
+    font-size: var(--font-size-extra-large);
+}
+#menu-Peg-Solitaire p.text-piece-select{
+    font-size: var(--font-size-medium);
+}
+
+#peg-pieces-container button.selected {
+  outline: 3px solid #00ff00;
+  transform: scale(1.1);
+  transition: transform 0.2s, outline 0.2s;
+}
+#menu-Peg-Solitaire{
+    position: absolute;
+}
+#menu-Peg-Solitaire button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
