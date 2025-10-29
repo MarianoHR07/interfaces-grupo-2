@@ -12,73 +12,104 @@
     gap:20px;
 }
 
-.controlsPegSolitaire {
-    margin-left:16px;
-    display:flex;
-    flex-direction:column;
-    gap:10px
+.btnPegSolitaire {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: #02a602;
+    font-size: var(--font-size-large);
+    color: #054305;
+    cursor: pointer;
 }
-.controlsPegSolitaire .infoPegSolitaire{
-    margin-bottom:6px
+
+.controlsPegSolitaire {
+    display:flex;
+    justify-content: space-between;
+    
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+    gap:10px;
+    width: 100%;
+    padding: 10px;
+    pointer-events: none;
 }
 
 .controlsPegSolitaire button {
-    padding:8px 12px;
-    border-radius:8px;
-    border:none;
-    background:var(--accent);
-    color:#111;
-    font-weight:600;
-    cursor:pointer
+    pointer-events: auto;
 }
 
+.buttonsPegSolitaire {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-:root{
-  --bg: #0e1420;
-  --panel: #0f1724;
-  --accent: #f0c040;
+#btnRestartPeg, #btnMenuPeg {
+    width: 100%;
+    height: fit-content;
+    font-size: var(--font-size-small);
+    
+    background: linear-gradient(145deg, #774c24, #cd853f);
+    border: 2px solid #5c3a1e;
+    border-radius: 8px;
+    color: #fff6e5;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #3e240e;
+    box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.2),
+                0 3px 5px rgba(0, 0, 0, 0.4);
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#btnRestartPeg:hover, #btnMenuPeg:hover{
+  background: linear-gradient(145deg, #a06b35, #deb887);
+  transform: translateY(-2px);
+}
+
+#btnRestartPeg:active,  #btnMenuPeg:active {
+  background: linear-gradient(145deg, #6e431d, #b07a43);
+  transform: translateY(1px);
+}
+
+.infoPegSolitaire {
+    color: #6e431d;
+    font-weight: bold;
+    font-size: var(--font-size-large);
 }
 
 canvas#pegCanvas {
-  border-radius:12px;
+  border-radius: 12px 12px 0 0;
   box-shadow: 0 6px 20px rgba(0,0,0,0.6);
   touch-action:none;
   cursor:grab;
 }
 
-.controlsPegSolitaire{
-    position: absolute;
-    top:0;
-    right: 0;
-    display:flex;
-    flex-direction:column;
-    gap:10px
-}
-
-/* .controlsPegSolitaire .infoPegSolitaire{
-    margin-bottom:6px
-} */
-
-.controlsPegSolitaire button{
-    padding:8px 12px;
-    border-radius:8px;
-    border:none;
-    background:var(--accent);
-    color:#111;
-    font-weight:600;
-    cursor:pointer
-}
-
 #game-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
     display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    color: var(--grey-100);
+    font-family: var(--font-base);
+    font-size: 50px;
+
+    backdrop-filter: blur(15px);
+    border-radius: 12px 12px 0 0;
 }
 
 #game-overlay.visible {
-    display: block;
+    display: flex;
 }
 
 #menu-Peg-Solitaire{
@@ -144,7 +175,6 @@ canvas#pegCanvas {
     gap: 30px;
     padding: 0px;
     box-sizing: border-box;
-    /* backdrop-filter: blur(1px); */
 }
 
 #peg-pieces-container img{
@@ -175,13 +205,3 @@ canvas#pegCanvas {
     grid-template-columns: 1fr 1fr 1fr ;
 }
 
-#starBtnPeg {
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    border-radius: 15px;
-    background-color: #02a602;
-    font-size: var(--font-size-large);
-    color: #054305;
-    cursor: pointer;
-}
