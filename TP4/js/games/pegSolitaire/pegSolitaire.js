@@ -7,7 +7,7 @@ import { Board } from "./board.js";
 import { DragController } from "./controllers/dragControllers.js";
 import { AssetsManager } from "./controllers/assetsManager.js";
 import { HintAnimator } from "./controllers/hintAnimator.js";
-import { JSON_SLOTS,ASSETS } from "./utils/constants.js";
+import { JSON_SLOTS, ASSETS, DEFAULT_TIME_LIMIT } from "./utils/constants.js";
 
 
 export async function initPegSolitaire(){
@@ -39,13 +39,11 @@ export async function initPegSolitaire(){
     let selectedPiece = null;
 
     // --- Botones de control del juego ---
-    const btnRestart = document.getElementById('btnRestartPeg');
-    btnRestart.style.display = 'none';
-    const btnMenu = document.getElementById('btnMenuPeg');
-    btnMenu.style.display = 'none';
+    const controlsPegSolitaire = document.querySelector('.controlsPegSolitaire');
+    controlsPegSolitaire.style.display = 'none';
 
-    const gameStatistics = document.querySelector('.infoPegSolitaire');
-    gameStatistics.style.display = 'none';
+    const btnRestart = document.getElementById('btnRestartPeg');
+    const btnMenu = document.getElementById('btnMenuPeg');
 
     // Mostrar imágenes en los botones
     buttons.forEach((btn, i) => {
@@ -72,9 +70,7 @@ export async function initPegSolitaire(){
     startBtn.addEventListener('click', () => {
         menu.style.display = 'none';
         startGame(selectedPiece);
-        btnMenu.style.display = 'block';
-        btnRestart.style.display = 'block';
-        gameStatistics.style.display = 'block';
+        controlsPegSolitaire.style.display = 'flex';
     });
 
 // =====================================================
@@ -100,8 +96,9 @@ async function startGame(selectedPieceId) {
 
         // --- Timer y contador ---
         const timerDisplay = document.getElementById('timerDisplayPeg');
-        const timer = new Timer(300, timerDisplay, () => {
+        const timer = new Timer(DEFAULT_TIME_LIMIT, timerDisplay, () => {      
             drag.canvas.style.pointerEvents = 'none';  // bloquear interacción
+            showEndOverlay("time");
         });
         timer.start();
 
@@ -120,7 +117,6 @@ async function startGame(selectedPieceId) {
             movesCountEl.textContent = '0';
             timer.reset();
             timer.start();
-            //drag.canvas.style.pointerEvents = 'auto';
         });
 
 
@@ -132,7 +128,7 @@ async function startGame(selectedPieceId) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawMenuBackground(ctx, assets);
             menu.style.display = 'flex';
-            btnMenu.style.display = 'none';
+            controlsPegSolitaire.style.display = 'none';
         });
 
         // --- Evento de fin del juego ---
@@ -142,13 +138,17 @@ async function startGame(selectedPieceId) {
             showEndOverlay(win);
         };
 
-    
-        function showEndOverlay(win) {
+        function showEndOverlay(result) {
             const overlay = document.getElementById("game-overlay");
             overlay.classList.add("visible");
-            overlay.innerHTML = win
-                ? "🎉 ¡Ganaste!"
-                : "💀 Fin del juego. No quedan movimientos válidos";
+
+            if (result === "time") {
+                overlay.innerHTML = "⏳ ¡Se acabó el tiempo!";
+            } else if (result === true) {
+                overlay.innerHTML = "🎉 ¡Ganaste!";
+            } else {
+                overlay.innerHTML = "💀 Fin del juego. No quedan movimientos válidos";
+            }
         }
 
         // bucle de renderizado (metodo recursivo)
@@ -156,6 +156,10 @@ async function startGame(selectedPieceId) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
             board.draw(ctx);
             hint.draw(ctx);
+            // Si hay una pieza en movimiento, se dibuja encima de todo
+            if (drag.draggingPiece) {
+                drag.draggingPiece.draw(ctx);
+            }
             animationId = requestAnimationFrame(render); /*  método de la DedicatedWorkerGlobalScope interfaz le dice al navegador que desea 
                                             *  realizar una solicitud de cuadro de animación y llamar a una función de devolución
                                             *  de llamada proporcionada por el usuario antes del próximo repintado.

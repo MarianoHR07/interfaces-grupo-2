@@ -52,6 +52,11 @@ export class DragController {
             }
 
         }
+
+        if (piece) {
+            this.draggingPiece = piece;
+            piece.isDragging = true;
+        }
     }
 
 
@@ -67,6 +72,10 @@ export class DragController {
 
     // Cuando se suelta la pieza
     onUp(event) {
+        if (this.draggingPiece) {
+            this.draggingPiece.isDragging = false; 
+        }
+
         if (!this.draggingPiece) return;
 
         const { offsetX, offsetY } = this.getMousePos(event);

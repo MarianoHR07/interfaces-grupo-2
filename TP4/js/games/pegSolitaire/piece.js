@@ -14,11 +14,19 @@ export class Piece {
     }
 
     draw(ctx) {
-        // ctx.font = "12px Arial";
-        // ctx.fillStyle = "yellow";
         ctx.save();
-        // Dibuja la imagen centrada en (x, y)
         ctx.translate(this.x, this.y);
+
+        // Si la pieza está siendo arrastrada, aplico el efecto
+        if (this.isDragging) {
+            ctx.shadowColor = "rgba(0, 255, 0, 1)"; 
+            ctx.shadowBlur = 22; 
+            ctx.scale(1.15, 1.15); 
+        } else {
+            ctx.shadowColor = "transparent";
+            ctx.shadowBlur = 0;
+        }
+
         ctx.drawImage(
             this.img,
             -this.width / 2,
@@ -26,7 +34,6 @@ export class Piece {
             this.width,
             this.height
         );
-        // ctx.fillText(this.id, -this.width / 2, -this.height / 2);
         ctx.restore();
     }
 
