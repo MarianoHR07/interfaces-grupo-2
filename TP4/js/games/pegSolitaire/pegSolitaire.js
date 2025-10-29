@@ -1,7 +1,6 @@
 // ###############################################
 //    Inicializa el juego y conecta con el DOM
 // ###############################################
-import { detectSlots } from "../../../generateSlotCoordinates.js";
 import { Timer } from "./timer.js";
 import { Board } from "./board.js";
 import { DragController } from "./controllers/dragControllers.js";
@@ -44,6 +43,8 @@ export async function initPegSolitaire(){
 
     const btnRestart = document.getElementById('btnRestartPeg');
     const btnMenu = document.getElementById('btnMenuPeg');
+
+    const btnRetryPeg = document.getElementById('btnRetryPeg');
 
     // Mostrar imágenes en los botones
     buttons.forEach((btn, i) => {
@@ -110,7 +111,7 @@ async function startGame(selectedPieceId) {
         });
 
         
-        // --- Evento restart ---
+        // --- Evento resetaer ---
         btnRestart.addEventListener('click', () => {
             board.resetPieces(assets.get(assetPiece.name));
             drag.moves = 0;
@@ -119,7 +120,7 @@ async function startGame(selectedPieceId) {
             timer.start();
         });
 
-
+        // --- Evento volver al menu ---
         btnMenu.addEventListener('click', () => {
             // Detener el juego y volver al menú
             timer.stop();
@@ -131,6 +132,23 @@ async function startGame(selectedPieceId) {
             controlsPegSolitaire.style.display = 'none';
         });
 
+        btnRetryPeg.addEventListener('click', () => {
+            const messageContainerPeg = document.getElementById('messageContainerPeg');
+            messageContainerPeg.classList.remove("visible");
+
+            // Reiniciamos estado de juego
+            board.resetPieces(assets.get(assetPiece.name)); // vuelve las fichas a la posición inicial
+            drag.moves = 0;
+            movesCountEl.textContent = '0';
+
+            // Reiniciamos el timer
+            timer.reset();
+            timer.start();
+
+            // Volvemos a habilitar interacción con el tablero
+            drag.canvas.style.pointerEvents = 'auto';
+        })
+
         // --- Evento de fin del juego ---
         // Se suscribe al evento de onGameEnd del board, cuando cambia win=true finaliza el juego
         board.onGameEnd = (win) => {
@@ -139,8 +157,10 @@ async function startGame(selectedPieceId) {
         };
 
         function showEndOverlay(result) {
+            const messageContainerPeg = document.getElementById('messageContainerPeg');
+            messageContainerPeg.classList.add("visible");
+            
             const overlay = document.getElementById("game-overlay");
-            overlay.classList.add("visible");
 
             if (result === "time") {
                 overlay.innerHTML = "⏳ ¡Se acabó el tiempo!";
