@@ -47,7 +47,7 @@
     gap: 10px;
 }
 
-#btnRestartPeg, #btnMenuPeg {
+#btnRestartPeg, #btnMenuPeg, #btnRetryPeg {
     width: 100%;
     height: fit-content;
     font-size: var(--font-size-small);
@@ -65,12 +65,12 @@
     transition: all 0.2s ease;
 }
 
-#btnRestartPeg:hover, #btnMenuPeg:hover{
+#btnRestartPeg:hover, #btnMenuPeg:hover, #btnRetryPeg:hover{
   background: linear-gradient(145deg, #a06b35, #deb887);
   transform: translateY(-2px);
 }
 
-#btnRestartPeg:active,  #btnMenuPeg:active {
+#btnRestartPeg:active,  #btnMenuPeg:active, #btnRetryPeg:active {
   background: linear-gradient(145deg, #6e431d, #b07a43);
   transform: translateY(1px);
 }
@@ -88,7 +88,7 @@ canvas#pegCanvas {
   cursor:grab;
 }
 
-#game-overlay {
+#messageContainerPeg {
     position: absolute;
     top: 0;
     left: 0;
@@ -96,6 +96,7 @@ canvas#pegCanvas {
     height: 100%;
 
     display: none;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -108,8 +109,14 @@ canvas#pegCanvas {
     border-radius: 12px 12px 0 0;
 }
 
-#game-overlay.visible {
+#messageContainerPeg.visible{
     display: flex;
+}
+
+#btnRetryPeg {
+    width: 50%;
+    height: 10%;
+    font-size: var(--font-size-huge);
 }
 
 #menu-Peg-Solitaire{
