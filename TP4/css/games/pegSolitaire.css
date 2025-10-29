@@ -84,8 +84,14 @@ canvas#pegCanvas {
 #menu-Peg-Solitaire{
     display: flex;
     flex-direction: column;
-    position: absolute;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
+
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #menu-Peg-Solitaire p {
@@ -99,24 +105,35 @@ canvas#pegCanvas {
 }
 
 #menu-Peg-Solitaire p.text-piece-select{
+    font-family: 'Minecraftia', sans-serif; 
     font-size: var(--font-size-medium);
+    color: var(--grey-200);
+    text-transform: uppercase;
+    text-shadow:
+        1px 1px 0 #000,
+        2px 2px 0 #000,
+        3px 3px 0 rgba(0,0,0,0.8);
+
 }
 
 #menu-Peg-Solitaire button:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
 #peg-pieces-container button.selected {
-  /* outline: 3px solid #00ff00; */
-  transform: scale(1.1);
-  transition: transform 0.2s, outline 0.2s;
-  filter: drop-shadow(-2px -2px 3px #00ff00)
-          drop-shadow(2px -2px 3px #00ff00)
-          drop-shadow(-2px 2px 3px #00ff00)
-          drop-shadow(2px 2px 3px #00ff00);
+    transform: scale(1.1);
+    transition: transform 0.2s, outline 0.2s;
+    filter: drop-shadow(-2px -2px 3px rgba(0, 255, 0, 0.4))
+        drop-shadow(2px -2px 3px rgba(0, 255, 0, 0.4))
+        drop-shadow(-2px 2px 3px rgba(0, 255, 0, 0.4))
+        drop-shadow(2px 2px 3px rgba(0, 255, 0, 0.4));
 }
 
+#peg-pieces-container button.selected img {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+}
 
 #peg-pieces-container{
     display: flex;
@@ -127,12 +144,21 @@ canvas#pegCanvas {
     gap: 30px;
     padding: 0px;
     box-sizing: border-box;
+    /* backdrop-filter: blur(1px); */
 }
 
 #peg-pieces-container img{
     width: 60px;
     height: 60px;
     object-fit: contain;
+
+    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.7)); 
+    transition: filter 0.3s, transform 0.3s;
+}
+
+#peg-pieces-container button:hover img {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
 }
 
 #peg-pieces-container button{
@@ -145,21 +171,16 @@ canvas#pegCanvas {
     background: none;
 }
 
-/* #peg-pieces-container img.selected{
-filter: drop-shadow(-2px -2px 3px white)
-          drop-shadow(2px -2px 3px white)
-          drop-shadow(-2px 2px 3px white)
-          drop-shadow(2px 2px 3px white);
-} */
-
 .gameplay-images{
     grid-template-columns: 1fr 1fr 1fr ;
 }
 
 #starBtnPeg {
+    width: 100%;
+    height: 100%;
     padding: 10px;
     border-radius: 15px;
-    background-color: #00ff00;
+    background-color: #02a602;
     font-size: var(--font-size-large);
     color: #054305;
     cursor: pointer;

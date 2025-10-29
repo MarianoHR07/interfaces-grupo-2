@@ -1,5 +1,5 @@
 // ############################################
-//    Carga y gestion de las imagenes/iconos
+//       Carga y gestion de las imagenes
 // ############################################
 
  export class AssetsManager {
