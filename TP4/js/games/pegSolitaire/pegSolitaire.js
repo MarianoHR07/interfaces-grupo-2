@@ -8,6 +8,10 @@ import { AssetsManager } from "./controllers/assetsManager.js";
 import { HintAnimator } from "./controllers/hintAnimator.js";
 import { JSON_SLOTS, ASSETS, DEFAULT_TIME_LIMIT } from "./utils/constants.js";
 
+import { VGMController } from "./controllers/VGMController.js";
+import { VGM } from "./utils/constants.js";
+
+
 
 export async function initPegSolitaire(){
     
@@ -26,6 +30,10 @@ export async function initPegSolitaire(){
         ASSETS.boardSlots,
         ...ASSETS.pieces
     ]);
+
+    const vgm = new VGMController();
+    await vgm.loadAll(VGM); // carga todas las pistas
+
 
     // --- GENERA Y DESCARGA JSON de coordenadas: Solo se debe activar en caso de que quisieramos cargar un nuevo tablero  
     // detectSlots(canvas,assets.get('slotsToJson'),canvas.width, canvas.height);
@@ -67,17 +75,54 @@ export async function initPegSolitaire(){
 
     drawMenuBackground(ctx, assets);
     
+    // =====================================================
+    //              EVENTOS DE VIDEO GAME MUSIC CONTROLLER
+    // =====================================================
+    
+    //  --- Habilitamos la musica cuando el usuario ingresa a la pagina del juego ---
+    function enableMusicOnce() {
+        vgm.play('menu');
+        document.removeEventListener('pointerdown', enableMusicOnce);
+        document.removeEventListener('mousemove', enableMusicOnce);
+    }
+    // --- Espera a la primera interacción (por ejemplo, clic en el botón de menú) ---
+    document.addEventListener('pointerdown', enableMusicOnce);
+    document.addEventListener('mousemove', enableMusicOnce);
+
+    const muteButton = document.getElementById('btnMutePeg');
+    let isMuted = false;
+    let lastVolume = vgm.volume; // guardamos el volumen inicial
+
+    muteButton.addEventListener('click', () => {
+        if (isMuted) {
+            // Reactivar sonido
+            vgm.setVolume(lastVolume);
+            muteButton.textContent = '🔊';
+        } else {
+            // Silenciar
+            lastVolume = vgm.volume; // guarda el volumen actual
+            vgm.setVolume(0);
+            muteButton.textContent = '🔇';
+        }
+        isMuted = !isMuted;
+    });
+
+    // =====================================================
+    //              EVENTO DE EJECUCION DEL JUEGO
+    // =====================================================
+
     // --- CUANDO SE PRESIONA “COMENZAR” ---
     startBtn.addEventListener('click', () => {
         menu.style.display = 'none';
+        vgm.play('gameplay'); // cambia música
         startGame(selectedPiece);
         controlsPegSolitaire.style.display = 'flex';
     });
-
-// =====================================================
-//              FUNCIÓN PRINCIPAL DEL JUEGO
-// ===================================================== 
-async function startGame(selectedPieceId) {
+    
+    // =====================================================
+    //              FUNCIÓN PRINCIPAL DEL JUEGO
+    // ===================================================== 
+    async function startGame(selectedPieceId) {
 
         let animationId = null; // se utiliza para detener el render loop cuando se pausa o vuelve al menú.
  
@@ -130,6 +175,7 @@ async function startGame(selectedPieceId) {
             drawMenuBackground(ctx, assets);
             menu.style.display = 'flex';
             controlsPegSolitaire.style.display = 'none';
+            vgm.play('menu'); // vuelve a reproducir el tema del menú
         });
 
         btnRetryPeg.addEventListener('click', () => {
@@ -207,4 +253,5 @@ async function startGame(selectedPieceId) {
         if (bg) ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
     }
 
+    return vgm; // devuelve la instancia al router
 }

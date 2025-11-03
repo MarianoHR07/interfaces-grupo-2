@@ -29,3 +29,9 @@ export const ASSETS = {
             src: 'images/pegSolitaire/slots.png' 
         }
     }
+
+export const VGM = {
+    menu: "./js/games/pegSolitaire/assets/audio/music/menu-theme.mp3",
+    gameplay: "./js/games/pegSolitaire/assets/audio/music/gameplay-theme.mp3",
+};
+
