@@ -97,6 +97,11 @@ function setupUI(page) {
 // ========================================
 
 function setupPage(page) {
+    // Limpiamos la música activa del juego anterior (si la hay)
+    if (window._activeVGM) {
+        window._activeVGM.dispose();
+        window._activeVGM = null;
+    }
     switch (page) {
         case "login":
             container.querySelector(".go-to-register")?.addEventListener("click", () => navigateTo("register"));
@@ -125,7 +130,11 @@ function setupPage(page) {
 
         case "pegSolitaire":
             if(typeof initGameplay === "function") initGameplay(container);
-            if(typeof initPegSolitaire === "function") initPegSolitaire();
+            if(typeof initPegSolitaire === "function") {
+                initPegSolitaire().then(vgm => {
+                    window._activeVGM = vgm; // Guarda una referencia al obj del controlador de musica de Peg Solitaire
+                });
+            }
             break;
     }
 }
