@@ -1,0 +1,378 @@
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    border: 0;
+}
+
+/* HEADER COMPLETO*/
+
+.header {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--primary-600);
+    padding: 8px 16px;
+    color: white;
+}
+
+.header-left,
+.header-right,
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-logo {
+    gap: 5px;
+}
+
+.header-right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content; 
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.header-menu-btn,
+.header-search button {
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+}
+
+.header-icon {
+    font-size: 5px;
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+}
+
+.header-menu-btn {
+    background: none;
+    color: inherit;
+    display: block;
+}
+
+.header-icon-link,
+.header-logo {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+    
+.header-icon-link {
+    height: 24px;
+    width: 24px;
+}
+
+/* LOGO */
+.header-logo-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.header-logo-text {
+    font-weight: bold;
+    font-size: 1.1rem;
+    background-image: linear-gradient(to right, #1ABC9C 0%, #16A085 20%, #66797B 50%, #C0392B 80%, #E74C3C 100%);
+    background-clip: text;
+    color: transparent;
+}
+
+.header-menu-btn::after {
+    content: '|';
+    color: white;
+    opacity: .7;
+    font-size: 1.2rem;
+    margin-left: 5px;
+}
+
+/* SEARCH BAR */
+
+.header-search {
+    flex: 1;
+    display: flex;
+    max-width: 350px;
+    margin: 0 10px;
+}
+
+.header-search input {
+    flex: 1;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 20px 0 0 20px;
+    outline: none;
+    font-size: .8rem;
+}
+
+.header-search button {
+    background: white;
+    padding: 4px 8px;
+    border-radius: 0 20px 20px 0;
+    font-size: .9rem;
+}
+
+/* USER AVATAR */
+.header-user {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.header-user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.header-user-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background: #00c853;
+    border: 1.5px solid white;
+    border-radius: 50%;
+}
+
+/* PROFILE CARD */
+
+.profile-card {
+    background: linear-gradient(145deg, var(--primary-600), var(--primary-600));
+    width: 220px;
+    right: 0px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, .4);
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    position: absolute;
+    top: 51px;
+    z-index: 1000;
+    transition: all .3s ease;
+}
+
+.profile-card.active {
+    display: flex;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 8px;
+}
+
+.avatar-container {
+    position: relative;
+    top: 10px;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, .1);
+}
+
+.username {
+    margin: 6px 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.email {
+    margin: 2px 0 0;
+    font-size: .75rem;
+    color: white;
+}
+
+.actions {
+    padding: 8px 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.profile-btn,
+.edit-btn {
+    background: linear-gradient(180deg, var(--accent-600));
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-btn {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: .8rem;
+    font-weight: 500;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.edit-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+/* FOOTER PROFILE */
+
+.footer-profile {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(0, 0, 0, .15);
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.footer-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, .8);
+    font-size: .7rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.footer-btn i {
+    font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+
+    .header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between; 
+        gap: 6px;
+        padding: 10px 16px;
+        position: fixed;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .header-logo-img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .header-logo-text {
+        font-size: 1rem;
+    }
+
+    .header-menu-btn::after {
+        display: none;
+    }
+
+    /* Contenedor derecho: favoritos + usuario */
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .header-icon-link {
+        width: 22px;
+        height: 22px;
+    }
+
+    .header-user {
+        width: 28px;
+        height: 28px;
+    }
+
+    .header-user-status {
+        width: 7px;
+        height: 7px;
+    }
+
+    .header-search {
+        width: 90%;
+        max-width: 350px;
+        margin: 8px auto 0;
+    }
+
+    .header-search input {
+        font-size: .85rem;
+        padding: 6px 10px;
+        border-radius: 25px 0 0 25px;
+    }
+
+    .header-search button {
+        font-size: .85rem;
+        padding: 6px 10px;
+        border-radius: 0 25px 25px 0;
+    }
+
+    /* Tarjeta de perfil */
+    .profile-card {
+        top: 60px; 
+        right: 8px;
+        width: 200px;
+    }
+
+    .avatar-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .username {
+        font-size: .9rem;
+    }
+
+    .email {
+        font-size: .7rem;
+    }
+
+    .profile-btn {
+        font-size: .75rem;
+        padding: 6px 10px;
+    }
+
+    .edit-btn {
+        width: 28px;
+        height: 28px;
+    }
+}

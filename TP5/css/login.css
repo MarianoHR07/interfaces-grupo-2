@@ -1,0 +1,222 @@
+.login-container {
+  font-family: 'Jandi', sans-serif;
+  color: var(--grey-100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 20px;
+  content: "";
+  background: url("../images/background-login.png") fixed center/cover no-repeat;
+  background-size: 100%;
+  background-attachment: scroll;
+  width: 100%;
+  height: 100%;
+}
+
+.form-container {
+  width: 350px;
+  padding: 30px;
+  border-radius: 15px;
+  background: var(--primary-700);
+  border: 2px solid var(--accent-600);
+  box-shadow: 0 4px 20px var(--accent-600);
+  backdrop-filter: blur(10px);
+}
+
+.logo-cotainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo-login { width: 60px; height: 60px; padding: 5px; }
+
+.login-title {
+  font-size: 2em;
+  font-weight: 600;
+  background-image: linear-gradient(to right, #1ABC9C 0%, #16A085 20%,#66797B 50%,#C0392B 80%,#E74C3C 100%);
+  background-clip: text;
+  color: transparent;
+}
+
+.form-group { margin-bottom: 15px; }
+
+label {
+  display: block;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  color: var(--grey-100);
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: var(--grey-100);
+  border-radius: 8px;
+  border: 1px solid var(--grey-700);
+  background: var(--primary-700);
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--grey-700);
+  box-shadow: 0 0 5px rgba(100,65,165,0.5);
+}
+
+.input-with-icon { position: relative; }
+.input-with-icon input { padding-right: 40px; }
+.input-with-icon .fa-solid {
+  position: absolute;
+  top: 50%; right: 15px;
+  transform: translateY(-50%);
+  color: #6a6a7c;
+}
+
+.forgot-password {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #62a1ff;
+  text-decoration: none;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+  appearance: none;
+  width: 18px; height: 18px;
+  border: 2px solid var(--grey-100);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.remember-me input:checked {
+  background: var(--grey-100)
+}
+
+.remember-me input:checked::after {
+  content: "✔";
+  position: absolute;
+  top: -2px; left: 2px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #0a0a2a;
+}
+
+.remember-me label {
+  font-size: 0.9em;
+  color: var(--grey-100);
+  cursor: pointer;
+}
+
+.login-button {
+    width: 100%;
+    padding: 10px 8px;
+    font-size: 1.1em;
+    font-weight: bold; 
+    color: var(--grey-100);
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative; 
+    overflow: hidden;
+    transition: all 0.20s ease;
+    text-align: center;
+    display: block;
+    background-color: var(--accent-600);
+    box-shadow: 
+        inset 0 1px 0 #FFE5C4,
+        0 8px 0 #915100;
+}
+
+.login-button:hover {
+    background-color: var(--accent-300);
+}
+
+.login-button:active {
+    top: 8px;
+    background-color: var(--accent-700);
+    
+    box-shadow:
+        inset 0 1px 0 #d6a15b,
+        inset 0 -3px 0 #915100;
+}
+
+.register-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+.register-link a {
+  font-weight: 600;
+  color: var(--accent-600);
+  text-decoration: none;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin: 20px 0;
+}
+
+.social-login .line {
+  width: 40px; height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(to right,var(--accent-600),var(--grey-700));
+}
+
+.social-login .line:last-of-type {
+  background: linear-gradient(to left,var(--accent-600),var(--grey-700));
+}
+
+.social-login .circle:nth-child(2) {
+  background: var(--accent-600);
+  border: 1px solid var(--accent-600);
+  box-shadow: 0 0 5px rgba(255,140,0,0.5);
+}
+
+.social-buttons-circle {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.social-button-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: #1a1e2a;
+  border: 1px solid var(--grey-700);
+  transition: all 0.3s ease;
+}
+
+.social-button-circle:hover {
+  border-color: #777;
+  box-shadow: 0 0 10px rgba(255,140,0,0.3);
+}
+
+.social-button-circle img,
+.social-button img {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+}

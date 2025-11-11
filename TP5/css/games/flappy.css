@@ -1,0 +1,12 @@
+.blocka-container {
+  position: relative;
+  width: 100%;
+  height: fit-content;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 15px 15px 0px 0px;
+  background-color: var(--primary-600);
+}
