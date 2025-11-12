@@ -1,9 +1,9 @@
-// export class Model {
-//     constructor() {
-//         this.active = true;
-//     }
+export class Model {
+    constructor() {
+        this.active = true;
+    }
 
-//     update(deltaTime) {
-//         // lógica genérica de actualización
-//     }
-// }
+    update(deltaTime) {
+        // lógica genérica de actualización
+    }
+}
