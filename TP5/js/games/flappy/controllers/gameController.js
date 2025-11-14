@@ -24,9 +24,13 @@
 import { Obstacle } from '../models/obstacle.js';
 import { ObstacleView } from '../views/obstacleView.js';
 
+import { Runner } from "../models/runner.js";
+import { RunnerView } from "../views/runnerView.js";
+
 export class GameController {
     constructor(ctx) {
         this.ctx = ctx;
+
         this.obstacleView = new ObstacleView(ctx);
         this.obstacles = [];
 
@@ -37,12 +41,32 @@ export class GameController {
         this.minHeight = 80;
         this.maxHeight = 300;
 
-        // cargar imágenes
+        // cargar tuberias
         this.imgTop = new Image();
         this.imgTop.src = 'js/games/flappy/assets/images/obstacle/obstaculo_superior.png';
 
         this.imgBottom = new Image();
         this.imgBottom.src = 'js/games/flappy/assets/images/obstacle/obstaculo_inferior.png';
+
+        // Runner
+        this.runner = new Runner(100, 150);
+        this.runnerView = new RunnerView(this.runner, ctx);
+        this.registerInput();
+    }
+
+    registerInput() {
+        // Barra espaciadora
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                e.preventDefault();
+                this.runner.jump();
+            }
+        });
+
+        // Click del mouse
+        window.addEventListener("mousedown", () => {
+            this.runner.jump;
+        });
     }
 
     // actualiza el estado del juego y de cada uno de los objetos
@@ -58,11 +82,29 @@ export class GameController {
 
         // eliminar los que ya salieron de pantalla
         this.obstacles = this.obstacles.filter(o => o.active);
+
+        // Runner
+        this.runner.update();
+
+        // Limite con el suelo(CAMBIAR:::: para que al colicionar con el techo o el suelo explote) <<<=============================
+        const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
+        if(this.runner.y > bottomLimit){
+            this.runner.y = bottomLimit;
+            this.runner.velocityY = 0;
+        }
+
+        // Limite con el techo
+        if (this.runner.y < 0) {
+            this.runner.y = 0;
+            this.runner.velocityY = 0; 
+        }
     }
 
     // renderiza el estado actual del juego en la pantalla
     draw() {
         this.obstacles.forEach(o => this.obstacleView.draw(o));
+
+        this.runnerView.draw();
     }
 
     spawnPair() {

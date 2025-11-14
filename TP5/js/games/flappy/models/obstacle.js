@@ -16,7 +16,7 @@ export class Obstacle extends Model {
         // this.vy = 0; // velocidad en el eje Y (pixeles por segundo).
         this.type = type;
         this.image = image;
-        this.width = 80;
+        this.width = 110;
         this.height = image.height;
         this.speed = 150; // px/s hacia la izquierda (es equivalente a vx = -150)
     }
