@@ -1,4 +1,7 @@
 export class View {
+    /**
+     * @param {CanvasRenderingContext2D} ctx  
+     */
     constructor(ctx) {
         this.ctx = ctx;
     }
