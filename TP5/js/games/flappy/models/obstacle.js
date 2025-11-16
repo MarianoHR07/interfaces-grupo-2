@@ -18,12 +18,11 @@ export class Obstacle extends Model {
         this.image = image;
         this.width = 110;
         this.height = image.height;
-        this.speed = 150; // px/s hacia la izquierda (es equivalente a vx = -150)
     }
 
-    update(deltaTime) {
+    update(deltaTime, speed) {
         // desplazamiento horizontal constante (hacia la izquierda) 
-        this.x -= this.speed * (deltaTime / 1000);  //(deltaTime / 1000): convierte milisegundos a segundos.
+        this.x -= speed * (deltaTime / 1000);  //(deltaTime / 1000): convierte milisegundos a segundos.
         /**
          * "Avanzá en X la cantidad de píxeles que corresponden a moverse 
          *  vx píxeles por segundo, durante el tiempo que pasó entre frames."

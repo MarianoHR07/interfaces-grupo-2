@@ -4,7 +4,7 @@ export class RunnerView {
         this.ctx = ctx;
 
         this.sprite = new Image();
-        this.sprite.src = "js/games/flappy/assets/images/runner/spritesheet-runner.png";
+        this.sprite.src = "js/games/flappy/assets/images/runner/runner-spritesheet.png";
     }
 
     draw() {

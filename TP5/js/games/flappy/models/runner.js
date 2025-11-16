@@ -54,7 +54,7 @@ export class Runner {
 
         // Física (caída y movimiento)
         this.velocityY += this.gravity;  // gravedad
-        if(this.velocityY > this.maxFallSpeed){
+        if(this.velocityY > this.maxFallSpeed){  // limitamos la velocidad, aunque la gravedad siga sumando, nunca superara esa velocidad
             this.velocityY = this.maxFallSpeed;
         }
         this.y += this.velocityY;  // mover al personaje
