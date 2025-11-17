@@ -31,14 +31,19 @@ export class ObstacleController {
     }
 
     addObstaclePair() {
-        const { topObstacle, bottomObstacle } = this.#spawnPair();
+        const { topObstacle: topObstacle, bottomObstacle: bottomObstacle , topHeight: topHeight, bottomY: bottomY} = this.#spawnPair();
         this.obstacles.push(topObstacle, bottomObstacle);
+        return { topHeight: topHeight, bottomY: bottomY};
     }
 
     update(deltaTime, timestamp) {
+        let topHeight = null;
+        let bottomY = null;
         // generar obstáculos nuevos
         if (timestamp - this.lastSpawn > this.spawnInterval) {
-            this.addObstaclePair();
+            const pair = this.addObstaclePair();
+            topHeight = pair.topHeight;
+            bottomY = pair.bottomY;
             this.lastSpawn = timestamp;
         }
 
@@ -47,6 +52,7 @@ export class ObstacleController {
 
         // eliminar los que ya salieron de pantalla
         this.obstacles = this.obstacles.filter(o => o.active);
+        return { topHeight: topHeight, bottomY: bottomY};
     }
 
     // renderiza el estado actual del juego en la pantalla
@@ -55,7 +61,7 @@ export class ObstacleController {
     }
 
     #spawnPair() {
-        const canvasHeight = this.ctx.canvas.height;
+        // const canvasHeight = this.ctx.canvas.height;
 
         // altura aleatoria para el top
         // topHeight ∈ [minHeight, maxHeight]
@@ -85,7 +91,7 @@ export class ObstacleController {
             'bottom',
             this.imgBottom
         );
-
-        return { topObstacle: top, bottomObstacle: bottom };
+ 
+        return { topObstacle: top, bottomObstacle: bottom , topHeight: topHeight, bottomY: bottomY};
     }
 }

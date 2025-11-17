@@ -26,6 +26,10 @@ export class Obstacle extends CollidableEntity {
     update(deltaTime) {
         // desplazamiento horizontal constante (hacia la izquierda) 
         super.update(deltaTime);
+        // si sale de la pantalla, se marca como inactivo
+        if (this.x + this.width < 0) {
+            this.active = false;
+        }
     }
     
     collidesWith(entity) {
