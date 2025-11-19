@@ -10,6 +10,8 @@ export class RunnerView {
     draw() {
         const m = this.runner;
 
+        if (!this.sprite.complete) return; // esperar carga
+        
         this.ctx.drawImage(
             this.sprite,
             m.currentFrame * m.frameWidth, // frame X en el sprite

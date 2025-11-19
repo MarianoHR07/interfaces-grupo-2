@@ -1,5 +1,4 @@
-import { Obstacle } from '../models/obstacle.js';
-import { ObstacleView } from '../views/obstacleView.js';
+import { ObstacleController } from './obstacleController.js';
 
 import { Runner } from "../models/runner.js";
 import { RunnerView } from "../views/runnerView.js";
@@ -8,30 +7,23 @@ import { Bonus } from "../models/bonus.js";
 import { BonusView } from "../views/bonusView.js";
 
 export class GameController {
+    /**
+     * @param {CanvasRenderingContext2D} ctx  
+     */
     constructor(ctx) {
         this.ctx = ctx;
+
+        /** @type {ObstacleController} controlador de obstáculos */
+        this.obstacleController = new ObstacleController(ctx);
 
         // **************VER DE LLEVAR A UNA CLASE EN COMUN PARA BONUS Y OBSTACLE***************
         this.speed = 150; // px/s hacia la izquierda (es equivalente a vx = -150)
         // *****************(velocidad comun para bonus y obstacle)*****************************
-
-        this.obstacleView = new ObstacleView(ctx);
-        this.obstacles = [];
-
+        
+        // ******** ESTO HAY QUE MIGRARLO, PERTENECE A LAS CLASES COIN Y POWER-UP
         this.spawnInterval = 2000; // cada 2 segundos
         this.distancePipes = this.speed * (this.spawnInterval / 1000);   // distancia entre dos tuberias
-        this.lastSpawn = 0;
-
-        this.gap = 150; // distancia entre top y bottom
-        this.minHeight = 80;
-        this.maxHeight = 300;
-
-        // ------------- cargar tuberias ---------------
-        this.imgTop = new Image();
-        this.imgTop.src = 'js/games/flappy/assets/images/obstacle/obstaculo_superior.png';
-
-        this.imgBottom = new Image();
-        this.imgBottom.src = 'js/games/flappy/assets/images/obstacle/obstaculo_inferior.png';
+        // ***********************************************************************
 
         // --------------- Runner --------------------
         this.runner = new Runner(100, 150);
@@ -74,17 +66,15 @@ export class GameController {
 
     // actualiza el estado del juego y de cada uno de los objetos
     update(deltaTime, timestamp) {
-        // generar obstáculos nuevos
-        if (timestamp - this.lastSpawn > this.spawnInterval) {
-            this.spawnPair();
-            this.lastSpawn = timestamp;
+        const { topHeight: topHeight, bottomY: bottomY} = this.obstacleController.update(deltaTime, timestamp);
+        // BONUS: 40% de probabilidad de generar un bonus
+        if(topHeight!== null && bottomY !== null){ // esto hay que sacarlo porque el spawn interval determina cuando generar un obstaculo e intenta generar un bonus. 
+            if (Math.random() < 0.7) {
+                this.#spawnBonus(topHeight, bottomY);
+                // el bonus siempre depende de dos tuberias, con lo cual si se genera(ya que tienen un porcentaje de aparicion),
+                // solo se genera en el momento en que instanciamos un par de obstaculos
+            }
         }
-
-        // actualizar obstáculos
-        this.obstacles.forEach(o => o.update(deltaTime, this.speed));
-
-        // eliminar los que ya salieron de pantalla
-        this.obstacles = this.obstacles.filter(o => o.active);
 
         // Runner
         this.runner.update();
@@ -93,13 +83,15 @@ export class GameController {
         const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
         if(this.runner.y > bottomLimit){
             this.runner.y = bottomLimit;
-            this.runner.velocityY = 0;
+            // this.runner.velocityY = 0;
+            this.runner.vy = 0;
         }
 
         // Limite con el techo
         if (this.runner.y < 0) {
             this.runner.y = 0;
-            this.runner.velocityY = 0; 
+            // this.runner.velocityY = 0; 
+            this.runner.vy = 0; 
         }
 
         // actualizar bonus (animación + movimiento)
@@ -109,56 +101,15 @@ export class GameController {
 
     // renderiza el estado actual del juego en la pantalla
     draw() {
-        this.obstacles.forEach(o => this.obstacleView.draw(o));
+        this.obstacleController.draw();
+        // this.obstacles.forEach(o => this.obstacleView.draw(o));
 
         this.runnerView.draw();
 
         this.bonuses.forEach(b => this.bonusView.draw(b));
     }
 
-    spawnPair() {
-        const canvasHeight = this.ctx.canvas.height;
-
-        // altura aleatoria para el top
-        // topHeight ∈ [minHeight, maxHeight]
-        const topHeight = Math.floor(
-            Math.random() * (this.maxHeight - this.minHeight) + this.minHeight
-        );
-        // Ejemplo: 
-        // Sean: minHeight=50, maxHeight=300
-        //       topHeight ∈ [50, 300]
-        // (maxHeight - minHeight) = 250 nos da el rango de variación
-        // Math.random() * (maxHeight - minHeight) ∈ [0, 250]
-        // + minHeight desplaza el rango a [50, 300]
-
-        const bottomY = topHeight + this.gap;
-
-        // crear obstáculos arriba
-        const top = new Obstacle(
-            this.ctx.canvas.width,
-            topHeight - this.imgTop.height,
-            'top',
-            this.imgTop
-        );
-
-        // crear obstáculos abajo
-        const bottom = new Obstacle(
-            this.ctx.canvas.width,
-            bottomY,
-            'bottom',
-            this.imgBottom
-        );
-
-        this.obstacles.push(top, bottom);
-
-        // BONUS: 40% de probabilidad de generar un bonus
-        if (Math.random() < 0.7) {
-            this.spawnBonus(topHeight, bottomY);
-        }
-    }
-
-
-    spawnBonus(topHeight, bottomY) {
+    #spawnBonus(topHeight, bottomY) {
         // Tipo aleatorio: moneda o estrella
         const type = Math.random() < 0.5 ? "coin" : "star";
 

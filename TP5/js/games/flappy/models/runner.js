@@ -1,22 +1,63 @@
-// import { Model } from "../core/model.js";
+// import { CollidableEntity } from "../core/collidableEntity.js";
 
-// export class Runner extends Model {
-//     constructor() {
-//         super();
-//         this.x = 100;
-//         this.y = 150;
-//         this.velocity = 0;
-//         this.gravity = 0.5;
-//         this.jumpStrength = -8;
+// export class Runner extends CollidableEntity {
+//     constructor(x, y) {
+//         super(x, y);
+
+//         // this.width = 266 * 0.30;  // escala del sprite
+//         // this.height = 207 * 0.30;
+
+//         this.frameWidth = 266;
+//         this.frameHeight = 207;
+//         this.totalFrames = 15;
+//         this.scale = 0.30;   // % del tamaño original
+
+//         this.currentFrame = 0;
+//         this.frameSpeed = 4;
+//         this.frameCount = 0;
+
+//         this.maxFallSpeed = 2;  // velocidad máxima de caída
+
+//         // física
+//         this.gravity = 900;       // px/s^2
+//         this.jumpImpulse = -350;  // salto hacia arriba
+
+//         // velocidad inicial
+//         this.vx = 0;
+//         this.vy = 0;
+
+//         // estado
+//         this.isAlive = true;
+
+//         // Activamos gravedad
+//         this.ay = this.gravity;
 //     }
 
 //     jump() {
-//         this.velocity = this.jumpStrength;
+//         if (!this.isAlive) return;
+//         this.vy = this.jumpImpulse;
+//     }
+
+//     die() {
+//         this.isAlive = false;
+//         this.ay = this.gravity;
 //     }
 
 //     update(deltaTime) {
-//         this.velocity += this.gravity;
-//         this.y += this.velocity;
+//         // Actualiza la animación
+//         this.frameCount++;
+//         if (this.frameCount >= this.frameSpeed) {
+//             this.frameCount = 0;
+//             this.currentFrame = (this.currentFrame + 1) % this.totalFrames;  // equivale a steps(15)
+//             // Cada vez que cambia currentFrame, se mueve el recorte dentro del sprite. 
+//         }
+//         super.update(deltaTime);
+
+//         if(this.vy > this.maxFallSpeed){  // limitamos la velocidad, aunque la gravedad siga sumando, nunca superara esa velocidad
+//             this.vy = this.maxFallSpeed;
+//         }
+//         // Se mantiene dentro de los límites del vw del juego
+//         if (this.y < 0) this.y = 0;
 //     }
 // }
 
@@ -64,3 +105,4 @@ export class Runner {
         this.velocityY = this.jumpForce;
     }
 }
+

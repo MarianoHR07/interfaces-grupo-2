@@ -4,6 +4,7 @@ export class BonusView {
     }
 
     draw(bonus) {
+        if (!bonus.sprite.complete) return; // esperar carga
         const frameX = bonus.currentFrame * bonus.frameWidth;
         
         this.ctx.drawImage(
