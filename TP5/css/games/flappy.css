@@ -1,7 +1,7 @@
-.blocka-container {
+.flappy-container {
   position: relative;
   width: 100%;
-  height: fit-content;
+  height: 550px;
 
   display: flex;
   justify-content: center;
@@ -9,4 +9,65 @@
 
   border-radius: 15px 15px 0px 0px;
   background-color: var(--primary-600);
+
+  overflow: hidden;
 }
+
+
+#flappyCanvas {
+  position: relative; 
+  z-index: 10; 
+}
+
+
+@keyframes scroll {
+    0% {background-position-x: 0px;}
+    100% {background-position-x: -1518px;}
+}
+
+.layer {
+    width: 1518px;
+    height: 550px;
+    position: absolute;
+  top: 0;
+  left: 0;
+  background-repeat: repeat-x;
+  background-size: cover;
+}
+
+
+  .layer-7 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer7.png"); 
+    animation: scroll 30s infinite linear;
+  }
+
+  .layer-6 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer6.png"); 
+    animation: scroll 28s infinite linear;
+  }
+
+  .layer-5 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer5.png"); 
+    animation: scroll 25s infinite linear;
+  }
+  
+
+.layer-4 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer4.png"); 
+    animation: scroll 22s infinite linear;
+  }
+
+  .layer-3 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer3.png"); 
+    animation: scroll 20s infinite linear;
+  }
+
+  .layer-2 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer2.png"); 
+    animation: scroll 15s infinite linear;
+  }
+
+  .layer-1 {        
+    background-image: url("../../js/games/flappy/assets/images/background/layer1.png"); 
+    animation: scroll 12s infinite linear;
+  }
