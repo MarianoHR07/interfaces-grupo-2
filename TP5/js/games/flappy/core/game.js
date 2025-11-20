@@ -1,15 +1,24 @@
+// TP5\js\games\flappy\core\game.js
 import { GameController } from '../controllers/gameController.js';
 
 export class Game {
-    constructor(canvas) {
+    constructor(canvas , overlay) {
          /** @type {CanvasRenderingContext2D} */
         this.ctx = canvas.getContext('2d');
         this.controller = new GameController(this.ctx);
         this.lastTime = 0; // guarda el timestamp del frame anterior.
+        this.loopId = null;
+        this.overlay = overlay;
     }
 
     start() {
-        requestAnimationFrame(this.loop.bind(this));
+
+        this.loopId = requestAnimationFrame(this.loop.bind(this));
+    }
+
+    pause() {
+        cancelAnimationFrame(this.loopId);
+        this.loopId = null;
     }
 
     loop(timestamp) { 
@@ -24,9 +33,20 @@ export class Game {
 
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+        this.controller.draw();                             // dibuja el estado actual del juego
+        
         this.controller.update(deltaTime, timestamp);       // actualiza los estados del juego
-        this.controller.draw();         // dibuja el estado actual del juego
 
-        requestAnimationFrame(this.loop.bind(this));
+        if(this.controller.gameOver){                       // si el juego terminó
+            this.pause();
+            this.showGameOverOverlay();
+            return null;
+        }
+        
+        this.loopId = requestAnimationFrame(this.loop.bind(this));  
+    }
+
+    showGameOverOverlay() {
+        this.overlay.style.display = "flex";
     }
 }

@@ -30,6 +30,14 @@ export class ObstacleController {
         this.imgBottom.src = 'js/games/flappy/assets/images/obstacle/obstaculo_inferior.png';
     }
 
+    /** Resetea el controlador de obstáculos
+     * @returns {void}
+     */
+    reset() {
+        this.obstacles = [];
+        this.lastSpawn = 0;
+    }
+
     addObstaclePair() {
         const { topObstacle: topObstacle, bottomObstacle: bottomObstacle , topHeight: topHeight, bottomY: bottomY} = this.#spawnPair();
         this.obstacles.push(topObstacle, bottomObstacle);
@@ -41,10 +49,11 @@ export class ObstacleController {
         let bottomY = null;
         // generar obstáculos nuevos
         if (timestamp - this.lastSpawn > this.spawnInterval) {
+            this.lastSpawn = timestamp;
+            
             const pair = this.addObstaclePair();
             topHeight = pair.topHeight;
             bottomY = pair.bottomY;
-            this.lastSpawn = timestamp;
         }
 
         // actualizar obstáculos

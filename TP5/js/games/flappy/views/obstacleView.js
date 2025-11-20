@@ -1,3 +1,4 @@
+// TP5\js\games\flappy\views\obstacleView.js
 import { View } from '../core/view.js';
 
 export class ObstacleView extends View {
@@ -10,21 +11,6 @@ export class ObstacleView extends View {
     draw(obstacle) {
         const ctx = this.ctx;
         const img = obstacle.image;
-        
-        const minHeight = 80;
-        ctx.strokeStyle='red';
-        ctx.beginPath();
-        ctx.moveTo(0, minHeight);
-        ctx.lineTo(this.ctx.canvas.width, minHeight)
-        ctx.stroke()
-        ctx.closePath()
-
-        ctx.strokeStyle='green';
-        ctx.beginPath();
-        ctx.moveTo(0, ctx.canvas.height-minHeight);
-        ctx.lineTo(this.ctx.canvas.width, ctx.canvas.height-minHeight)
-        ctx.stroke()
-        ctx.closePath()
 
         if (!img.complete) return; // esperar carga
 

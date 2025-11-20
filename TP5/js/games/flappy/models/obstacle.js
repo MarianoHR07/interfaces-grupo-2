@@ -1,7 +1,4 @@
-// import { Entity } from "../core/entity.js";
-
-// import { Model } from '../core/model.js';
-// C:\interfaces de usuario\TPE 5\interfaces-grupo-2\TP5\js\games\flappy\models\obstacle.js
+// TP5\js\games\flappy\models\obstacle.js
 import { CollidableEntity } from "../core/collidableEntity.js";
 export class Obstacle extends CollidableEntity {
     /**
@@ -21,6 +18,8 @@ export class Obstacle extends CollidableEntity {
         this.height = image.height;
 
         this.vx = -150; // px/s hacia la izquierda (es equivalente a vx = -150)
+
+        this.colliderType = "rect"; // valor por defecto de colliderType
     }
 
     update(deltaTime) {

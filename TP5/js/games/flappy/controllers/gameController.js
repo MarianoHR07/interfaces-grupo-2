@@ -1,3 +1,5 @@
+// TP5\js\games\flappy\controllers\gameController.js
+
 import { ObstacleController } from './obstacleController.js';
 
 import { Runner } from "../models/runner.js";
@@ -6,12 +8,18 @@ import { RunnerView } from "../views/runnerView.js";
 import { Bonus } from "../models/bonus.js";
 import { BonusView } from "../views/bonusView.js";
 
+import { ColliderSystem } from '../core/colliderSystem.js';
+import { DebugColliderView } from '../views/debugColliderView.js';
+
 export class GameController {
     /**
      * @param {CanvasRenderingContext2D} ctx  
      */
     constructor(ctx) {
         this.ctx = ctx;
+        this.debugView = new DebugColliderView(this.ctx);
+        this.gameOver = false;
+        this.score = 0;
 
         /** @type {ObstacleController} controlador de obstáculos */
         this.obstacleController = new ObstacleController(ctx);
@@ -49,6 +57,25 @@ export class GameController {
         this.starFrameHeight = 69;
     }
 
+    /**
+        * Resetea el estado del juego a los valores iniciales.
+        * @return {void}
+     */
+    reset() {
+        // Reiniciar estado del juego
+        this.gameOver = false;
+        this.score = 0;
+
+        // Reiniciar Runner
+        this.runner.reset(100, 150);
+
+        // Reiniciar Obstaculos
+        this.obstacleController.reset();
+        
+        // Reiniciar Bonus
+        this.bonuses = [];
+    }
+
     registerInput() {
         // Barra espaciadora
         window.addEventListener("keydown", (e) => {
@@ -60,12 +87,15 @@ export class GameController {
 
         // Click del mouse
         window.addEventListener("mousedown", () => {
-            this.runner.jump;
+            this.runner.jump();
         });
     }
 
     // actualiza el estado del juego y de cada uno de los objetos
     update(deltaTime, timestamp) {
+        
+        if (this.isGameOver()) return; // si hay colisión con un obstáculo, termina la actualización del juego}
+
         const { topHeight: topHeight, bottomY: bottomY} = this.obstacleController.update(deltaTime, timestamp);
         // BONUS: 40% de probabilidad de generar un bonus
         if(topHeight!== null && bottomY !== null){ // esto hay que sacarlo porque el spawn interval determina cuando generar un obstaculo e intenta generar un bonus. 
@@ -77,38 +107,43 @@ export class GameController {
         }
 
         // Runner
-        this.runner.update();
+        this.runner.update(); 
 
         // Limite con el suelo(CAMBIAR:::: para que al colicionar con el techo o el suelo explote) <<<=============================
         const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
         if(this.runner.y > bottomLimit){
             this.runner.y = bottomLimit;
-            // this.runner.velocityY = 0;
             this.runner.vy = 0;
         }
 
         // Limite con el techo
         if (this.runner.y < 0) {
             this.runner.y = 0;
-            // this.runner.velocityY = 0; 
             this.runner.vy = 0; 
         }
 
         // actualizar bonus (animación + movimiento)
         this.bonuses.forEach(b => b.update(deltaTime, this.speed));
         this.bonuses = this.bonuses.filter(b => b.active);
+
+        
     }
 
     // renderiza el estado actual del juego en la pantalla
     draw() {
         this.obstacleController.draw();
-        // this.obstacles.forEach(o => this.obstacleView.draw(o));
 
         this.runnerView.draw();
 
         this.bonuses.forEach(b => this.bonusView.draw(b));
+
+        // Depuración: dibujar cajas de colisión
+        this.debugView.enabled = false; // activar/desactivar vista de depuración
+        if(this.debugView.enabled)
+            this.#drawCollidersBox(this.runner, this.obstacleController.obstacles, this.bonuses);
     }
 
+    // Generacion de bonus
     #spawnBonus(topHeight, bottomY) {
         // Tipo aleatorio: moneda o estrella
         const type = Math.random() < 0.5 ? "coin" : "star";
@@ -200,6 +235,41 @@ export class GameController {
         this.bonuses.push(bonus);
     }
 
+    #drawCollidersBox(runner, obstacles, coins) {
+        this.debugView.drawCollider(runner);
+        obstacles.forEach(o => this.debugView.drawCollider(o));
+        coins.forEach(c => this.debugView.drawCollider(c));
+    }
 
+    /**
+        * Maneja las colisiones entre el runner y otros objetos con los que puede interactuar.
+        * @return {boolean} true si hubo colisión con un obstáculo (game over), false en caso contrario
+    */
+    #handleCollitions() {
+        // colisiones runner - obstáculos
+        const obstacles = this.obstacleController.obstacles;
+        const collidedWithObstacle = ColliderSystem.checkAgainstList(this.runner, obstacles);
+   
+        if (collidedWithObstacle) {
+            this.gameOver = true;
+            console.log("Game Over!");
+            this.runner.die();
+            return true;
+        }   
+
+        // colisiones runner - bonus
+        // const bonusColision = ColliderSystem.checkAgainstList(this.runner, this.bonuses);
+        // if (bonusColision) {
+        //     bonusColision.collect();
+        //     console.log("Bonus collected!");
+        // }
+
+        return false;
+    }
+
+    isGameOver() {
+        return this.#handleCollitions();
+    }
+        
 
 }

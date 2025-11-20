@@ -71,3 +71,36 @@
     background-image: url("../../js/games/flappy/assets/images/background/layer1.png"); 
     animation: scroll 12s infinite linear;
   }
+ /* OVERLAY GAME OVER */
+  .game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    color: white;
+    font-size: 2rem;
+    z-index: 999;
+    display: none; /* oculto por defecto */
+}
+
+.game-over-btn {
+    padding: 12px 24px;
+    background: #ffcc00;
+    color: #222;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: 0.2s;
+}
+
+.game-over-btn:hover {
+    background: #ffdd33;
+}
