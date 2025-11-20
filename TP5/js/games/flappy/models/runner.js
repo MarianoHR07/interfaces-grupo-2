@@ -67,5 +67,13 @@ export class Runner extends CollidableEntity {
     die() {
         this.isAlive = false;
     }
+
+    isCollidable() { 
+        return this.collidable;
+    }
+
+    setCollidable(state) { 
+        this.collidable = state;
+    }
 }
 

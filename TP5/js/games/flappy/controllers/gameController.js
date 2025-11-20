@@ -20,6 +20,9 @@ export class GameController {
         this.debugView = new DebugColliderView(this.ctx);
         this.gameOver = false;
         this.score = 0;
+        this.bestScore = 0;
+
+        // --------------- Obstáculos ----------------  
 
         /** @type {ObstacleController} controlador de obstáculos */
         this.obstacleController = new ObstacleController(ctx);
@@ -246,11 +249,17 @@ export class GameController {
         * @return {boolean} true si hubo colisión con un obstáculo (game over), false en caso contrario
     */
     #handleCollitions() {
+        // si el runner tiene power-up activo, no colisiona con obstaculos
+        const hasPowerUpColision = !this.runner.isCollidable(); 
+
         // colisiones runner - obstáculos
-        const obstacles = this.obstacleController.obstacles;
-        const collidedWithObstacle = ColliderSystem.checkAgainstList(this.runner, obstacles);
+        let obstaclesColision = false;
+        if(!hasPowerUpColision){ // si no tiene power-up activo, chequea colisiones con obstaculos
+            const obstacles = this.obstacleController.obstacles;
+            obstaclesColision = ColliderSystem.checkAgainstList(this.runner, obstacles);
+        }
    
-        if (collidedWithObstacle) {
+        if (obstaclesColision) {
             this.gameOver = true;
             console.log("Game Over!");
             this.runner.die();
@@ -258,11 +267,15 @@ export class GameController {
         }   
 
         // colisiones runner - bonus
-        // const bonusColision = ColliderSystem.checkAgainstList(this.runner, this.bonuses);
-        // if (bonusColision) {
-        //     bonusColision.collect();
-        //     console.log("Bonus collected!");
-        // }
+        const bonusColision = ColliderSystem.checkAgainstList(this.runner, this.bonuses);
+        if (bonusColision) {
+            this.score += bonusColision.collect();
+            if (this.score > this.bestScore) {
+                this.bestScore = this.score;
+            }
+            console.log("Bonus collected!");
+            console.log("Score: " + this.score);
+        }
 
         return false;
     }

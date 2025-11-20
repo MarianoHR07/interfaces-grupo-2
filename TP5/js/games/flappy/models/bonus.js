@@ -1,8 +1,10 @@
-export class Bonus {
-    constructor(x, y, sprite, frameCount, frameWidth, frameHeight, scale) {
-        this.x = x;
-        this.y = y;
+ import { Collectible } from "../core/collectible.js";
 
+export class Bonus extends Collectible {
+    
+    constructor(x, y, sprite, frameCount, frameWidth, frameHeight, scale, colliderType="rect") {
+
+        super(x, y, colliderType);
         // animación
         this.sprite = sprite;
         this.frameCount = frameCount;
@@ -18,7 +20,7 @@ export class Bonus {
         this.width = frameWidth * scale;
         this.height = frameHeight * scale;
 
-        this.active = true;
+        this.active = true; // indica si el bonus está activo (visible y recogible)
     }
 
     update(deltaTime, speed) {
