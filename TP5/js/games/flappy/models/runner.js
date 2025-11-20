@@ -126,5 +126,12 @@ export class Runner extends CollidableEntity {
     }
 
 
+    isCollidable() { 
+        return this.collidable;
+    }
+
+    setCollidable(state) { 
+        this.collidable = state;
+    }
 }
 

@@ -1,12 +1,10 @@
-import { CollidableEntity } from '../core/collidableEntity.js';
+ import { Collectible } from "../core/collectible.js";
 
-export class Bonus extends CollidableEntity{
-    constructor(x, y, sprite, frameCount, frameWidth, frameHeight, scale) {
-        super(x, y, "circle");
-        
-        this.x = x;
-        this.y = y;
+export class Bonus extends Collectible {
+    
+    constructor(x, y, sprite, frameCount, frameWidth, frameHeight, scale, colliderType="rect") {
 
+        super(x, y, colliderType);
         // animación
         this.sprite = sprite;
         this.frameCount = frameCount;
@@ -22,7 +20,7 @@ export class Bonus extends CollidableEntity{
         this.width = frameWidth * scale;
         this.height = frameHeight * scale;
 
-        this.active = true;
+        this.active = true; // indica si el bonus está activo (visible y recogible)
     }
 
     update(deltaTime, speed) {

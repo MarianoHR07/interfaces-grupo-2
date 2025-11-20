@@ -11,7 +11,7 @@ export class CollidableEntity extends MovableEntity {
   constructor(x, y, colliderType = "rect") {
     super(x, y);
     this.colliderType = colliderType; // valor por defecto
-    this.isCollidable = true; // bandera (puede servir en un futuro para los power-ups del personaje evitando colisiones por un tiempo)
+    this.collidable = true; // bandera (puede servir en un futuro para los power-ups del personaje evitando colisiones por un tiempo)
   }
 
  
