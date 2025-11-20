@@ -33,14 +33,15 @@ export class Game {
 
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+        this.controller.update(deltaTime, timestamp);       // actualiza los estados del juego
         this.controller.draw();                             // dibuja el estado actual del juego
         
-        this.controller.update(deltaTime, timestamp);       // actualiza los estados del juego
 
-        if(this.controller.gameOver){                       // si el juego terminó
+        // if(this.controller.gameOver){                       // si el juego terminó
+        if (this.controller.state === "gameOver") {    
             this.pause();
             this.showGameOverOverlay();
-            return null;
+            return;
         }
         
         this.loopId = requestAnimationFrame(this.loop.bind(this));  

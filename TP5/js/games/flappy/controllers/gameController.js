@@ -18,7 +18,7 @@ export class GameController {
     constructor(ctx) {
         this.ctx = ctx;
         this.debugView = new DebugColliderView(this.ctx);
-        this.gameOver = false;
+        // this.gameOver = false;
         this.score = 0;
 
         /** @type {ObstacleController} controlador de obstáculos */
@@ -32,6 +32,9 @@ export class GameController {
         this.spawnInterval = 2000; // cada 2 segundos
         this.distancePipes = this.speed * (this.spawnInterval / 1000);   // distancia entre dos tuberias
         // ***********************************************************************
+
+        this.state = "playing";
+        this.explosionStartTime = null;
 
         // --------------- Runner --------------------
         this.runner = new Runner(100, 150);
@@ -49,12 +52,18 @@ export class GameController {
         this.starSprite = new Image();
         this.starSprite.src = "js/games/flappy/assets/images/bonus/star-spritesheet.png";
 
+        this.heartSprite = new Image();
+        this.heartSprite.src = "js/games/flappy/assets/images/bonus/heart-spritesheet.png";
+
         // Tamaños calculados
         this.coinFrameWidth = 5650 / 10;
         this.coinFrameHeight = 566;
 
         this.starFrameWidth = 893 / 12;
         this.starFrameHeight = 69;
+
+        this.heartFrameWidth = 1036 / 14;
+        this.heartFrameHeight = 66;
     }
 
     /**
@@ -63,7 +72,7 @@ export class GameController {
      */
     reset() {
         // Reiniciar estado del juego
-        this.gameOver = false;
+        this.state = "playing";
         this.score = 0;
 
         // Reiniciar Runner
@@ -93,33 +102,81 @@ export class GameController {
 
     // actualiza el estado del juego y de cada uno de los objetos
     update(deltaTime, timestamp) {
-        
-        if (this.isGameOver()) return; // si hay colisión con un obstáculo, termina la actualización del juego}
 
+        // Detectar colision → activar explosion SOLO una vez
+        if (this.isGameOver()) {
+            if (this.state === "playing") {
+                this.runner.startExplosion();
+                this.state = "exploding";
+                this.explosionStartTime = performance.now();
+            }
+        }
+        
+        // Actualizar siempre el runner (caminar / explosion / gravedad)
+        this.runner.update();
+
+        // Estado: explosión
+        if (this.state === "exploding") {
+            // si la explosión terminó → pasar al estado finishDelay
+            if (this.runner.explosionFinished) {
+                this.state = "finishDelay";
+                this.explosionStartTime = performance.now();
+            }
+
+            // durante explosion, NO actualizar mundo ni obstáculos
+            return;
+        }
+
+        // Estado: esperar 2 segundos luego de la explosión
+        if (this.state === "finishDelay") {
+            const elapsed = performance.now() - this.explosionStartTime;
+
+            if (elapsed >= 2000) {
+                this.state = "gameOver";
+            }
+
+            return; // seguir dibujando, pero no actualizar nada del juego
+        }
+
+        // Si está jugando (playing): actualizar obstáculos y bonus
         const { topHeight: topHeight, bottomY: bottomY} = this.obstacleController.update(deltaTime, timestamp);
-        // BONUS: 40% de probabilidad de generar un bonus
-        if(topHeight!== null && bottomY !== null){ // esto hay que sacarlo porque el spawn interval determina cuando generar un obstaculo e intenta generar un bonus. 
-            if (Math.random() < 0.7) {
+        
+        if(topHeight!== null && bottomY !== null){ 
+            if (Math.random() < 0.7) {  // BONUS: 70% de probabilidad de generar un bonus
                 this.#spawnBonus(topHeight, bottomY);
                 // el bonus siempre depende de dos tuberias, con lo cual si se genera(ya que tienen un porcentaje de aparicion),
                 // solo se genera en el momento en que instanciamos un par de obstaculos
             }
         }
 
-        // Runner
-        this.runner.update(); 
-
-        // Limite con el suelo(CAMBIAR:::: para que al colicionar con el techo o el suelo explote) <<<=============================
+        // --- COLISIÓN CON EL SUELO ---
         const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
-        if(this.runner.y > bottomLimit){
+
+        if (this.runner.y > bottomLimit) {
             this.runner.y = bottomLimit;
-            this.runner.vy = 0;
+
+            // activar game over por colisión con el suelo
+            if (this.state === "playing") {
+                this.runner.startExplosion();
+                this.state = "exploding";
+                this.explosionStartTime = performance.now();
+            }
+
+            return; // no seguir actualizando el juego
         }
 
-        // Limite con el techo
+        // --- COLISIÓN CON EL TECHO ---
         if (this.runner.y < 0) {
             this.runner.y = 0;
-            this.runner.vy = 0; 
+
+            // activar game over por colisión con el techo
+            if (this.state === "playing") {
+                this.runner.startExplosion();
+                this.state = "exploding";
+                this.explosionStartTime = performance.now();
+            }
+
+            return;
         }
 
         // actualizar bonus (animación + movimiento)
@@ -145,8 +202,8 @@ export class GameController {
 
     // Generacion de bonus
     #spawnBonus(topHeight, bottomY) {
-        // Tipo aleatorio: moneda o estrella
-        const type = Math.random() < 0.5 ? "coin" : "star";
+        // Tipo aleatorio: moneda, estrella o corazon
+        const type = this.#randomBonus();
 
         let sprite, frameCount, frameWidth, frameHeight, scale;
 
@@ -157,13 +214,23 @@ export class GameController {
             frameWidth = this.coinFrameWidth;    // 565
             frameHeight = this.coinFrameHeight;  // 566
             scale = 0.1;
-        } 
-        else { // star
-            sprite = this.starSprite;
-            frameCount = 12;
-            frameWidth = this.starFrameWidth;    // 74
-            frameHeight = this.starFrameHeight;  // 69
-            scale = 0.8;
+        } else {
+            if(type === "star"){
+                sprite = this.starSprite;
+                frameCount = 12;
+                frameWidth = this.starFrameWidth;    // 74
+                frameHeight = this.starFrameHeight;  // 69
+                scale = 0.8;
+            } else {
+                if(type === "heart"){
+                    sprite = this.heartSprite;
+                    frameCount = 14;
+                    frameWidth = this.heartFrameWidth;    // 74
+                    frameHeight = this.heartFrameHeight;  // 66
+                    scale = 0.7;
+                }
+            }
+            
         }
 
         const bonusHeightScaled = frameHeight * scale;
@@ -241,6 +308,27 @@ export class GameController {
         coins.forEach(c => this.debugView.drawCollider(c));
     }
 
+    #randomBonus(){
+        const probabilities = {
+            coin: 0.6,   // 50%
+            star: 0.3,   // 40%
+            heart: 0.1   // 10%
+        };
+
+        const r = Math.random();
+        let type;
+
+        if (r < probabilities.coin) {
+            type = "coin";
+        } else if (r < probabilities.coin + probabilities.star) {
+            type = "star";
+        } else {
+            type = "heart";
+        }
+        return type;
+    }
+
+
     /**
         * Maneja las colisiones entre el runner y otros objetos con los que puede interactuar.
         * @return {boolean} true si hubo colisión con un obstáculo (game over), false en caso contrario
@@ -251,12 +339,13 @@ export class GameController {
         const collidedWithObstacle = ColliderSystem.checkAgainstList(this.runner, obstacles);
    
         if (collidedWithObstacle) {
-            this.gameOver = true;
+            // this.gameOver = true;
             console.log("Game Over!");
             this.runner.die();
+            // this.runnerView.draw();
             return true;
         }   
-
+        // if (collidedWithObstacle) this.runner.startExplosion();
         // colisiones runner - bonus
         // const bonusColision = ColliderSystem.checkAgainstList(this.runner, this.bonuses);
         // if (bonusColision) {

@@ -6,7 +6,7 @@ export class ColliderSystem {
      * @param {object[]} list lista de entidades contra las que comprobar
      * @returns {object|null} la entidad con la que colisiona, o null si no hay colisión
      */
-    static checkAgainstList(entity, list) {
+    static checkAgainstList(entity, list) { // "Dice con cuál de las entidades de list se está chocando entity."
         const A = entity.colliderBounds();
         if (!A.active) return null;
 

@@ -1,5 +1,9 @@
-export class Bonus {
+import { CollidableEntity } from '../core/collidableEntity.js';
+
+export class Bonus extends CollidableEntity{
     constructor(x, y, sprite, frameCount, frameWidth, frameHeight, scale) {
+        super(x, y, "circle");
+        
         this.x = x;
         this.y = y;
 
@@ -12,7 +16,7 @@ export class Bonus {
         this.scale = scale;
 
         this.currentFrame = 0;
-        this.frameSpeed = 5; // avanza un frame cada 5 updates
+        this.frameSpeed = 8; // avanza un frame cada 5 updates
         this.frameTimer = 0;
 
         this.width = frameWidth * scale;

@@ -5,6 +5,7 @@ export class Runner extends CollidableEntity {
     constructor(x, y) {
         super(x, y);
 
+        // --- Datos del RUNNER ---
         this.frameWidth = 266;
         this.frameHeight = 207;
         this.totalFrames = 15;
@@ -26,6 +27,23 @@ export class Runner extends CollidableEntity {
         this.maxFallSpeed = 2;  // velocidad máxima de caída
 
         this.colliderType = "ellipse";
+
+        // --- Datos de EXPLOSIÓN ---
+        this.explosionFrameWidth = 130;    
+        this.explosionFrameHeight = 126;  
+        this.explosionTotalFrames = 6;   
+
+        this.explosionScale = 0.9;         // tamaño escala explosion
+
+        this.explosionWidth = this.explosionFrameWidth * this.explosionScale;
+        this.explosionHeight = this.explosionFrameHeight * this.explosionScale;
+
+        this.explosionCurrentFrame = 0;
+        this.explosionFrameSpeed = 8;
+        this.explosionFrameCount = 0;
+
+        this.isExploding = false;
+        this.explosionFinished = false;
     }
 
     /**
@@ -38,19 +56,26 @@ export class Runner extends CollidableEntity {
         this.x = initialPosX;
         this.y = initialPosY;
         this.vy = 0;
-        this.isAlive = true;
+        this.active = true;
+
+        // Animación normal
         this.currentFrame = 0;
         this.frameCount = 0;
+
+        // Explosión
+        this.isExploding = false;
+        this.explosionFinished = false;
+        this.explosionCurrentFrame = 0;
+        this.explosionFrameCount = 0;
     }
 
     update() {
         // Actualiza la animación
-        this.frameCount++;
-        if (this.frameCount >= this.frameSpeed) {
-            this.frameCount = 0;
-            this.currentFrame = (this.currentFrame + 1) % this.totalFrames;  // equivale a steps(15)
-            // Cada vez que cambia currentFrame, se mueve el recorte dentro del sprite. 
+        if (this.isExploding) {
+            this._updateExplosion();
+            return;
         }
+        this._updateRunAnimation();
 
         // Física (caída y movimiento)
         this.vy += this.gravity;  // gravedad
@@ -60,12 +85,46 @@ export class Runner extends CollidableEntity {
         this.y += this.vy;  // mover al personaje
     }
 
+    _updateRunAnimation() {
+        this.frameCount++;
+        if (this.frameCount >= this.frameSpeed) {
+            this.frameCount = 0;
+            this.currentFrame = (this.currentFrame + 1) % this.totalFrames; // Cada vez que cambia currentFrame, se mueve el recorte dentro del sprite. 
+                                                                            // Sirve para avanzar un frame de animación y hacer que, cuando llega al último, vuelva al frame 0 automáticamente.
+                                                                            // equivale a steps(15)
+        }
+    }
+
+    _updateExplosion() {
+        this.explosionFrameCount++;
+        if (this.explosionFrameCount >= this.explosionFrameSpeed) {
+            this.explosionFrameCount = 0;
+            this.explosionCurrentFrame++;
+
+            if (this.explosionCurrentFrame >= this.explosionTotalFrames) {
+                this.explosionFinished = true;
+            }
+        }
+    }
+
     jump() {
-        this.vy = this.jumpForce;
+        if (!this.isExploding) {
+            this.vy = this.jumpForce;
+        }
     }
 
     die() {
-        this.isAlive = false;
+        this.active = false;
+        this.startExplosion();
     }
+
+    startExplosion() {
+        this.isExploding = true;
+        this.explosionCurrentFrame = 0;
+        this.explosionFrameCount = 0;
+        this.explosionFinished = false;
+    }
+
+
 }
 
