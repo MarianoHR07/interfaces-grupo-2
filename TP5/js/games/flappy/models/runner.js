@@ -33,7 +33,7 @@ export class Runner extends CollidableEntity {
         this.explosionFrameHeight = 126;  
         this.explosionTotalFrames = 6;   
 
-        this.explosionScale = 0.9;         // tamaño escala explosion
+        this.explosionScale = 3;         // tamaño escala explosion
 
         this.explosionWidth = this.explosionFrameWidth * this.explosionScale;
         this.explosionHeight = this.explosionFrameHeight * this.explosionScale;

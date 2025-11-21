@@ -11,6 +11,9 @@ import { BonusView } from "../views/bonusView.js";
 import { ColliderSystem } from '../core/colliderSystem.js';
 import { DebugColliderView } from '../views/debugColliderView.js';
 
+import { LifeManager } from '../models/lifeManager.js';
+import { LifeBarView } from '../views/lifeBarView.js';
+
 export class GameController {
     /**
      * @param {CanvasRenderingContext2D} ctx  
@@ -44,7 +47,7 @@ export class GameController {
         this.runnerView = new RunnerView(this.runner, ctx);
         this.registerInput();
 
-        // --------------- cargar bonus ----------------
+        // ----------------- Bonus --------------------
         this.bonuses = []; 
         this.bonusView = new BonusView(ctx);
 
@@ -67,6 +70,14 @@ export class GameController {
 
         this.heartFrameWidth = 1036 / 14;
         this.heartFrameHeight = 66;
+
+        // ----------------- Sistema de Vidas --------------------
+        this.lifeManager = new LifeManager(3);
+        this.lifeBar = new LifeBarView(ctx, this.lifeManager);
+        
+        // flag para evitar múltiples pérdidas por la misma colisión
+        this.runnerRecentlyHit = false;
+        this.hitCooldown = 500; // ms sin recibir daño
     }
 
     /**
@@ -86,6 +97,10 @@ export class GameController {
         
         // Reiniciar Bonus
         this.bonuses = [];
+
+        // Reiniciar vidas
+        this.lifeManager.setLives(this.lifeManager.maxLives);
+        this.runnerRecentlyHit = false;
     }
 
     registerInput() {
@@ -105,23 +120,14 @@ export class GameController {
 
     // actualiza el estado del juego y de cada uno de los objetos
     update(deltaTime, timestamp) {
-
-        // Detectar colision → activar explosion SOLO una vez
-        if (this.isGameOver()) {
-            if (this.state === "playing") {
-                this.runner.startExplosion();
-                this.state = "exploding";
-                this.explosionStartTime = performance.now();
-            }
-        }
-        
-        // Actualizar siempre el runner (caminar / explosion / gravedad)
-        this.runner.update();
+        this.checkObstacleCollision();
+        this.checkBonusCollision();
 
         // Estado: explosión
         if (this.state === "exploding") {
-            // si la explosión terminó → pasar al estado finishDelay
-            if (this.runner.explosionFinished) {
+            this.runner.update();
+            
+            if (this.runner.explosionFinished) { // si la explosión terminó → pasar al estado finishDelay
                 this.state = "finishDelay";
                 this.explosionStartTime = performance.now();
             }
@@ -141,8 +147,14 @@ export class GameController {
             return; // seguir dibujando, pero no actualizar nada del juego
         }
 
-        // Si está jugando (playing): actualizar obstáculos y bonus
-        const { topHeight: topHeight, bottomY: bottomY} = this.obstacleController.update(deltaTime, timestamp);
+        // Estado: Game Over
+        if (this.state === "gameOver") return;
+
+        // Estado: Playing
+        this.runner.update();
+
+        // Obastaculos
+        const { topHeight, bottomY } = this.obstacleController.update(deltaTime, timestamp);
         
         if(topHeight!== null && bottomY !== null){ 
             if (Math.random() < 0.7) {  // BONUS: 70% de probabilidad de generar un bonus
@@ -152,31 +164,43 @@ export class GameController {
             }
         }
 
-        // --- COLISIÓN CON EL SUELO ---
         const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
 
+        // --- Límite inferior ---
         if (this.runner.y > bottomLimit) {
             this.runner.y = bottomLimit;
 
-            // activar game over por colisión con el suelo
-            if (this.state === "playing") {
-                this.runner.startExplosion();
-                this.state = "exploding";
-                this.explosionStartTime = performance.now();
+            if (this.state === "playing" && !this.runnerRecentlyHit) {
+                this.lifeManager.loseLife();
+
+                if (this.lifeManager.currentLives <= 0) {
+                    this.runner.startExplosion();
+                    this.state = "exploding";
+                    this.explosionStartTime = performance.now();
+                }
+
+                this.runnerRecentlyHit = true;
+                setTimeout(() => (this.runnerRecentlyHit = false), this.hitCooldown);
             }
 
-            return; // no seguir actualizando el juego
+            return;
         }
 
-        // --- COLISIÓN CON EL TECHO ---
+        // --- Límite superior ---
         if (this.runner.y < 0) {
             this.runner.y = 0;
 
-            // activar game over por colisión con el techo
-            if (this.state === "playing") {
-                this.runner.startExplosion();
-                this.state = "exploding";
-                this.explosionStartTime = performance.now();
+            if (this.state === "playing" && !this.runnerRecentlyHit) {
+                this.lifeManager.loseLife();
+
+                if (this.lifeManager.currentLives <= 0) {
+                    this.runner.startExplosion();
+                    this.state = "exploding";
+                    this.explosionStartTime = performance.now();
+                }
+
+                this.runnerRecentlyHit = true;
+                setTimeout(() => (this.runnerRecentlyHit = false), this.hitCooldown);
             }
 
             return;
@@ -184,8 +208,7 @@ export class GameController {
 
         // actualizar bonus (animación + movimiento)
         this.bonuses.forEach(b => b.update(deltaTime, this.speed));
-        this.bonuses = this.bonuses.filter(b => b.active);
-
+        this.bonuses = this.bonuses.filter(b => b.active || !b.flashFinished);
         
     }
 
@@ -197,10 +220,18 @@ export class GameController {
 
         this.bonuses.forEach(b => this.bonusView.draw(b));
 
-        // Depuración: dibujar cajas de colisión
+        this.lifeBar.draw();
+
+
+        // #############Depuración: dibujar cajas de colisión###########
         this.debugView.enabled = false; // activar/desactivar vista de depuración
         if(this.debugView.enabled)
             this.#drawCollidersBox(this.runner, this.obstacleController.obstacles, this.bonuses);
+        // ############################
+    }
+
+    gameOver() {
+        console.log("GAME OVER");
     }
 
     // Generacion de bonus
@@ -301,6 +332,7 @@ export class GameController {
             scale
         );
 
+        bonus.type = type;
 
         this.bonuses.push(bonus);
     }
@@ -311,11 +343,84 @@ export class GameController {
         coins.forEach(c => this.debugView.drawCollider(c));
     }
 
+
+    checkObstacleCollision() {
+        if (this.state !== "playing") return;
+
+        const obstacles = this.obstacleController.obstacles;
+
+        // Revisar colisión usando el sistema centralizado
+        /** @type {CollidableEntity || null} obstaculo que el runner acaba de colisiónar */
+        let collision = ColliderSystem.checkAgainstList(this.runner, obstacles);
+
+        if ((collision && collision.isCollidable()) && !this.runnerRecentlyHit) {
+            collision.setCollidable(false)
+            this.lifeManager.loseLife(); // perder vida
+
+            // Si se queda sin vidas → explosion
+            if (this.lifeManager.currentLives <= 0) {
+                this.runner.startExplosion();
+                this.state = "exploding";
+                this.explosionStartTime = performance.now();
+            }
+
+            // Cooldown de daño
+            this.runnerRecentlyHit = true;
+            setTimeout(() => {
+                this.runnerRecentlyHit = false;
+            }, this.hitCooldown);
+        }
+    }
+
+
+    checkBonusCollision() {
+        for (let bonus of this.bonuses) {
+            if (bonus.collected) continue;  // evitar colisiones múltiples: si ya se recogió, ignorar 
+
+            // Ver si colisiona
+            if (ColliderSystem.rectVsRect(this.runner.colliderBounds(), bonus.colliderBounds())) {
+
+                // // ---- MONEDA ----
+                // if (bonus.type === "coin") {
+                //     // ejemplo:
+                //     // this.score += bonus.collect();
+                // }
+
+                // // ---- ESTRELLA (power-up) ----
+                // if (bonus.type === "star") {
+                //     // ejemplo:
+                //     // this.runner.activateStarPowerUp();
+                // }
+
+
+                // ---- CORAZÓN (vida extra) ----
+                // marcar como recogido
+                bonus.collected = true;
+
+                // desactivar collider para evitar colisiones múltiples
+                bonus.active = false;
+
+                // activar flash de desaparición
+                bonus.startFlash();
+
+                if (bonus.type === "heart") {
+                    console.log("Sumando vida");
+                    this.lifeManager.gainLife();
+                }
+ 
+            }
+        }
+
+        // eliminar bonus recogidos + permitir animación flash
+        this.bonuses = this.bonuses.filter(b => b.active || !b.flashFinished);
+    }
+
+
     #randomBonus(){
         const probabilities = {
-            coin: 0.6,   // 50%
+            coin: 0.65,   // 50%
             star: 0.3,   // 40%
-            heart: 0.1   // 10%
+            heart: 0.05   // 10%
         };
 
         const r = Math.random();
@@ -331,45 +436,5 @@ export class GameController {
         return type;
     }
 
-
-    /**
-        * Maneja las colisiones entre el runner y otros objetos con los que puede interactuar.
-        * @return {boolean} true si hubo colisión con un obstáculo (game over), false en caso contrario
-    */
-    #handleCollitions() {
-        // si el runner tiene power-up activo, no colisiona con obstaculos
-        const hasPowerUpColision = !this.runner.isCollidable(); 
-
-        // colisiones runner - obstáculos
-        let obstaclesColision = false;
-        if(!hasPowerUpColision){ // si no tiene power-up activo, chequea colisiones con obstaculos
-            const obstacles = this.obstacleController.obstacles;
-            obstaclesColision = ColliderSystem.checkAgainstList(this.runner, obstacles);
-        }
-   
-        if (obstaclesColision) {
-            console.log("Game Over!");
-            this.runner.die();
-            // this.runnerView.draw();
-            return true;
-        }   
-        
-        const bonusColision = ColliderSystem.checkAgainstList(this.runner, this.bonuses);
-        if (bonusColision) {
-            this.score += bonusColision.collect();
-            if (this.score > this.bestScore) {
-                this.bestScore = this.score;
-            }
-            console.log("Bonus collected!");
-            console.log("Score: " + this.score);
-        }
-
-        return false;
-    }
-
-    isGameOver() {
-        return this.#handleCollitions();
-    }
-        
 
 }

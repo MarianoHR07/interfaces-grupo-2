@@ -2,8 +2,8 @@
 // Categorias:
 export const categorias = [
     { icon: "🏈", name: "Deportes", game:[] },
-    { icon: "⚔️", name: "Acción", game:[] },
-    { icon: "🏁", name: "Aventura", game:[] },
+    { icon: "⚔️", name: "Acción", game:["Flappy"] },
+    { icon: "🏁", name: "Aventura", game:["Flappy"] },
     { icon: "🃏", name: "Cartas", game:[] },
     { icon: "🚗", name: "Autos", game:[] },
     { icon: "🎯", name: "Disparos", game:[] },
@@ -33,7 +33,7 @@ function initCategoriesGameplay(container){
             const template = container.querySelector("#game-category-template");
     
             categorias.forEach(cat => {
-                if(cat.game.includes("PegSolitaire")){
+                if(cat.game.includes("Flappy")){
                     let clone = template.content.cloneNode(true);
                     clone.querySelector(".icon").textContent = cat.icon;
                     clone.querySelector(".index-user").textContent = cat.name;

@@ -479,13 +479,14 @@ button.active {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 20px;
 
     width: 100%;
 }
 
 .control-image img{
     width: 100px;
-    height: 120px;
+    height: 100px;
 }
 
 .gameplay-information{  
@@ -527,8 +528,8 @@ button.active {
 }
 
 .gameplay-images img{
-    width: 100%;
-    height: 100%;
+    width: 300px;
+    height: 200px;
     object-fit: cover;  /* hace que las imágenes llenen la celda sin deformarse */
 }
 

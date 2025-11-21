@@ -8,13 +8,13 @@ export class ColliderSystem {
      */
     static checkAgainstList(entity, list) { // "Dice con cuál de las entidades de list se está chocando entity."
         const A = entity.colliderBounds();
-        if (!A.active) return null;
+        if (!A.active || !A.collidable) return false;
 
         for (const other of list) {
             if (other === entity) continue;
 
             const B = other.colliderBounds();
-            if (!B.active) continue;
+            if (!B.active || !B.collidable) return false;
 
             if (ColliderSystem.collides(A, B)) {
                 return other; // devolvemos el que chocó

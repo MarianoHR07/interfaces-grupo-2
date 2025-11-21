@@ -35,41 +35,43 @@
   background-size: cover;
 }
 
-
+  /* Fondo */
   .layer-7 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer7.png"); 
-    animation: scroll 30s infinite linear;
+    animation: scroll 400s infinite linear;
   }
 
+  /* Planetas */
   .layer-6 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer6.png"); 
-    animation: scroll 28s infinite linear;
+    animation: scroll 200s infinite linear;
   }
 
+  /* Nubes */
   .layer-5 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer5.png"); 
-    animation: scroll 25s infinite linear;
+    animation: scroll 100s infinite linear;
   }
   
 
-.layer-4 {        
+  .layer-4 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer4.png"); 
-    animation: scroll 22s infinite linear;
+    animation: scroll 88s infinite linear;
   }
 
   .layer-3 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer3.png"); 
-    animation: scroll 20s infinite linear;
+    animation: scroll 67s infinite linear;
   }
 
   .layer-2 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer2.png"); 
-    animation: scroll 15s infinite linear;
+    animation: scroll 40s infinite linear;
   }
 
   .layer-1 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer1.png"); 
-    animation: scroll 12s infinite linear;
+    animation: scroll 22s infinite linear;
   }
  /* OVERLAY GAME OVER */
   .game-over-overlay {
