@@ -1,4 +1,3 @@
-// TP5\js\games\flappy\models\runner.js
 import { CollidableEntity } from "../core/collidableEntity.js";
 
 export class Runner extends CollidableEntity {
@@ -44,6 +43,11 @@ export class Runner extends CollidableEntity {
 
         this.isExploding = false;
         this.explosionFinished = false;
+
+        // Parpadeo al colisionar
+        this.isInvulnerable = false;
+        this.blinkDuration = 800; // ms
+        this.blinkInterval = 120; // ms
     }
 
     /**
@@ -133,5 +137,23 @@ export class Runner extends CollidableEntity {
     setCollidable(state) { 
         this.collidable = state;
     }
+
+    startInvulnerability() {
+        this.isInvulnerable = true;
+        this.opacity = 0.4;
+
+        let blinkCount = 0;
+        this.blinkInterval = setInterval(() => {
+            this.opacity = this.opacity === 1 ? 0.3 : 1;
+            blinkCount++;
+
+            if (blinkCount >= 14) { // 7 parpadeos
+                clearInterval(this.blinkInterval);
+                this.opacity = 1;
+                this.isInvulnerable = false;
+            }
+        }, 120);
+    }
+
 }
 

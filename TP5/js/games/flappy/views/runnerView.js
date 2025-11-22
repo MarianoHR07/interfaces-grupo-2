@@ -12,19 +12,28 @@ export class RunnerView {
         this.explosionSprite.src = "js/games/flappy/assets/images/runner/explosion-spritesheet.png";
 
         this.debug = false;
+
+        this.ctx.globalAlpha = 1;
     }
 
     draw() {
         const m = this.runner;
+        
+        // aplicar transparencia (parpadeo)
+        this.ctx.globalAlpha = m.opacity ?? 1;
 
         // Si está explotando → dibujar explosión
         if (m.isExploding) {
             this.drawExplosion();
+            this.ctx.globalAlpha = 1;
             return;
         }
 
         // Si NO está explotando → dibujar runner normal
-        if (!this.sprite.complete) return; // esperar carga
+        if (!this.sprite.complete) {
+            this.ctx.globalAlpha = 1;
+            return; // esperar carga
+        }
 
         this.ctx.drawImage(
             this.sprite,
@@ -38,6 +47,8 @@ export class RunnerView {
             m.height
         );
 
+        // resetear alpha
+        this.ctx.globalAlpha = 1;
     }
 
     drawExplosion() {

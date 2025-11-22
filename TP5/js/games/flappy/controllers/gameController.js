@@ -1,5 +1,3 @@
-// TP5\js\games\flappy\controllers\gameController.js
-
 import { ObstacleController } from './obstacleController.js';
 
 import { Runner } from "../models/runner.js";
@@ -169,40 +167,14 @@ export class GameController {
         // --- Límite inferior ---
         if (this.runner.y > bottomLimit) {
             this.runner.y = bottomLimit;
-
-            if (this.state === "playing" && !this.runnerRecentlyHit) {
-                this.lifeManager.loseLife();
-
-                if (this.lifeManager.currentLives <= 0) {
-                    this.runner.startExplosion();
-                    this.state = "exploding";
-                    this.explosionStartTime = performance.now();
-                }
-
-                this.runnerRecentlyHit = true;
-                setTimeout(() => (this.runnerRecentlyHit = false), this.hitCooldown);
-            }
-
+            this.handleRunnerDamage();
             return;
         }
 
         // --- Límite superior ---
         if (this.runner.y < 0) {
             this.runner.y = 0;
-
-            if (this.state === "playing" && !this.runnerRecentlyHit) {
-                this.lifeManager.loseLife();
-
-                if (this.lifeManager.currentLives <= 0) {
-                    this.runner.startExplosion();
-                    this.state = "exploding";
-                    this.explosionStartTime = performance.now();
-                }
-
-                this.runnerRecentlyHit = true;
-                setTimeout(() => (this.runnerRecentlyHit = false), this.hitCooldown);
-            }
-
+            this.handleRunnerDamage();
             return;
         }
 
@@ -268,6 +240,7 @@ export class GameController {
         }
 
         const bonusHeightScaled = frameHeight * scale;
+        let halfBonusScaled = frameWidth*scale/2;
 
         // -------------------------
         //   ZONAS VÁLIDAS
@@ -297,7 +270,7 @@ export class GameController {
             zones.push({
                 min: gapMin,
                 max: gapMax,
-                x: canvasW  // posición normal
+                x: canvasW - halfBonusScaled // posición normal
             });
         }
 
@@ -322,8 +295,13 @@ export class GameController {
         // -------------------------
         // Crear BONUS
         // -------------------------
+        const firstObstacle = this.obstacleController.obstacles.at(0);
+        let halfObstacleX = 0;
+        
+        if(firstObstacle) halfObstacleX=firstObstacle.width/2;
+        
         const bonus = new Bonus(
-            zona.x + 25,
+            zona.x + halfObstacleX,
             bonusY,
             sprite,
             frameCount,
@@ -353,23 +331,13 @@ export class GameController {
         /** @type {CollidableEntity || null} obstaculo que el runner acaba de colisiónar */
         let collision = ColliderSystem.checkAgainstList(this.runner, obstacles);
 
-        if ((collision && collision.isCollidable()) && !this.runnerRecentlyHit) {
-            collision.setCollidable(false)
-            this.lifeManager.loseLife(); // perder vida
+        if (!collision) return;
 
-            // Si se queda sin vidas → explosion
-            if (this.lifeManager.currentLives <= 0) {
-                this.runner.startExplosion();
-                this.state = "exploding";
-                this.explosionStartTime = performance.now();
-            }
+        if (!collision.isCollidable()) return;
 
-            // Cooldown de daño
-            this.runnerRecentlyHit = true;
-            setTimeout(() => {
-                this.runnerRecentlyHit = false;
-            }, this.hitCooldown);
-        }
+        collision.setCollidable(false);
+
+        this.handleRunnerDamage();
     }
 
 
@@ -404,7 +372,6 @@ export class GameController {
                 bonus.startFlash();
 
                 if (bonus.type === "heart") {
-                    console.log("Sumando vida");
                     this.lifeManager.gainLife();
                 }
  
@@ -415,12 +382,40 @@ export class GameController {
         this.bonuses = this.bonuses.filter(b => b.active || !b.flashFinished);
     }
 
+    /**
+     * Maneja daño al runner desde cualquier fuente (suelo, techo, tubería, etc)
+     * @return {void}
+     */
+    handleRunnerDamage() {
+        if (this.state !== "playing") return;
+
+        // Evitar daño si está invulnerable o en cooldown
+        if (this.runner.isInvulnerable || this.runnerRecentlyHit) return;
+
+        const remainingLives = this.lifeManager.loseLife();
+
+        // Si todavía tiene vidas → parpadeo
+        if (remainingLives > 0) {
+            this.runner.startInvulnerability();
+        } else {
+            // Si NO tiene vidas → explota
+            this.runner.startExplosion();
+            this.state = "exploding";
+            this.explosionStartTime = performance.now();
+        }
+
+        // Activar cooldown anti-daño inmediato
+        this.runnerRecentlyHit = true;
+        setTimeout(() => (this.runnerRecentlyHit = false), this.hitCooldown);
+    }
+
+
 
     #randomBonus(){
         const probabilities = {
-            coin: 0.65,   // 50%
-            star: 0.3,   // 40%
-            heart: 0.05   // 10%
+            coin: 0.65,   // 65%
+            star: 0.3,   // 30%
+            heart: 0.05   // 5%
         };
 
         const r = Math.random();
