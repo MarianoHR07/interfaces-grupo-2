@@ -37,7 +37,7 @@ export class GameController {
         this.distancePipes = this.speed * (this.spawnInterval / 1000);   // distancia entre dos tuberias
         // ***********************************************************************
 
-        this.state = "playing";
+        this.state = "ready";
         this.explosionStartTime = null;
 
         // --------------- Runner --------------------
@@ -84,7 +84,7 @@ export class GameController {
      */
     reset() {
         // Reiniciar estado del juego
-        this.state = "playing";
+        this.state = "ready";
         this.score = 0;
 
         // Reiniciar Runner
@@ -106,13 +106,28 @@ export class GameController {
         window.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
                 e.preventDefault();
-                this.runner.jump();
+                if (this.state === "ready") {
+                    this.state = "playing";
+                    this.runner.jump(); // primer salto opcional
+                    return
+                }
+                if (this.state === "playing") {
+                    this.runner.jump();
+                }
             }
         });
 
         // Click del mouse
         window.addEventListener("mousedown", () => {
+            if (this.state === "ready") {
+            this.state = "playing";
+            this.runner.jump(); // primer salto opcional
+            return;
+        }
+
+        if (this.state === "playing") {
             this.runner.jump();
+        }
         });
     }
 

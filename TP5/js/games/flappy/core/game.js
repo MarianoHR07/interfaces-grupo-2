@@ -12,7 +12,6 @@ export class Game {
     }
 
     start() {
-
         this.loopId = requestAnimationFrame(this.loop.bind(this));
     }
 
@@ -36,8 +35,6 @@ export class Game {
         this.controller.update(deltaTime, timestamp);       // actualiza los estados del juego
         this.controller.draw();                             // dibuja el estado actual del juego
         
-
-        // if(this.controller.gameOver){                       // si el juego terminó
         if (this.controller.state === "gameOver") {    
             this.pause();
             this.showGameOverOverlay();
@@ -49,5 +46,9 @@ export class Game {
 
     showGameOverOverlay() {
         this.overlay.style.display = "flex";
+    }
+
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 }

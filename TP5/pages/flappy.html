@@ -15,9 +15,13 @@
 
             <div class="flappy-container"> 
                 <!-- Menu de inicio -->
-                <!-- <div>
-
-                </div> -->
+                <div id="startMenuFlappy" class="start-menu-flappy">
+                    <div class="start-menu-content-flappy">
+                        <img src="js/games/flappy/assets/images/runner/runner-menu.png" class="menu-character-flappy" alt="bichito">
+                        <h1 class="menu-title-flappy">Flappy Extraterrestrial</h1>
+                        <button id="startBtnFlappy" class="start-btn-flappy">Comenzar</button>
+                    </div>
+                </div>
 
                 <!-- Fondo Parallax -->
                 <div class="layer layer-7"></div>
@@ -28,12 +32,14 @@
                 <div class="layer layer-2"></div>
                 <div class="layer layer-1"></div>
 
+                <!-- Juego -->
                 <canvas id="flappyCanvas" width="921" height="550"></canvas>
 
                 <!-- OVERLAY GAME OVER -->
-                <div id="gameOverOverlay" class="game-over-overlay">
+                <div id="gameOverOverlayFlappy" class="game-over-overlay-flappy">
                     <h2>¡Game Over!</h2>
-                    <button id="retryBtn" class="game-over-btn">Reintentar</button>
+                    <button id="retryBtnFlappy" class="game-over-btn-flappy">Reintentar</button>
+                    <button id="backToMenuBtnFlappy" class="game-over-btn-flappy back-menu-btn-flappy">Volver al inicio</button>
                 </div>
             </div>
 
