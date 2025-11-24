@@ -8,7 +8,8 @@ export class ColliderSystem {
      */
     static checkAgainstList(entity, list) { // "Dice con cuál de las entidades de list se está chocando entity."
         const A = entity.colliderBounds();
-        if (!A.active) return null;
+
+        if (!A.active || !A.collidable) return null;
 
         for (const other of list) {
             if (other === entity) continue;
@@ -148,4 +149,23 @@ export class ColliderSystem {
         // comprobamos si el punto está dentro de la elipse, usando la ecuación de la elipse (normalizada)
         return (dx * dx + dy * dy) <= 1;
     }   
+
+    static circleVsEllipse(circle, ellipse) {
+        // consideramos el círculo como una elipse con rx = ry = r
+        const rxC = circle.width / 2;
+        const ryC = circle.height / 2; // normalmente igual a rxC
+        const cx = circle.x + rxC;
+        const cy = circle.y + ryC;
+
+        const rxE = ellipse.width / 2;
+        const ryE = ellipse.height / 2;
+        const ex = ellipse.x + rxE;
+        const ey = ellipse.y + ryE;
+
+        // transformamos al sistema de coordenadas de la elipse
+        const dx = (cx - ex) / (rxC + rxE);
+        const dy = (cy - ey) / (ryC + ryE);
+
+        return (dx * dx + dy * dy) <= 1;
+    }
 }

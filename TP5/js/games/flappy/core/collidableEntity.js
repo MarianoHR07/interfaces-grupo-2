@@ -31,6 +31,21 @@ export class CollidableEntity extends MovableEntity {
     );
   }
 
+  /** Chequea si el elemento se encuentra activo para colisiones
+   *   @return {boolean}  
+   */
+  isCollidable() { 
+        return this.collidable;
+  }
+
+  /** Activa y desactiva la propiedad de colisionar
+   *   @param {boolean} state 
+   *   @return {void}
+   */
+  setCollidable(state){
+    this.collidable = state
+  }
+
   /**
    * Devuelve los límites del collider de la entidad.
    * @returns {object} objeto con las propiedades del collider
@@ -43,7 +58,9 @@ export class CollidableEntity extends MovableEntity {
             y: this.y,
             width: this.width,
             height: this.height,
-            active: this.active
+            active: this.active,
+            collidable:this.collidable,
         };
-    }
+  }
+
 }

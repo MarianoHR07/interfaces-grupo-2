@@ -5,11 +5,12 @@ import { ObstacleController } from './obstacleController.js';
 import { Runner } from "../models/runner.js";
 import { RunnerView } from "../views/runnerView.js";
 
-import { Bonus } from "../models/bonus.js";
-import { BonusView } from "../views/bonusView.js";
-
 import { ColliderSystem } from '../core/colliderSystem.js';
 import { DebugColliderView } from '../views/debugColliderView.js';
+
+import { BonusTypes } from '../core/bonusTypes.js';
+import { BonusController } from './bonusController.js';
+import { CoinView } from '../views/coinView.js';
 
 export class GameController {
     /**
@@ -21,11 +22,13 @@ export class GameController {
         // this.gameOver = false;
         this.score = 0;
         this.bestScore = 0;
-
+        
         // --------------- Obstáculos ----------------  
 
         /** @type {ObstacleController} controlador de obstáculos */
         this.obstacleController = new ObstacleController(ctx);
+        
+        this.aux_obstacle = this.obstacleController.getObstacleData();
 
         // **************VER DE LLEVAR A UNA CLASE EN COMUN PARA BONUS Y OBSTACLE***************
         this.speed = 150; // px/s hacia la izquierda (es equivalente a vx = -150)
@@ -44,29 +47,18 @@ export class GameController {
         this.runnerView = new RunnerView(this.runner, ctx);
         this.registerInput();
 
-        // --------------- cargar bonus ----------------
-        this.bonuses = []; 
-        this.bonusView = new BonusView(ctx);
+        // ----------------- Bonus ---------------- 
+        this.coinView = new CoinView(ctx);
+        this.bonusController = new BonusController(
+            ctx,
+            { minY: 0, maxY: 0, x: 0 },  // spawnArea
+            this.speed,                  // speed 
+        );
+        // Nos suscribimos al evento emitido por BonusController
+        this.bonusController.on("bonus-taken", (effect) => {
+            this.applyBonusEffect(effect); // callback
+        });
 
-        // objeto de bonificacion
-        this.coinSprite = new Image();
-        this.coinSprite.src = "js/games/flappy/assets/images/bonus/coin-spritesheet.png";
-
-        this.starSprite = new Image();
-        this.starSprite.src = "js/games/flappy/assets/images/bonus/star-spritesheet.png";
-
-        this.heartSprite = new Image();
-        this.heartSprite.src = "js/games/flappy/assets/images/bonus/heart-spritesheet.png";
-
-        // Tamaños calculados
-        this.coinFrameWidth = 5650 / 10;
-        this.coinFrameHeight = 566;
-
-        this.starFrameWidth = 893 / 12;
-        this.starFrameHeight = 69;
-
-        this.heartFrameWidth = 1036 / 14;
-        this.heartFrameHeight = 66;
     }
 
     /**
@@ -83,9 +75,9 @@ export class GameController {
 
         // Reiniciar Obstaculos
         this.obstacleController.reset();
-        
+
         // Reiniciar Bonus
-        this.bonuses = [];
+        this.bonusController.reset();
     }
 
     registerInput() {
@@ -118,6 +110,9 @@ export class GameController {
         // Actualizar siempre el runner (caminar / explosion / gravedad)
         this.runner.update();
 
+        // actualizar bonus (animación + movimiento)
+        this.bonusController.update(deltaTime);
+
         // Estado: explosión
         if (this.state === "exploding") {
             // si la explosión terminó → pasar al estado finishDelay
@@ -143,23 +138,26 @@ export class GameController {
 
         // Si está jugando (playing): actualizar obstáculos y bonus
         const { topHeight: topHeight, bottomY: bottomY} = this.obstacleController.update(deltaTime, timestamp);
+        // SpawnArea = this.obstacleController.getLastSpawnArea();
         
         if(topHeight!== null && bottomY !== null){ 
             if (Math.random() < 0.7) {  // BONUS: 70% de probabilidad de generar un bonus
                 this.#spawnBonus(topHeight, bottomY);
+
                 // el bonus siempre depende de dos tuberias, con lo cual si se genera(ya que tienen un porcentaje de aparicion),
                 // solo se genera en el momento en que instanciamos un par de obstaculos
             }
         }
 
         // --- COLISIÓN CON EL SUELO ---
+        const starActive = this.runner.isInvincible();
         const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
 
         if (this.runner.y > bottomLimit) {
             this.runner.y = bottomLimit;
 
             // activar game over por colisión con el suelo
-            if (this.state === "playing") {
+            if (!starActive && this.state === "playing") {
                 this.runner.startExplosion();
                 this.state = "exploding";
                 this.explosionStartTime = performance.now();
@@ -173,195 +171,176 @@ export class GameController {
             this.runner.y = 0;
 
             // activar game over por colisión con el techo
-            if (this.state === "playing") {
+            if (!starActive && this.state === "playing") {
                 this.runner.startExplosion();
                 this.state = "exploding";
                 this.explosionStartTime = performance.now();
             }
 
             return;
-        }
-
-        // actualizar bonus (animación + movimiento)
-        this.bonuses.forEach(b => b.update(deltaTime, this.speed));
-        this.bonuses = this.bonuses.filter(b => b.active);
-
-        
+        }        
     }
 
     // renderiza el estado actual del juego en la pantalla
     draw() {
         this.obstacleController.draw();
+        
+        this.bonusController.draw();
 
         this.runnerView.draw();
-
-        this.bonuses.forEach(b => this.bonusView.draw(b));
 
         // Depuración: dibujar cajas de colisión
         this.debugView.enabled = false; // activar/desactivar vista de depuración
         if(this.debugView.enabled)
-            this.#drawCollidersBox(this.runner, this.obstacleController.obstacles, this.bonuses);
+            this.#drawCollidersBox(this.runner, this.obstacleController.obstacles, this.bonusController.bonuses);
+
+        this.coinView.draw(this.score);
     }
 
-    // Generacion de bonus
+
     #spawnBonus(topHeight, bottomY) {
-        // Tipo aleatorio: moneda, estrella o corazon
-        const type = this.#randomBonus();
+        if (!this.obstacleController.obstacles) return;
 
-        let sprite, frameCount, frameWidth, frameHeight, scale;
+        const halfObstacleX = this.aux_obstacle ? this.aux_obstacle.width / 2 : 0;
 
-        // ------------ CONFIG SEGÚN TIPO ------------
-        if (type === "coin") {
-            sprite = this.coinSprite;
-            frameCount = 10;
-            frameWidth = this.coinFrameWidth;    // 565
-            frameHeight = this.coinFrameHeight;  // 566
-            scale = 0.1;
-        } else {
-            if(type === "star"){
-                sprite = this.starSprite;
-                frameCount = 12;
-                frameWidth = this.starFrameWidth;    // 74
-                frameHeight = this.starFrameHeight;  // 69
-                scale = 0.8;
-            } else {
-                if(type === "heart"){
-                    sprite = this.heartSprite;
-                    frameCount = 14;
-                    frameWidth = this.heartFrameWidth;    // 74
-                    frameHeight = this.heartFrameHeight;  // 66
-                    scale = 0.7;
-                }
-            }
-            
-        }
+        // Elegir tipo de bonus (clase)
+        const type = this.bonusController.pickBonusType();
 
-        const bonusHeightScaled = frameHeight * scale;
+        // Obtener datos del bonus sin instanciar
+        const bonusData = this.bonusController.getBonusData(type);
+        const bonusHeight = bonusData.height;
+        const halfBonusWidth = bonusData.width / 2;
 
         // -------------------------
         //   ZONAS VÁLIDAS
         // -------------------------
-
         const zones = [];
         const margin = 20;
-
         const canvasW = this.ctx.canvas.width;
         const canvasH = this.ctx.canvas.height;
+        const distanceBetweenObstacles = this.distancePipes
 
         //  ##### Zona A #### En el pasillo entre dos tuberias de arriba
         const topMin = (topHeight / 2) + margin;
-        const topMax = topHeight - bonusHeightScaled - margin;
+        const topMax = topHeight - bonusHeight - margin;
         if (topMax > topMin) {
             zones.push({
-                min: topMin,
-                max: topMax,
-                x: canvasW + this.distancePipes / 2  // cuanto me despego del centro de la tuberia hacia la derecha
+                minY: topMin,
+                maxY: topMax,
+                x: canvasW + distanceBetweenObstacles/2 + halfBonusWidth  // cuanto me despego del centro de la tuberia hacia la derecha
             });
         }
 
         // ##### Zona B ##### En el gap(entre las bocas de dos tuberias)
+        /** @type {number} */
         const gapMin = topHeight + margin;
-        const gapMax = bottomY - bonusHeightScaled - margin;
+        const gapMax = bottomY - bonusHeight - margin;
         if (gapMax > gapMin) {
             zones.push({
-                min: gapMin,
-                max: gapMax,
-                x: canvasW  // posición normal
+                minY: gapMin,
+                maxY: gapMax,
+                x: canvasW + halfObstacleX - halfBonusWidth // posición normal
             });
         }
 
         // ##### Zona C ##### Debajo del tubo inferior
         const bottomMin = bottomY - margin;
-        const bottomMax = canvasH - bonusHeightScaled - margin;
+        const bottomMax = canvasH - bonusHeight - margin;
         if (bottomMax > bottomMin) {
             zones.push({
-                min: bottomMin,
-                max: bottomMax,
-                x: canvasW + this.distancePipes / 2
+                minY: bottomMin,
+                maxY: bottomMax,
+                x: canvasW + distanceBetweenObstacles/2 + halfBonusWidth 
             });
         }
 
+        // Si no hay zonas válidas, no spawnear
+        if (zones.length === 0) return;
+
         // Elegir zona válida al azar
-        const zona = zones[Math.floor(Math.random() * zones.length)];
+        const spawnArea = zones[Math.floor(Math.random() * zones.length)];
 
-        // Y final dentro de esa zona
-        const bonusY = Math.floor(Math.random() * (zona.max - zona.min) + zona.min);
-
-
-        // -------------------------
-        // Crear BONUS
-        // -------------------------
-        const bonus = new Bonus(
-            zona.x + 25,
-            bonusY,
-            sprite,
-            frameCount,
-            frameWidth,
-            frameHeight,
-            scale
-        );
-
-
-        this.bonuses.push(bonus);
+        // Crear bonus real
+        this.bonusController.spawnBonus(type,spawnArea);
     }
 
-    #drawCollidersBox(runner, obstacles, coins) {
-        this.debugView.drawCollider(runner);
-        obstacles.forEach(o => this.debugView.drawCollider(o));
-        coins.forEach(c => this.debugView.drawCollider(c));
-    }
 
-    #randomBonus(){
-        const probabilities = {
-            coin: 0.6,   // 50%
-            star: 0.3,   // 40%
-            heart: 0.1   // 10%
-        };
+    /**
+     * Aplica el efecto recibido desde un bonus.
+     * Cada bonus envía un objeto `effect` con datos como:
+     *   - type     → tipo de bonus (STAR, COIN, HEART)
+     *   - amount   → cantidad a sumar (monedas)
+     *   - duration → duración de la invencibilidad (estrella)
+     *   - heal     → cantidad de vidas a recuperar (corazón)
+     *
+     * @param {Object} effect - Efecto emitido por un bonus.
+     */
+    applyBonusEffect(effect) {
+        switch(effect.type) {
 
-        const r = Math.random();
-        let type;
+            case BonusTypes.STAR:
+                // this.runner.setInvincible(true);
 
-        if (r < probabilities.coin) {
-            type = "coin";
-        } else if (r < probabilities.coin + probabilities.star) {
-            type = "star";
-        } else {
-            type = "heart";
+                // setTimeout(() => {
+                //     this.runner.setInvincible(false);
+                // }, effect.duration);
+                
+
+                // this.runner.setInvincible(true, effect.duration);
+                // setTimeout(() => {
+                //     this.runner.setInvincible(false);
+                // }, effect.duration);
+
+                this.runner.setInvincible(true, effect.duration);
+                break;
+
+            case BonusTypes.COIN:
+                this.score += effect.amount;
+
+                if (this.score > this.bestScore) {
+                    this.bestScore = this.score;
+                    console.log("Has impuesto un nuevo record: " + this.score);
+                }
+                // console.log("Bonus collected!");
+                // console.log("Score: " + this.score);
+                break;
+
+            case BonusTypes.HEART:
+                this.lives = (this.lives < 3) ? (this.lives += effect.heal) : this.lives
+                break;
+
+            default:
+                console.warn("Bonus desconocido:", effect.type);
         }
-        return type;
     }
 
+    
 
     /**
         * Maneja las colisiones entre el runner y otros objetos con los que puede interactuar.
         * @return {boolean} true si hubo colisión con un obstáculo (game over), false en caso contrario
     */
     #handleCollitions() {
-        // si el runner tiene power-up activo, no colisiona con obstaculos
-        const hasPowerUpColision = !this.runner.isCollidable(); 
 
-        // colisiones runner - obstáculos
-        let obstaclesColision = false;
-        if(!hasPowerUpColision){ // si no tiene power-up activo, chequea colisiones con obstaculos
+        const starActive = this.runner.isInvincible();
+
+        // Colisiones con obstáculos solo si NO es invencible
+        if (!starActive) {
             const obstacles = this.obstacleController.obstacles;
-            obstaclesColision = ColliderSystem.checkAgainstList(this.runner, obstacles);
-        }
-   
-        if (obstaclesColision) {
-            console.log("Game Over!");
-            this.runner.die();
-            // this.runnerView.draw();
-            return true;
-        }   
-        
-        const bonusColision = ColliderSystem.checkAgainstList(this.runner, this.bonuses);
-        if (bonusColision) {
-            this.score += bonusColision.collect();
-            if (this.score > this.bestScore) {
-                this.bestScore = this.score;
+            if (ColliderSystem.checkAgainstList(this.runner, obstacles)) {
+                this.runner.die();
+                return true;
             }
-            console.log("Bonus collected!");
-            console.log("Score: " + this.score);
+        }
+
+        // Colisiones con BONUS (SIEMPRE)
+        const hitBonus = ColliderSystem.checkAgainstList(
+            this.runner,
+            this.bonusController.bonuses
+        );
+
+        if (hitBonus) {
+            hitBonus.collect(); // dispara COLLECT y REMOVE automáticamente
         }
 
         return false;
@@ -370,6 +349,10 @@ export class GameController {
     isGameOver() {
         return this.#handleCollitions();
     }
-        
 
+    #drawCollidersBox(runner, obstacles, coins) {
+        this.debugView.drawCollider(runner);
+        obstacles.forEach(o => this.debugView.drawCollider(o));
+        coins.forEach(c => this.debugView.drawCollider(c));
+    }
 }

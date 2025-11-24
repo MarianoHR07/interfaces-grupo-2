@@ -38,6 +38,19 @@ export class ObstacleController {
         this.lastSpawn = 0;
     }
 
+    /** 
+     * Devuelve los datos de un obstáculo sin instanciar un objeto completo de la clase `Obstacle`.
+     * 
+     * @returns {Object} Datos del obstáculo con los atributos necesarios:
+     *   - `width`: Ancho fijo del obstáculo (110).
+     *   - `height`: Alto del obstáculo basado en la imagen.
+     *   - `vx`: Velocidad horizontal del obstáculo (-150).
+     *   - `colliderType`: Tipo de colisionador ('rect').
+     */
+    getObstacleData() {
+        return Obstacle.createObstacleData(this.imgTop);
+    }
+
     addObstaclePair() {
         const { topObstacle: topObstacle, bottomObstacle: bottomObstacle , topHeight: topHeight, bottomY: bottomY} = this.#spawnPair();
         this.obstacles.push(topObstacle, bottomObstacle);
@@ -97,7 +110,7 @@ export class ObstacleController {
         // crear obstáculos
         const top = new Obstacle(
             this.ctx.canvas.width,
-            topHeight - this.imgTop.height,
+            topHeight - this.imgTop.height, // puede dar valores negativos, la idea es que para esos valores que se van del rango del canvas, no los dibuje. (una porcion de la imagen se saldria del canvas)
             'top',
             this.imgTop
         );

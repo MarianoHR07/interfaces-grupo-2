@@ -4,6 +4,13 @@ import { CollidableEntity } from "../core/collidableEntity.js";
 export class Runner extends CollidableEntity {
     constructor(x, y) {
         super(x, y);
+         // Sprite del runner
+        this.sprite = new Image();
+        this.sprite.src = "js/games/flappy/assets/images/runner/runner-spritesheet.png";
+
+        // Sprite de explosión
+        this.explosionSprite = new Image();
+        this.explosionSprite.src = "js/games/flappy/assets/images/runner/explosion-spritesheet.png";
 
         // --- Datos del RUNNER ---
         this.frameWidth = 266;
@@ -44,6 +51,12 @@ export class Runner extends CollidableEntity {
 
         this.isExploding = false;
         this.explosionFinished = false;
+        
+        // --- Estrella / invencibilidad ---
+        this.invincible    
+        this.particles = [];
+        this.invincibleStartTime = 0;
+        this.invincibleDuration = 0;// duración total (ms)
     }
 
     /**
@@ -67,6 +80,10 @@ export class Runner extends CollidableEntity {
         this.explosionFinished = false;
         this.explosionCurrentFrame = 0;
         this.explosionFrameCount = 0;
+
+        // --- Reset invencibilidad ---
+        this.invincible = false;
+        this.particles = [];
     }
 
     update() {
@@ -83,6 +100,15 @@ export class Runner extends CollidableEntity {
             this.vy = this.maxFallSpeed;
         }
         this.y += this.vy;  // mover al personaje
+        
+        // Partículas
+        this.generateParticles();
+        this.updateParticles();
+
+        // Cancelar invencibilidad cuando se acaba el tiempo
+        if (this.invincible && this.getInvincibleTimeLeft() <= 0) {
+            this.setInvincible(false);
+        }
     }
 
     _updateRunAnimation() {
@@ -133,5 +159,80 @@ export class Runner extends CollidableEntity {
     setCollidable(state) { 
         this.collidable = state;
     }
+
+    setInvincible(value, duration = 0) {
+        const now = performance.now();
+
+        if (value) {
+            // Extender duración si ya está activo
+            if (this.invincible) {
+                const timeLeft = this.getInvincibleTimeLeft();
+                this.invincibleDuration = timeLeft + duration;
+                this.invincibleStartTime = now;
+            }
+            // Activar desde cero
+            else {
+                this.invincible = true;
+                this.invincibleStartTime = now;
+                this.invincibleDuration = duration;
+            }
+        } else {
+            // Apagar correctamete
+            this.invincible = false;
+            this.invincibleDuration = 0;
+            this.invincibleStartTime = 0;
+            this.particles = [];
+        }
+    }
+
+    getInvincibleTimeLeft() {
+        if (!this.invincible) return 0;
+
+        const elapsed = performance.now() - this.invincibleStartTime;
+        return Math.max(0, this.invincibleDuration - elapsed);
+    }
+
+    shouldBlink() {
+        if (!this.invincible) return false;
+
+        const timeLeft = this.getInvincibleTimeLeft();
+        return timeLeft < 1000; // último segundo
+    }
+
+    isInvincible() {
+        return this.invincible;
+    }
+
+    /** Genera partículas luminosas flotando alrededor del runner */
+    generateParticles() {
+        if (!this.invincible) return;
+        const centerY = this.y + this.height / 2;
+        const count = 2; // partículas por frame
+        for (let i = 0; i < count; i++) {
+            this.particles.push({
+                x: this.x + (Math.random() * this.width - this.width/2),
+                y: this.y + (Math.random() * this.height - this.height/2),
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                alpha: 1,
+                size: 2 + Math.random() * 3
+            });
+        }
+    }
+
+    /** Actualiza la animación de partículas */
+    updateParticles() {
+        if (!this.invincible) return;
+
+        this.particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.03;
+        });
+
+        // limpiar partículas apagadas
+        this.particles = this.particles.filter(p => p.alpha > 0);
+    }
+
 }
 

@@ -35,4 +35,22 @@ export class Obstacle extends CollidableEntity {
         if (!this.active) return false;
         return super.collidesWith(entity);
     }
+    
+    /**
+     * Método estático para crear un objeto con los atributos necesarios,
+     * @param {HTMLImageElement} image imagen de la tubería
+     * @returns {Object} Objeto con los siguientes atributos:
+     *   - `width`: Ancho fijo del obstáculo (110).
+     *   - `height`: Alto del obstáculo, basado en la altura de la imagen.
+     *   - `vx`: Velocidad horizontal del obstáculo (-150).
+     *   - `colliderType`: Tipo de colisionador ('rect').
+     */
+    static createObstacleData(image) {
+        return {
+            width: 110,
+            height: image.height,
+            vx: -150,
+            colliderType: "rect"
+        };
+    }
 }
