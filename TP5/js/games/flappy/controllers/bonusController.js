@@ -33,16 +33,16 @@ export class BonusController extends EventEmitter{
         this.spawnTimer = 0;
 
         // probabilidades de aparición
-        // this.spawnTable = [
-        //     { type: BonusTypes.COIN,  chance: 0.7 },
-        //     { type: BonusTypes.HEART, chance: 0.2 },
-        //     { type: BonusTypes.STAR,  chance: 0.1 }
-        // ];
         this.spawnTable = [
-            { type: BonusTypes.COIN,  chance: 0.0 },
-            { type: BonusTypes.HEART, chance: 0.0 },
-            { type: BonusTypes.STAR,  chance: 1 }
+            { type: BonusTypes.COIN,  chance: 0.65 },
+            { type: BonusTypes.HEART, chance: 0.05 },
+            { type: BonusTypes.STAR,  chance: 0.3 }
         ];
+        // this.spawnTable = [
+        //     { type: BonusTypes.COIN,  chance: 0.0 },
+        //     { type: BonusTypes.HEART, chance: 0.0 },
+        //     { type: BonusTypes.STAR,  chance: 1 }
+        // ];
 
         // this.onBonusTaken = onBonusTaken;
     }
@@ -61,13 +61,13 @@ export class BonusController extends EventEmitter{
 
     /** El GameController llama a esto cada frame */
     update(deltaTime) {
-        // actualizar todos los bonus
+        // actualizar todos los bonus (animación + movimiento)
         for (const bonus of this.bonuses) {
             bonus.update(deltaTime, this.speed);
         }
 
         // limpiar bonus activos
-        this.bonuses = this.bonuses.filter(b => b.active);
+        this.bonuses = this.bonuses.filter(b => b.active || !b.flashFinished);
 
         // manejar el cooldown del spawneo
         // this.spawnTimer += deltaTime;

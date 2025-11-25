@@ -6,23 +6,62 @@ export class ColliderSystem {
      * @param {object[]} list lista de entidades contra las que comprobar
      * @returns {object|null} la entidad con la que colisiona, o null si no hay colisión
      */
-    static checkAgainstList(entity, list) { // "Dice con cuál de las entidades de list se está chocando entity."
+    /*static checkAgainstList(entity, list) { // "Dice con cuál de las entidades de list se está chocando entity."
         const A = entity.colliderBounds();
-
         if (!A.active || !A.collidable) return null;
 
         for (const other of list) {
             if (other === entity) continue;
 
             const B = other.colliderBounds();
-            if (!B.active) continue;
+            if (!B.active || !B.collidable) return null;
 
             if (ColliderSystem.collides(A, B)) {
                 return other; // devolvemos el que chocó
             }
         }
         return null;
+    }*/
+
+
+    static checkAgainstList(entity, list) {
+        if (!entity || !Array.isArray(list) || list.length === 0) return null;
+
+        // Comprobaciones sobre la entidad que chequea (runner, etc.)
+        const entityActive = ('active' in entity) ? !!entity.active : true;
+        const entityCollidable = (typeof entity.isCollidable === "function")
+            ? !!entity.isCollidable()
+            : ('collidable' in entity ? !!entity.collidable : true);
+
+        if (!entityActive || !entityCollidable) return null;
+
+        const A = entity.colliderBounds();
+        if (!A) return null;
+
+        for (const other of list) {
+            if (!other || other === entity) continue;
+
+            // Si el elemento de la lista no está activo o collidable lo saltamos,
+            const otherActive = ('active' in other) ? !!other.active : true;
+            const otherCollidable = (typeof other.isCollidable === "function")
+                ? !!other.isCollidable()
+                : ('collidable' in other ? !!other.collidable : true);
+
+            if (!otherActive || !otherCollidable) continue;
+
+            const B = other.colliderBounds();
+            if (!B) continue;
+
+            if (ColliderSystem.collides(A, B)) {
+                return other; // devolvemos el que chocó
+            }
+        }
+
+        return null; // no se encontró ninguna colisión
     }
+
+
+
 
     /**
      * Determina si dos colliders colisionan, según su tipo.

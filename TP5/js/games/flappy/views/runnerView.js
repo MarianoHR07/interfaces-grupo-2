@@ -7,19 +7,33 @@ export class RunnerView {
 
         // Timer interno para parpadeo
         this.invincibleTimer = 0;
+
+        this.ctx.globalAlpha = 1;
     }
 
     draw() {
         const m = this.runner;
+
+        // Si NO está explotando → dibujar runner normal
+        if (!m.sprite.complete) {
+            this.ctx.globalAlpha = 1;
+            return; // esperar carga
+        }
+
         if (!m.isInvincible()) {
             this.invincibleTimer = 0;
         }
 
+        // aplicar transparencia (parpadeo)
+        this.ctx.globalAlpha = m.opacity ?? 1;
+
         // Si está explotando → dibujar explosión
         if (m.isExploding) {
             this.drawExplosion();
+            this.ctx.globalAlpha = 1;
             return;
         }
+
 
         // Si está invencible → efecto especial
         if (m.isInvincible()) {
@@ -29,6 +43,9 @@ export class RunnerView {
 
         // Dibujar runner normal
         this.drawNormal();
+
+        // resetear alpha
+        this.ctx.globalAlpha = 1;
     }
 
     drawNormal() {

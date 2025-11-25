@@ -5,7 +5,10 @@ import { EventEmitter } from "../core/eventEmitter.js";
 export class Bonus extends Collectible {
     constructor(x, y, colliderType = "circle") {
         super(x, y, colliderType);
+        this.collidable = true;
+        this.collected = false;
 
+        // // ---- Bonus ----
         this.active = true;
         this.events = new EventEmitter();
 
@@ -16,8 +19,28 @@ export class Bonus extends Collectible {
 
         this.frameCount = 1;
         this.currentFrame = 0;
-        this.frameSpeed = 5;
+        this.frameSpeed = 8; // avanza un frame cada 8 updates
         this.frameTimer = 0;
+        
+
+        // ---- Destello ----
+        this.flashFrameWidth = 347;     
+        this.flashFrameHeight = 348;
+        this.flashFrameCount = 8;
+
+        this.flashScale = 2;      
+
+        this.flashWidth = this.flashFrameWidth * this.flashScale;
+        this.flashHeight = this.flashFrameHeight * this.flashScale;
+
+        this.flashCurrentFrame = 0;
+        this.flashFrameSpeed = 8;
+        this.flashFrameTimer = 0;
+
+        this.isFlashing = false;
+        this.flashFinished = false;
+
+        
     }
 
     /**
@@ -31,15 +54,33 @@ export class Bonus extends Collectible {
 
     collect() {
         if (!this.active) return;
+        
+        this.startFlash();
         console.log("Bonus recolectado");
-        this.active = false;
 
         // 🔥 EMITE EL EVENTO, EL CONTROLADOR LO MANEJA
         this.events.emit("COLLECT", this.getEffectData()); // Envia el tipo de efecto
-        this.events.emit("REMOVE", this); // Avisa que debe eliminarse
+        
     }
 
     update(deltaTime, speed) {
+        // Animacion del flash
+        if (this.isFlashing) {
+            this.flashFrameTimer++;
+
+            if (this.flashFrameTimer >= this.flashFrameSpeed) {
+                this.flashFrameTimer = 0;
+                this.flashCurrentFrame++;
+
+                if (this.flashCurrentFrame >= this.flashFrameCount) {
+                    this.flashFinished = true;
+                    this.isFlashing = false;
+                    this.events.emit("REMOVE", this); // Avisa que debe eliminarse
+                }
+            }
+            // return;
+        }
+
         this.x -= speed * (deltaTime / 1000);
 
         // animación genérica
@@ -74,4 +115,18 @@ export class Bonus extends Collectible {
             colliderType: colliderType
         };
     }
+
+    startFlash() {
+        if (this.isFlashing || this.flashFinished) return; // evita reinicios
+        this.isFlashing = true;
+        this.flashCurrentFrame = 0;
+        this.flashFrameTimer = 0;
+        this.flashFinished = false;
+
+        // El bonus desaparece visualmente, pero sigue "vivo" hasta que termine flash
+        this.active = false;
+
+        this.setCollidable(false);
+    }
+
 }

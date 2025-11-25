@@ -20,6 +20,78 @@
 }
 
 
+/* --- -------- MENU DE INICIO -------------- */
+.start-menu-flappy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background: url("/mnt/data/vecteezy_alien-planet-game-background_7357531.jpg"); */
+  /* background: url("js/games/flappy/assets/images/background/background.jpg"); */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.start-menu-content-flappy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-character-flappy {
+  width: 220px;
+  image-rendering: pixelated;
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+.menu-title-flappy {
+  font-family: "Arial Black", sans-serif;
+  font-size: 38px;
+  color: #ffffff;
+  text-shadow: 0 0 10px #ff0099;
+}
+
+.start-btn-flappy {
+  padding: 14px 35px;
+  font-size: 22px;
+  font-weight: bold;
+  background: #ff0099;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.start-btn-flappy:hover {
+  transform: scale(1.07);
+  background: #ff40b3;
+}
+
+.back-menu-btn-flappy {
+  margin-top: 10px;
+  background: #5555ff;
+}
+
+.back-menu-btn-flappy:hover {
+  background: #7777ff;
+}
+
+
+/* ------------------ FONDO PARALLAX ----------------- */
 @keyframes scroll {
     0% {background-position-x: 0px;}
     100% {background-position-x: -1518px;}
@@ -35,72 +107,77 @@
   background-size: cover;
 }
 
-
+  /* Fondo */
   .layer-7 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer7.png"); 
-    animation: scroll 30s infinite linear;
+    animation: scroll 400s infinite linear;
   }
 
+  /* Planetas */
   .layer-6 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer6.png"); 
-    animation: scroll 28s infinite linear;
+    animation: scroll 200s infinite linear;
   }
 
+  /* Nubes */
   .layer-5 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer5.png"); 
-    animation: scroll 25s infinite linear;
+    animation: scroll 100s infinite linear;
   }
   
 
-.layer-4 {        
+  .layer-4 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer4.png"); 
-    animation: scroll 22s infinite linear;
+    animation: scroll 88s infinite linear;
   }
 
   .layer-3 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer3.png"); 
-    animation: scroll 20s infinite linear;
+    animation: scroll 67s infinite linear;
   }
 
   .layer-2 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer2.png"); 
-    animation: scroll 15s infinite linear;
+    animation: scroll 40s infinite linear;
   }
 
   .layer-1 {        
     background-image: url("../../js/games/flappy/assets/images/background/layer1.png"); 
-    animation: scroll 12s infinite linear;
+    animation: scroll 22s infinite linear;
   }
- /* OVERLAY GAME OVER */
-  .game-over-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    color: white;
-    font-size: 2rem;
-    z-index: 999;
-    display: none; /* oculto por defecto */
+
+
+
+ /* ------------------ OVERLAY GAME OVER ------------------ */
+  .game-over-overlay-flappy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  color: white;
+  font-size: 2rem;
+  z-index: 999;
+  display: none; /* oculto por defecto */
 }
 
-.game-over-btn {
-    padding: 12px 24px;
-    background: #ffcc00;
-    color: #222;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: 0.2s;
+.game-over-btn-flappy {
+  padding: 12px 24px;
+  background: #ffcc00;
+  color: #222;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.2s;
 }
 
-.game-over-btn:hover {
-    background: #ffdd33;
+.game-over-btn-flappy:hover {
+  background: #ffdd33;
 }

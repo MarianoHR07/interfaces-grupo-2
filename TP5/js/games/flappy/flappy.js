@@ -6,28 +6,48 @@ export function initFlappy(container) {
     /** @type {HTMLCanvasElement} */
     const canvas = container.querySelector('#flappyCanvas');
 
-    // obtenemos el overlay de game over
-    let overlay = container.querySelector("#gameOverOverlay");
-    const retryBtn = container.querySelector("#retryBtn");
+    // MENU DE INICIO
+    const startMenu = container.querySelector("#startMenuFlappy");
+    const startBtn = container.querySelector("#startBtnFlappy");
 
-    // crear e iniciar el juego
+    // GAME OVER
+    let overlay = container.querySelector("#gameOverOverlayFlappy");
+    const retryBtn = container.querySelector("#retryBtnFlappy");
+    const backToMenuBtn = container.querySelector("#backToMenuBtnFlappy");
+
+    // Crear el juego
     const game = new Game(canvas, overlay);;
-    game.start();
 
-    // manejar el evento click del botón reintentar
+    // Comenzar juego
+    startBtn.addEventListener("click", () => {
+        startMenu.style.display = "none"; // ocultar menú
+        game.start();                     // iniciar juego
+    });
+
+    // Reintentar juego
     retryBtn.addEventListener("click", () => {
-        // ocultar overlay
-        overlay.style.display = "none";
+        overlay.style.display = "none"; // ocultar overlay
+        game.controller.reset();  // reiniciar el juego al estado inicial
+        game.lastTime = 0;
+        game.controller.gameOver = false;
+        game.start();  // volver a iniciar el loop
+    });
 
-        // reiniciar el juego al estado inicial
+    // Volver al menu de inicio
+    backToMenuBtn.addEventListener("click", () => {
+        overlay.style.display = "none";
+        startMenu.style.display = "flex";
+
+        // parar el juego
+        game.pause();   
+        
+        // limpiar canvas
+        game.clearCanvas();
+
+        // Reiniciar el juego para que arranque desde cero cuando se toque "Comenzar"
         game.controller.reset();
         game.lastTime = 0;
         game.controller.gameOver = false;
-
-        // volver a iniciar el loop
-        game.start();
     });
-
-    
    
 }

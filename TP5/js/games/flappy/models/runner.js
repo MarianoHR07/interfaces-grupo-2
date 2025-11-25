@@ -1,4 +1,3 @@
-// TP5\js\games\flappy\models\runner.js
 import { CollidableEntity } from "../core/collidableEntity.js";
 
 export class Runner extends CollidableEntity {
@@ -40,7 +39,7 @@ export class Runner extends CollidableEntity {
         this.explosionFrameHeight = 126;  
         this.explosionTotalFrames = 6;   
 
-        this.explosionScale = 0.9;         // tamaño escala explosion
+        this.explosionScale = 3;         // tamaño escala explosion
 
         this.explosionWidth = this.explosionFrameWidth * this.explosionScale;
         this.explosionHeight = this.explosionFrameHeight * this.explosionScale;
@@ -53,10 +52,17 @@ export class Runner extends CollidableEntity {
         this.explosionFinished = false;
         
         // --- Estrella / invencibilidad ---
-        this.invincible    
+        this.invincible = false;  
         this.particles = [];
         this.invincibleStartTime = 0;
         this.invincibleDuration = 0;// duración total (ms)
+
+        // Parpadeo al colisionar
+        this.isInvulnerable = false;
+        this.blinkDuration = 800; // ms
+        this.blinkInterval = 120; // ms
+
+        this.collidable = true;
     }
 
     /**
@@ -70,6 +76,7 @@ export class Runner extends CollidableEntity {
         this.y = initialPosY;
         this.vy = 0;
         this.active = true;
+        this.collidable = true;
 
         // Animación normal
         this.currentFrame = 0;
@@ -233,6 +240,22 @@ export class Runner extends CollidableEntity {
         // limpiar partículas apagadas
         this.particles = this.particles.filter(p => p.alpha > 0);
     }
+    startInvulnerability() {
+        this.isInvulnerable = true;
+        this.opacity = 0.4;
 
+        let blinkCount = 0;
+        this.blinkInterval = setInterval(() => {
+            this.opacity = this.opacity === 1 ? 0.3 : 1;
+            blinkCount++;
+
+            if (blinkCount >= 14) { // 7 parpadeos
+                clearInterval(this.blinkInterval);
+                this.opacity = 1;
+                this.isInvulnerable = false;
+            }
+        }, 120);
+    
+    }
 }
 
