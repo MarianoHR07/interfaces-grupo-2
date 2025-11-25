@@ -1,0 +1,315 @@
+
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.logo-container-loading {
+    position: relative;
+    animation: logoEntrance 1s ease-out;
+    transition: all 0.8s ease;
+}
+
+.logo-container-loading.swiping {
+    animation: logoSwipe 2.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.logo-container-loading.swiping .logo {
+    animation: none;
+    filter: drop-shadow(0 0 60px rgba(0, 255, 255, 1));
+}
+
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes logoSwipe {
+    0% {
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        transform: translate(-10vw, 5vw) scale(1.2);
+    }
+}
+
+.img-logo-loading {
+    width: 280px;
+    height: auto;
+    filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.5));
+    animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.5));
+    }
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 50px rgba(255, 100, 100, 0.7));
+    }
+}
+
+.logo-name-loading {
+    font-size: 70px;
+    background-image: linear-gradient(to right, #1ABC9C 0%, #16A085 20%,#66797B 50%,#C0392B 80%,#E74C3C 100%);
+    background-clip: text;
+    color: transparent;
+    position: absolute;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0;
+    z-index: -1;
+    margin-top: 0;
+}
+
+.logo-name-loading.show {
+    animation: textReveal 2.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+    }
+    40% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+        transform: translate(10vw);
+    }
+}
+
+.loading-text {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 30px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: textGlow 1.5s ease-in-out infinite;
+    transition: opacity 0.5s ease;
+}
+
+.loading-text.hidden {
+    opacity: 0;
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 100, 100, 0.8);
+    }
+}
+
+.progress-container {
+    width: 300px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-top: 40px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.5s ease;
+}
+
+.progress-container.hidden {
+    opacity: 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #ff00ff, #ff6b00);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    animation: gradientShift 3s ease infinite;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    width: 0%;
+    transition: width 0.05s linear;
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.particle {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    animation: float 4s ease-in-out infinite;
+    opacity: 0.3;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+
+@keyframes float {
+    0%, 100% {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: rotate(5deg) scale(1.3);
+        opacity: 0.4;
+    }
+}
+
+.particle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.particle-1 {
+    top: 10%; 
+    left: 5%; 
+    animation-delay: 0s; 
+    animation-duration: 3s;
+}
+
+.particle-2 {
+    top: 15%; 
+    left: 85%; 
+    animation-delay: 0.5s; 
+    animation-duration: 4s;
+}
+
+.particle-3 {
+    top: 75%; 
+    left: 10%; 
+    animation-delay: 1s; 
+    animation-duration: 3.5s;
+}
+
+.particle-4 {
+    top: 25%; 
+    left: 75%; 
+    animation-delay: 1.5s; 
+    animation-duration: 4.5s;
+}
+
+.particle-5 {
+    top: 50%; 
+    left: 5%; 
+    animation-delay: 0.8s; 
+    animation-duration: 4.2s;
+}
+
+.particle-6 {
+    top: 70%; 
+    left: 80%; 
+    animation-delay: 2s; 
+    animation-duration: 3.8s;
+}
+
+.particle-7 {
+    top: 20%; 
+    left: 15%; 
+    animation-delay: 2.3s; 
+    animation-duration: 3.6s;
+}
+
+.particle-8 {
+    top: 85%; 
+    left: 50%; 
+    animation-delay: 1.2s; 
+    animation-duration: 3.3s;
+}
+
+.particle-9 {
+    top: 10%; 
+    left: 35%; 
+    animation-delay: 0.7s; 
+    animation-duration: 3.8s;
+}
+
+.particle-10 {
+    top: 40%; 
+    left: 90%; 
+    animation-delay: 1.8s; 
+    animation-duration: 4.8s;
+}
+
+
+.particle.curtain-left {
+  animation-name: curtain-left;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.particle.curtain-right {
+  animation-name: curtain-right;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.particle-1.curtain-left, 
+.particle-3.curtain-left, 
+.particle-5.curtain-left,
+.particle-7.curtain-left,
+.particle-9.curtain-left
+{
+    animation: curtain-left 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes curtain-left {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: translateX(-1000px) scale(0.3);
+    }
+}
+
+.particle-2.curtain-right, 
+.particle-4.curtain-right, 
+.particle-6.curtain-right,
+.particle-8.curtain-right,
+.particle-10.curtain-right
+{
+    animation: curtain-right 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes curtain-right {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: translateX(1000px) scale(0.3);
+    }
+}

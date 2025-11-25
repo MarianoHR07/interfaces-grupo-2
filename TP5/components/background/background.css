@@ -1,0 +1,64 @@
+/* GALERÍA DE CARDS (VERSIÓN GRID) */
+
+.card-gallery {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;
+  background-color: #0d1a3c;
+  padding: 30px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+.card-gallery .card {
+  background-color: #1a2b53;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-gallery .card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-gallery {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+}
+
+/* GRID DE ICONOS / JUEGOS PEQUEÑOS */
+
+#gameGridContainer {
+  display: grid;
+  grid-template-columns: repeat(15  ,2fr); /* 3 columnas por fila */
+  padding: 30px;
+  margin-top: 180px;
+  border-radius: 16px;
+  z-index: -1;
+}
+
+.game-card-bg {
+  width: 90px;
+  height: 90px;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 15px;
+}
+
+.game-card-bg img {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+}

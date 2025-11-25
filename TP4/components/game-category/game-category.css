@@ -1,0 +1,35 @@
+.game-category{     
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    height: fit-content;
+    gap: 10px;
+    padding: 3px 16px;
+    background-color: var(--primary-700);
+    color: var(--secondary-200);
+    border-radius: 9px;
+}
+
+.category-box {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100%;
+    height: fit-content;
+    gap: 12px;
+    padding: 0px;
+}
+
+.icon {
+    width: 30px;
+    height: 24px;
+    padding: 0px;
+}
+
+.index-user {
+    width: fit-content;
+    height: fit-content;
+    padding: 0px;
+}
