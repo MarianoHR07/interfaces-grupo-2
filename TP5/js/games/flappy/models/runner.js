@@ -249,7 +249,7 @@ export class Runner extends CollidableEntity {
             this.opacity = this.opacity === 1 ? 0.3 : 1;
             blinkCount++;
 
-            if (blinkCount >= 14) { // 7 parpadeos
+            if (blinkCount >= 14 || this.invincible) { // 7 parpadeos
                 clearInterval(this.blinkInterval);
                 this.opacity = 1;
                 this.isInvulnerable = false;

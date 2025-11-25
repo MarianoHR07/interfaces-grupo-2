@@ -17,10 +17,12 @@ export function initFlappy(container) {
 
     // Crear el juego
     const game = new Game(canvas, overlay);;
+    game.loadAudio();
 
     // Comenzar juego
     startBtn.addEventListener("click", () => {
         startMenu.style.display = "none"; // ocultar menú
+        game.playBGM(); // reproducir musica del juego
         game.start();                     // iniciar juego
     });
 
@@ -30,6 +32,7 @@ export function initFlappy(container) {
         game.controller.reset();  // reiniciar el juego al estado inicial
         game.lastTime = 0;
         game.controller.gameOver = false;
+        game.playBGM(); // reproducir musica del juego
         game.start();  // volver a iniciar el loop
     });
 
@@ -45,6 +48,7 @@ export function initFlappy(container) {
         game.clearCanvas();
 
         // Reiniciar el juego para que arranque desde cero cuando se toque "Comenzar"
+        game.stopBGM()
         game.controller.reset();
         game.lastTime = 0;
         game.controller.gameOver = false;

@@ -37,6 +37,7 @@ export class Game {
         
         if (this.controller.state === "gameOver") {    
             this.pause();
+            this.playBGM_GameOver();
             this.showGameOverOverlay();
             return;
         }
@@ -51,4 +52,9 @@ export class Game {
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
+
+    async loadAudio(){ this.controller.loadAudio(); }
+    playBGM(){ this.controller.playBGM();}
+    playBGM_GameOver(){ this.controller.playBGM_GameOver();}
+    stopBGM(){ this.controller.stopBGM();}
 }
