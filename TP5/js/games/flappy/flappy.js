@@ -48,10 +48,42 @@ export function initFlappy(container) {
         game.clearCanvas();
 
         // Reiniciar el juego para que arranque desde cero cuando se toque "Comenzar"
-        game.stopBGM()
+        game.stopAllBGM();
+        game.playBGM_Menu();
+
         game.controller.reset();
         game.lastTime = 0;
         game.controller.gameOver = false;
     });
+
+    // Pausar musica
+    const muteBtn = container.querySelector("#muteMusicBtn");
+    game.controller.audio.muted = false; // flag del estado de la música
+
+    muteBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        const audio = game.controller.audio;
+
+        audio.muted = !audio.muted;
+
+        if (audio.muted) {
+            game.stopAllBGM();
+            muteBtn.textContent = "🔇";
+        } else {
+            // Si estamos en menu → reproducir menu BGM
+            if (startMenu.style.display !== "none") {
+                game.playBGM_Menu();
+            } 
+            // Si estamos dentro del juego → reproducir gameplay BGM
+            else {
+                game.playBGM();
+            }
+
+            muteBtn.textContent = "🔊";
+        }
+    });
+
+
    
 }

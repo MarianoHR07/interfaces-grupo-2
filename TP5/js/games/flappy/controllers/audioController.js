@@ -1,3 +1,4 @@
+
 export class AudioController {
     constructor() {
         this.bgmTracks = {};   // Música
@@ -7,6 +8,8 @@ export class AudioController {
 
         this.bgmVolume = 0.3;
         this.sfxVolume = 0.7;
+
+        this.muted = false;
     }
 
     /** Carga todos los audios */
@@ -36,7 +39,9 @@ export class AudioController {
     //      🎼  MÚSICA (BGM)
     // -----------------------------
     playBGM(id) {
-        this.stopBGM();
+        if (this.muted) return;
+
+        this.stopAllBGM();
 
         const track = this.bgmTracks[id];
         if (!track) return;
@@ -58,6 +63,21 @@ export class AudioController {
         }
         this.currentBGM = null;
     }
+
+    stopAllBGM() {
+        for (const key in this.bgmTracks) {
+            const track = this.bgmTracks[key];
+            track.pause();
+            track.currentTime = 0;
+        }
+
+        // Si había un track suelto (menú viejo), pausarlo también
+        if (this.currentBGM) {
+            this.currentBGM.pause();
+            this.currentBGM.currentTime = 0;
+        }
+    }
+
     
     setBGMVolume(v) {
         this.bgmVolume = v;
@@ -69,6 +89,8 @@ export class AudioController {
     //      🔊  EFECTOS (SFX)
     // -----------------------------
     playSFX(id) {
+        if (this.muted) return;
+
         const src = this.sfxTracks[id];
         if (!src) return;
 
@@ -84,8 +106,10 @@ export class AudioController {
 
     // Limpieza completa
     dispose() {
-        this.stopBGM();
+        this.stopAllBGM();
         this.bgmTracks = {};
         this.sfxTracks = {};
     }
+
+
 }

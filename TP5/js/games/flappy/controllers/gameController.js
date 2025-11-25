@@ -25,7 +25,6 @@ export class GameController {
         this.ctx = ctx;
         this.audio = new AudioController();
         this.debugView = new DebugColliderView(this.ctx);
-        // this.gameOver = false;
         this.score = 0;
         this.bestScore = 0;
         
@@ -103,6 +102,7 @@ export class GameController {
         window.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
                 e.preventDefault();
+
                 if (this.state === "ready") {
                     this.state = "playing";
                     return
@@ -116,23 +116,21 @@ export class GameController {
 
         // Click del mouse
         window.addEventListener("mousedown", () => {
+        // this.ctx.canvas.addEventListener("mousedown", () => {
             if (this.state === "ready") {
-            this.state = "playing";
-            return;
-        }
+                this.state = "playing";
+                return;
+            }
 
-        if (this.state === "playing") {
-            this.audio.playSFX("jump");
-            this.runner.jump();
-        }
+            if (this.state === "playing") {
+                this.audio.playSFX("jump");
+                this.runner.jump();
+            }
         });
     }
 
     // actualiza el estado del juego y de cada uno de los objetos
     update(deltaTime, timestamp) {
-        //this.checkObstacleCollision();
-        //this.checkBonusCollision();
-
         // Obastaculos
         const { topHeight, bottomY } = this.obstacleController.update(deltaTime, timestamp);
 
@@ -162,7 +160,7 @@ export class GameController {
             if (elapsed >= 2000) {
                 this.state = "gameOver";
                 this.audio.playSFX("die")
-                this.stopBGM();
+                this.audio.stopAllBGM();
             }
 
             return; // seguir dibujando, pero no actualizar nada del juego
@@ -176,9 +174,6 @@ export class GameController {
         // Estado: Playing
         this.runner.update();
 
-        // Obastaculos
-        //const { topHeight, bottomY } = this.obstacleController.update(deltaTime, timestamp);
-        
         if(topHeight!== null && bottomY !== null){ 
             if (Math.random() < 0.7) {  // BONUS: 70% de probabilidad de generar un bonus
                 this.#spawnBonus(topHeight, bottomY);
@@ -222,8 +217,6 @@ export class GameController {
         this.bonusController.draw();
 
         this.runnerView.draw();
-
-        // this.bonuses.forEach(b => this.bonusView.draw(b));
 
         this.lifeBar.draw();
 
@@ -333,14 +326,11 @@ export class GameController {
                     this.bestScore = this.score;
                     console.log("Has impuesto un nuevo record: " + this.score);
                 }
-                // console.log("Bonus collected!");
-                // console.log("Score: " + this.score);
                 break;
 
             case BonusTypes.HEART:
                 this.audio.playSFX("heart");
                 this.lifeManager.gainLife();
-                // this.lives = (this.lives < 3) ? (this.lives += effect.heal) : this.lives
                 break;
 
             default:
@@ -393,8 +383,6 @@ export class GameController {
         // Evitar daño si está invulnerable o en cooldown
         if (this.runner.isInvulnerable || this.runnerRecentlyHit) return;
        
-        // this.audio.playSFX("hit"); // reproducir efecto de colision
-
         const remainingLives = this.lifeManager.loseLife();
 
         // Si todavía tiene vidas → parpadeo
@@ -420,8 +408,16 @@ export class GameController {
         coins.forEach(c => this.debugView.drawCollider(c));
     }
 
+    // ----------------AUDIO--------------------
+    
     async loadAudio() { await this.audio.load(BGM, SFX); }
+    
+    // REPRODUCCION
     playBGM(){ this.audio.playBGM("gameplay"); }
-    playBGM_GameOver(){ this.audio.playBGM("gameOver");}
+    playBGM_Menu() { this.audio.playBGM("menu"); }
+
+    // DETENER 
     stopBGM(){ this.audio.stopBGM(); }
+    stopAllBGM(){ this.audio.stopAllBGM(); }
+    
 }

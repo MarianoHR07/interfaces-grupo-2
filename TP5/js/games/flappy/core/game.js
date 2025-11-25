@@ -30,15 +30,17 @@ export class Game {
         const deltaTime = timestamp - this.lastTime;
         this.lastTime = timestamp;
 
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
         this.controller.update(deltaTime, timestamp);       // actualiza los estados del juego
+
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
         this.controller.draw();                             // dibuja el estado actual del juego
         
         if (this.controller.state === "gameOver") {    
             this.pause();
-            this.playBGM_GameOver();
             this.showGameOverOverlay();
+            this.stopAllBGM();
+            this.controller.audio.playSFX("die");
             return;
         }
         
@@ -53,8 +55,34 @@ export class Game {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
+
+
+    mute() {
+        this.controller.audio.muted = true;
+        this.controller.audio.stopBGM();        
+    }
+
+    unmute() {
+        const audio = this.controller.audio;
+        audio.muted = false;
+
+        // Reproducir la BGM correspondiente según el estado actual del juego.
+        // Si estás en el menú (tu estado "ready"), reproducir la música del menú;
+        // si ya estás jugando, reproducir la BGM de gameplay.
+        if (this.controller.state === "ready") {
+            if (typeof audio.playBGM_Menu === "function") {
+                this.playBGM_Menu();
+            }
+        } else {
+            this.playBGM();
+        }
+    }
+
+
     async loadAudio(){ this.controller.loadAudio(); }
     playBGM(){ this.controller.playBGM();}
-    playBGM_GameOver(){ this.controller.playBGM_GameOver();}
     stopBGM(){ this.controller.stopBGM();}
+    playBGM_Menu(){this.controller.playBGM_Menu();}
+    stopAllBGM(){this.controller.stopAllBGM();}
+
 }

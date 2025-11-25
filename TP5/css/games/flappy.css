@@ -181,3 +181,34 @@
 .game-over-btn-flappy:hover {
   background: #ffdd33;
 }
+
+
+/* Musica */
+#muteMusicBtn {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+
+  padding: 10px 14px;
+  font-size: 18px;
+
+  z-index: 9999; 
+
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  pointer-events: auto; /* 🔥 acepta clics */
+}
+
+
+#muteMusicBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+#muteMusicBtn:active {
+  transform: scale(0.95);
+}
