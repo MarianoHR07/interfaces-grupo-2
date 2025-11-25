@@ -14,7 +14,7 @@ export class RunnerView {
     draw() {
         const m = this.runner;
 
-        // Si NO está explotando → dibujar runner normal
+        // Si NO se cargo la imagen
         if (!m.sprite.complete) {
             this.ctx.globalAlpha = 1;
             return; // esperar carga
@@ -27,18 +27,16 @@ export class RunnerView {
         // aplicar transparencia (parpadeo)
         this.ctx.globalAlpha = m.opacity ?? 1;
 
-        // Si está explotando → dibujar explosión
+        // Si se quedo sin vidas → dibujar explosión
         if (m.isExploding) {
             this.drawExplosion();
-            this.ctx.globalAlpha = 1;
             return;
         }
 
-
-        // Si está invencible → efecto especial
+        // Si está invencible → efecto especial de la estrella
         if (m.isInvincible()) {
             this.drawInvincible();
-            return; // No dibujamos el runner normal aquí
+            return;
         }
 
         // Dibujar runner normal
@@ -67,7 +65,9 @@ export class RunnerView {
     }
 
      
-
+    // ============================================================
+    //         ★ Dibujar efecto al recolectar estrella ★
+    // ============================================================
     drawInvincible() {
         const m = this.runner;
 
