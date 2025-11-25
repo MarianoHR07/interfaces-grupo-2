@@ -10,7 +10,7 @@ let navigateToPage = (titleText) => {
     import("../../js/router.js").then(({ navigateTo }) => navigateTo("pegSolitaire"));
   }
 
-  if(titleText === "Flappy Runner"){
+  if(titleText === "Flappy Extraterrestrial"){
     // card.id = "play-flappy-runner";
     import("../../js/router.js").then(({ navigateTo }) => navigateTo("flappy"));
   }

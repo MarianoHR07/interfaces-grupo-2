@@ -30,7 +30,7 @@ export class Runner extends CollidableEntity {
         this.gravity = 0.2;   // fuerza hacia abajo
         this.jumpForce = -6.5;  // fuerza hacia arriba
 
-        this.maxFallSpeed = 2;  // velocidad máxima de caída
+        this.maxFallSpeed = 1;  // velocidad máxima de caída
 
         this.colliderType = "ellipse";
 
@@ -240,21 +240,28 @@ export class Runner extends CollidableEntity {
         // limpiar partículas apagadas
         this.particles = this.particles.filter(p => p.alpha > 0);
     }
+
+
+    //invulnerabilidad luego de recibir daño
     startInvulnerability() {
+         
         this.isInvulnerable = true;
         this.opacity = 0.4;
 
         let blinkCount = 0;
         this.blinkInterval = setInterval(() => {
-            this.opacity = this.opacity === 1 ? 0.3 : 1;
+
+            this.opacity = (this.opacity === 1) ? 0.3 : 1;
+
             blinkCount++;
 
-            if (blinkCount >= 14 || this.invincible) { // 7 parpadeos
+            if (blinkCount >= 14 || this.invincible) { // cantidad de parpadeos
                 clearInterval(this.blinkInterval);
                 this.opacity = 1;
                 this.isInvulnerable = false;
             }
-        }, 120);
+        }, 120); // cambia el valor de la opacidad en un intervalo de 0,12 segundos
+        
     
     }
 }

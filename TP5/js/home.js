@@ -73,8 +73,8 @@ function initHome(container){
       selectedGames.splice(3, 0, featuredGamePegSolitaire);
 
       const featuredGameFlappyRunner = {
-        title: "Flappy Runner",
-        image: `images/Flappy-Runner.png`, 
+        title: "Flappy Extraterrestrial",
+        image: `images/Flappy-Extraterrestrial.png`, 
         link: "#",
         category: ""
       };
