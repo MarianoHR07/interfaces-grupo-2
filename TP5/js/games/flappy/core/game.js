@@ -12,6 +12,7 @@ export class Game {
     }
 
     start() {
+        this.controller.reset();  // siempre reiniciamos el juego al estado inicial
         this.loopId = requestAnimationFrame(this.loop.bind(this));
     }
 

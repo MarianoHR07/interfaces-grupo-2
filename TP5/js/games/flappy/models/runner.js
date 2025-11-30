@@ -25,12 +25,14 @@ export class Runner extends CollidableEntity {
         this.frameSpeed = 4;
         this.frameCount = 0;
 
-        // Física básica
-        this.vy = 0;
-        this.gravity = 0.2;   // fuerza hacia abajo
-        this.jumpForce = -6.5;  // fuerza hacia arriba
-
-        this.maxFallSpeed = 1;  // velocidad máxima de caída
+        // Física en MovableEntity → Runner
+        this.jumpForce = -550; // fuerza hacia arriba
+        this.maxFallSpeed = 200; // velocidad máxima de caída
+         
+        this.ay = 1500; // fuerza hacia abajo
+        this.gravityDelay = 3000; // ms antes de aplicar gravedad
+         
+        this.timeSinceStart = performance.now();
 
         this.colliderType = "ellipse";
 
@@ -91,23 +93,37 @@ export class Runner extends CollidableEntity {
         // --- Reset invencibilidad ---
         this.invincible = false;
         this.particles = [];
+        
+        // --- Reset fisicas ---
+        this.ay = 1500; 
+        this.jumpForce = -550;
+        this.maxFallSpeed = 200;
+        
+        this.timeSinceStart = performance.now();
     }
 
-    update() {
-        // Actualiza la animación
+     update(deltaTime,timestamp) {
+         // Actualiza la animación
         if (this.isExploding) {
             this._updateExplosion();
             return;
         }
-        this._updateRunAnimation();
+        
+        this._updateRunAnimation(); // animacion de spritesheet
+        
+        if (timestamp - this.timeSinceStart  < this.gravityDelay) {
+           // No aplicar gravedad hasta que transcurran "gravityDelay" segundos
+            return; 
+        }
 
-        // Física (caída y movimiento)
-        this.vy += this.gravity;  // gravedad
-        if(this.vy > this.maxFallSpeed){  // limitamos la velocidad, aunque la gravedad siga sumando, nunca superara esa velocidad
+        // Física base (velocidad, aceleración, gravedad, movimiento)
+        super.update(deltaTime);
+
+        // Limitar velocidad de caída
+        if (this.vy > this.maxFallSpeed) {
             this.vy = this.maxFallSpeed;
         }
-        this.y += this.vy;  // mover al personaje
-        
+
         // Partículas
         this.generateParticles();
         this.updateParticles();

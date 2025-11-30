@@ -79,8 +79,7 @@ export class GameController {
         * @return {void}
      */
     reset() {
-        // Reiniciar estado del juego
-        this.state = "ready";
+   
         this.score = 0;
 
         // Reiniciar Runner
@@ -95,54 +94,58 @@ export class GameController {
         // Reiniciar vidas
         this.lifeManager.setLives(this.lifeManager.maxLives);
         this.runnerRecentlyHit = false;
+
+        // Reiniciar estado del juego
+        this.state = "playing";
+        this.runner.jump(); // para que la animacion inicie con un salto antes de aplicar gravedad
     }
 
+    // --- Handler común ---
+    handleInput = () => {
+        if (this.state === "ready") { // solo sirve para iniciar el juego y para no tener conflicto con la tecla "space"
+            this.state = "playing";
+        }
+
+        if (this.state === "playing") {
+            this.audio.playSFX("jump");
+            this.runner.jump();
+        }
+    };
+
     registerInput() {
-        // Barra espaciadora
+ 
+        // --- Teclado: Space ---
         window.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
-                e.preventDefault();
-
-                if (this.state === "ready") {
-                    this.state = "playing";
-                    return
-                }
-                if (this.state === "playing") {
-                    this.audio.playSFX("jump");
-                    this.runner.jump();
-                }
+                // solo lo toma cuando el juego esta en estado de playing (como es un evento de tipo window, de esta manera
+                // se evita que al presionar la tecla espacio comience el juego)
+                if (this.state !== "ready") {
+                    e.preventDefault();
+                    this.handleInput();
+                } // si no se cumple, la tecla espacio funciona por defecto (se desplaza hacia abajo el view port de la pagina)
             }
         });
 
-        // Click del mouse
-        window.addEventListener("mousedown", () => {
-        // this.ctx.canvas.addEventListener("mousedown", () => {
-            if (this.state === "ready") {
-                this.state = "playing";
-                return;
-            }
-
-            if (this.state === "playing") {
-                this.audio.playSFX("jump");
-                this.runner.jump();
-            }
+        // --- Mouse: click ---
+        this.ctx.canvas.addEventListener("mousedown", () => {
+            this.handleInput();
         });
+
+        // --- Mobile: toque ---
+        this.ctx.canvas.addEventListener("touchstart", (e) => {
+            // Evita que el navegador haga scroll o zoom con el toque
+            e.preventDefault();
+            this.handleInput();
+        }, { passive: false });  // Debe ser false para permitir e.preventDefault()
+
     }
 
     // actualiza el estado del juego y de cada uno de los objetos
     update(deltaTime, timestamp) {
-        // Obastaculos
-        const { topHeight, bottomY } = this.obstacleController.update(deltaTime, timestamp);
-
-        this.checkObstacleCollision();
-        this.checkBonusCollision();
-
-        // actualizar bonus (animación + movimiento)
-        this.bonusController.update(deltaTime);
 
         // Estado: explosión
-        if (this.state === "exploding") {
-            this.runner.update();
+        if (this.state === "exploding") {  
+            this.runner.update(deltaTime, timestamp);
             
             if (this.runner.explosionFinished) { // si la explosión terminó → pasar al estado finishDelay
                 this.state = "finishDelay";
@@ -172,7 +175,16 @@ export class GameController {
         };
 
         // Estado: Playing
-        this.runner.update();
+        this.runner.update(deltaTime, timestamp);
+     
+        // Obastaculos
+        const { topHeight, bottomY } = this.obstacleController.update(deltaTime, timestamp);
+
+        this.checkObstacleCollision();
+        this.checkBonusCollision();
+
+        // actualizar bonus (animación + movimiento)
+        this.bonusController.update(deltaTime);
 
         if(topHeight!== null && bottomY !== null){ 
             if (Math.random() < 0.7) {  // BONUS: 70% de probabilidad de generar un bonus
@@ -182,6 +194,7 @@ export class GameController {
                 // solo se genera en el momento en que instanciamos un par de obstaculos
             }
         }
+        
 
         // --- COLISIÓN CON EL SUELO ---
         const starActive = this.runner.isInvincible();
@@ -220,13 +233,16 @@ export class GameController {
 
         this.lifeBar.draw();
 
+        // Contador de puntos que lleva el player
+        this.coinView.draw(this.score);
+
         // ############# Depuración: dibujar cajas de colisión###########
         this.debugView.enabled = false; // activar/desactivar vista de depuración
         if(this.debugView.enabled)
             this.#drawCollidersBox(this.runner, this.obstacleController.obstacles, this.bonuses);
         // ############################
 
-        this.coinView.draw(this.score);
+
     }
 
     gameOver() {
