@@ -29,7 +29,6 @@ export function initFlappy(container) {
     // Reintentar juego
     retryBtn.addEventListener("click", () => {
         overlay.style.display = "none"; // ocultar overlay
-        game.controller.reset();  // reiniciar el juego al estado inicial
         game.lastTime = 0;
         game.controller.gameOver = false;
         game.playBGM(); // reproducir musica del juego
@@ -51,7 +50,6 @@ export function initFlappy(container) {
         game.stopAllBGM();
         game.playBGM_Menu();
 
-        game.controller.reset();
         game.lastTime = 0;
         game.controller.gameOver = false;
     });

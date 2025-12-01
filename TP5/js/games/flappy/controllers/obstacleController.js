@@ -15,8 +15,9 @@ export class ObstacleController {
         /** @type {ObstacleView} vista de los obstáculos */
         this.obstacleView = new ObstacleView(ctx);
 
-        this.spawnInterval = 2250; // cada 2 segundos
-        this.lastSpawn = 0;
+        this.spawnInterval = 2250; // cada 2,25 segundos
+
+        this.lastSpawn = performance.now()-2000; 
 
         this.gap = 225; // distancia entre top y bottom
         this.minHeight = 100;
@@ -35,7 +36,7 @@ export class ObstacleController {
      */
     reset() {
         this.obstacles = [];
-        this.lastSpawn = 0;
+        this.lastSpawn = performance.now() - 2000; // forzamos un spawn temprano para que el primer obstaculo no demore "this.spawnInterval = 2250;" en aparecer.  
     }
 
     /** 

@@ -5,8 +5,8 @@ export const BGM = {
 };
 
 export const SFX = {
-    // jump: "js/games/flappy/assets/audio/sfx/jump.wav",
-    // hit: "js/games/flappy/assets/audio/sfx/hit.mp3",
+    jump: "js/games/flappy/assets/audio/sfx/jump.wav",
+    hit: "js/games/flappy/assets/audio/sfx/hit.wav",
     coin: "js/games/flappy/assets/audio/sfx/coin.mp3",
     star: "js/games/flappy/assets/audio/sfx/star.wav",
     heart: "js/games/flappy/assets/audio/sfx/heart.wav",
