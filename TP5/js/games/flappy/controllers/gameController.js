@@ -196,7 +196,7 @@ export class GameController {
         }
         
 
-        // --- COLISIÓN CON EL SUELO ---
+        // --- COLISIÓN CON EL SUELO/TECHO ---
         const starActive = this.runner.isInvincible();
         const bottomLimit = this.ctx.canvas.height - this.runner.frameHeight * this.runner.scale;
         
@@ -295,7 +295,7 @@ export class GameController {
             });
         }
 
-        // ##### Zona C ##### Debajo del tubo inferior
+        // ##### Zona C ##### En el pasillo entre dos tuberias de abajo
         const bottomMin = bottomY - margin;
         const bottomMax = canvasH - bonusHeight - margin;
         if (bottomMax > bottomMin) {
